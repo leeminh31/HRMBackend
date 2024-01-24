@@ -7,13 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CoreApiResponse" Version="1.0.1" />
+    <PackageReference Include="Dapper" Version="2.1.28" />
+    <PackageReference Include="Dapper.ORM" Version="1.0.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.26" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.26" />
+    <PackageReference Include="Npgsql" Version="8.0.1" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.22" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DataAccess\" />
     <Folder Include="Extensions\Validation\" />
     <Folder Include="Mapping\" />
     <Folder Include="Services\" />
