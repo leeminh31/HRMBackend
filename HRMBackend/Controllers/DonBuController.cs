@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using HRMBackend.Resources;
+using HRMBackend.Resources.DTO.DonBu.Request;
 using HRMBackend.Services.DonBu;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

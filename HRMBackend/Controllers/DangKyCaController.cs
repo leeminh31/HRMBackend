@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using HRMBackend.Resources;
+using HRMBackend.Resources.DTO.DangKyCa.Request;
 using HRMBackend.Services.DangKyCa;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

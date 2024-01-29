@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using HRMBackend.Resources;
+using HRMBackend.Resources.DTO.QuyPhep.Request;
 using HRMBackend.Services.QuyPhep;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

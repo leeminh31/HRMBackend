@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using HRMBackend.Resources;
+using HRMBackend.Resources.DTO.LoaiHopDong.Request;
 using HRMBackend.Services.LoaiHopDong;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

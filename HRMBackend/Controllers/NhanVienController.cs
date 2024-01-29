@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using HRMBackend.Resources;
+using HRMBackend.Resources.DTO.NhanVien.Request;
 using HRMBackend.Services.NhanVien;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
