@@ -6,6 +6,9 @@ using HRMBackend.Resources;
 using HRMBackend.Results;
 using HRMBackend.Services.GiaiTrinh;
 using Microsoft.Extensions.Options;
+using HRMBackend.Resources.DTO.GiaiTrinh.Response;
+using HRMBackend.Resources.DTO.GiaiTrinh.Request;
+using HRMBackend.Extensions;
 
 namespace HRMBackend.Services.GiaiTrinh
 {
@@ -27,47 +30,47 @@ namespace HRMBackend.Services.GiaiTrinh
         }
         #endregion
 
-        public async Task<BaseResult<AirportResponse>> CreateAsync(CreateAirportRequest request)
+        public async Task<BaseResult<GiaiTrinhResponse>> CreateAsync(CreateGiaiTrinhRequest request)
         {
-            // Mapping Resource to Airport
-            var airport = Mapper.Map<CreateAirportRequest, Models.Airport>(request);
-            SearchAirportRequest searchRequest = new SearchAirportRequest() { Code = request.Code, Name = request.Name };
+            // Mapping Resource to GiaiTrinh
+            var airport = Mapper.Map<CreateGiaiTrinhRequest, Models.GiaiTrinh>(request);
+            SearchGiaiTrinhRequest searchRequest = new SearchGiaiTrinhRequest() { Code = request.Code, Name = request.Name };
             //Tìm mã code hoặc name đã tồn tại chưa?
             var records = await _giaiTrinhDAO.GetByCodeOrNameAsync(searchRequest);
             if (records.isSuccess)
             {
-                return GetBaseResult(CodeMessage._547, data: Mapper.Map<AirportResponse>(records.data.First()));
+                return GetBaseResult(CodeMessage._547, data: Mapper.Map<GiaiTrinhResponse>(records.data.First()));
             }
 
             var result = await _giaiTrinhDAO.CreateAsync(airport);
             await _unitOfWork.SaveChangesAsync();
 
             if (result.isSuccess)
-                return GetBaseResult(CodeMessage._200, data: Mapper.Map<AirportResponse>(result.data));
+                return GetBaseResult(CodeMessage._200, data: Mapper.Map<GiaiTrinhResponse>(result.data));
             else
-                return GetBaseResult<AirportResponse>(CodeMessage._209, status: StatusEnum.Failed);
+                return GetBaseResult<GiaiTrinhResponse>(CodeMessage._209, status: StatusEnum.Failed);
         }
 
-        public async Task<BaseResult<IEnumerable<AirportResponse>>> GetByCodeOrNameAsync(SearchAirportRequest request)
+        public async Task<BaseResult<IEnumerable<GiaiTrinhResponse>>> GetByCodeOrNameAsync(SearchGiaiTrinhRequest request)
         {
             var records = await _giaiTrinhDAO.GetByCodeOrNameAsync(request);
             if (records.isSuccess)
             {
-                return GetBaseResult(CodeMessage._200, data: Mapper.Map<IEnumerable<AirportResponse>>(records.data));
+                return GetBaseResult(CodeMessage._200, data: Mapper.Map<IEnumerable<GiaiTrinhResponse>>(records.data));
             }
-            return GetBaseResult<IEnumerable<AirportResponse>>(CodeMessage._545, status: StatusEnum.Failed);
+            return GetBaseResult<IEnumerable<GiaiTrinhResponse>>(CodeMessage._545, status: StatusEnum.Failed);
         }
 
-        public async Task<PaginationResult<IEnumerable<AirportResponse>>> PaginationGetByCodeAndNameAsync(PaginationAirportRequest request)
+        public async Task<PaginationResult<IEnumerable<GiaiTrinhResponse>>> PaginationGetByCodeAndNameAsync(PaginationGiaiTrinhRequest request)
         {
             var resultDAO = await _giaiTrinhDAO.PaginationAsync(request);
 
             if (resultDAO.isSuccess)
             {
                 // Mapping
-                var resource = Mapper.Map<IEnumerable<AirportResponse>>(resultDAO.data);
+                var resource = Mapper.Map<IEnumerable<GiaiTrinhResponse>>(resultDAO.data);
 
-                var result = GetPaginationResult<PaginationResult<IEnumerable<AirportResponse>>, IEnumerable<AirportResponse>>(CodeMessage._200, resource);
+                var result = GetPaginationResult<PaginationResult<IEnumerable<GiaiTrinhResponse>>, IEnumerable<GiaiTrinhResponse>>(CodeMessage._200, resource);
 
                 // Using extension-method for pagination
                 result.CreatePaginationResponse(request, resultDAO.totalRecords);
@@ -76,15 +79,15 @@ namespace HRMBackend.Services.GiaiTrinh
             }
             else
             {
-                return GetPaginationResult<PaginationResult<IEnumerable<AirportResponse>>, IEnumerable<AirportResponse>>(CodeMessage._545, status: StatusEnum.Failed);
+                return GetPaginationResult<PaginationResult<IEnumerable<GiaiTrinhResponse>>, IEnumerable<GiaiTrinhResponse>>(CodeMessage._545, status: StatusEnum.Failed);
             }
         }
 
-        public async Task<BaseResult<AirportResponse>> UpdateAsync(UpdateAirportRequest request)
+        public async Task<BaseResult<GiaiTrinhResponse>> UpdateAsync(UpdateGiaiTrinhRequest request)
         {
-            // Mapping Resource to Airport
-            var airport = Mapper.Map<UpdateAirportRequest, Models.Airport>(request);
-            SearchAirportRequest searchRequest = new SearchAirportRequest() { Code = request.Code, Name = request.Name };
+            // Mapping Resource to GiaiTrinh
+            var airport = Mapper.Map<UpdateGiaiTrinhRequest, Models.GiaiTrinh>(request);
+            SearchGiaiTrinhRequest searchRequest = new SearchGiaiTrinhRequest() { Code = request.Code, Name = request.Name };
             //Tìm mã code hoặc name đã tồn tại chưa?
             var records = await _giaiTrinhDAO.GetByCodeOrNameAsync(searchRequest);
             if (records.isSuccess)
@@ -92,7 +95,7 @@ namespace HRMBackend.Services.GiaiTrinh
                 var anyExist = records.data.Where(x => x.Id != request.Id).ToList();
                 if (anyExist.Count > 0)
                 {
-                    return GetBaseResult(CodeMessage._547, data: Mapper.Map<AirportResponse>(anyExist.FirstOrDefault()));
+                    return GetBaseResult(CodeMessage._547, data: Mapper.Map<GiaiTrinhResponse>(anyExist.FirstOrDefault()));
                 }
             }
 
@@ -100,9 +103,9 @@ namespace HRMBackend.Services.GiaiTrinh
             await _unitOfWork.SaveChangesAsync();
 
             if (result.isSuccess)
-                return GetBaseResult(CodeMessage._200, data: Mapper.Map<AirportResponse>(result.data));
+                return GetBaseResult(CodeMessage._200, data: Mapper.Map<GiaiTrinhResponse>(result.data));
             else
-                return GetBaseResult<AirportResponse>(CodeMessage._236, status: StatusEnum.Failed);
+                return GetBaseResult<GiaiTrinhResponse>(CodeMessage._236, status: StatusEnum.Failed);
         }
     }
 }

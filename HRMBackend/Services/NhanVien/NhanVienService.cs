@@ -6,6 +6,9 @@ using HRMBackend.Resources;
 using HRMBackend.Results;
 using HRMBackend.Services.NhanVien;
 using Microsoft.Extensions.Options;
+using HRMBackend.Resources.DTO.NhanVien.Response;
+using HRMBackend.Resources.DTO.NhanVien.Request;
+using HRMBackend.Extensions;
 
 namespace HRMBackend.Services.NhanVien
 {
@@ -27,47 +30,47 @@ namespace HRMBackend.Services.NhanVien
         }
         #endregion
 
-        public async Task<BaseResult<AirportResponse>> CreateAsync(CreateAirportRequest request)
+        public async Task<BaseResult<NhanVienResponse>> CreateAsync(CreateNhanVienRequest request)
         {
-            // Mapping Resource to Airport
-            var airport = Mapper.Map<CreateAirportRequest, Models.Airport>(request);
-            SearchAirportRequest searchRequest = new SearchAirportRequest() { Code = request.Code, Name = request.Name };
+            // Mapping Resource to NhanVien
+            var airport = Mapper.Map<CreateNhanVienRequest, Models.NhanVien>(request);
+            SearchNhanVienRequest searchRequest = new SearchNhanVienRequest() { Code = request.Code, Name = request.Name };
             //Tìm mã code hoặc name đã tồn tại chưa?
             var records = await _nhanVienDAO.GetByCodeOrNameAsync(searchRequest);
             if (records.isSuccess)
             {
-                return GetBaseResult(CodeMessage._547, data: Mapper.Map<AirportResponse>(records.data.First()));
+                return GetBaseResult(CodeMessage._547, data: Mapper.Map<NhanVienResponse>(records.data.First()));
             }
 
             var result = await _nhanVienDAO.CreateAsync(airport);
             await _unitOfWork.SaveChangesAsync();
 
             if (result.isSuccess)
-                return GetBaseResult(CodeMessage._200, data: Mapper.Map<AirportResponse>(result.data));
+                return GetBaseResult(CodeMessage._200, data: Mapper.Map<NhanVienResponse>(result.data));
             else
-                return GetBaseResult<AirportResponse>(CodeMessage._209, status: StatusEnum.Failed);
+                return GetBaseResult<NhanVienResponse>(CodeMessage._209, status: StatusEnum.Failed);
         }
 
-        public async Task<BaseResult<IEnumerable<AirportResponse>>> GetByCodeOrNameAsync(SearchAirportRequest request)
+        public async Task<BaseResult<IEnumerable<NhanVienResponse>>> GetByCodeOrNameAsync(SearchNhanVienRequest request)
         {
             var records = await _nhanVienDAO.GetByCodeOrNameAsync(request);
             if (records.isSuccess)
             {
-                return GetBaseResult(CodeMessage._200, data: Mapper.Map<IEnumerable<AirportResponse>>(records.data));
+                return GetBaseResult(CodeMessage._200, data: Mapper.Map<IEnumerable<NhanVienResponse>>(records.data));
             }
-            return GetBaseResult<IEnumerable<AirportResponse>>(CodeMessage._545, status: StatusEnum.Failed);
+            return GetBaseResult<IEnumerable<NhanVienResponse>>(CodeMessage._545, status: StatusEnum.Failed);
         }
 
-        public async Task<PaginationResult<IEnumerable<AirportResponse>>> PaginationGetByCodeAndNameAsync(PaginationAirportRequest request)
+        public async Task<PaginationResult<IEnumerable<NhanVienResponse>>> PaginationGetByCodeAndNameAsync(PaginationNhanVienRequest request)
         {
             var resultDAO = await _nhanVienDAO.PaginationAsync(request);
 
             if (resultDAO.isSuccess)
             {
                 // Mapping
-                var resource = Mapper.Map<IEnumerable<AirportResponse>>(resultDAO.data);
+                var resource = Mapper.Map<IEnumerable<NhanVienResponse>>(resultDAO.data);
 
-                var result = GetPaginationResult<PaginationResult<IEnumerable<AirportResponse>>, IEnumerable<AirportResponse>>(CodeMessage._200, resource);
+                var result = GetPaginationResult<PaginationResult<IEnumerable<NhanVienResponse>>, IEnumerable<NhanVienResponse>>(CodeMessage._200, resource);
 
                 // Using extension-method for pagination
                 result.CreatePaginationResponse(request, resultDAO.totalRecords);
@@ -76,15 +79,15 @@ namespace HRMBackend.Services.NhanVien
             }
             else
             {
-                return GetPaginationResult<PaginationResult<IEnumerable<AirportResponse>>, IEnumerable<AirportResponse>>(CodeMessage._545, status: StatusEnum.Failed);
+                return GetPaginationResult<PaginationResult<IEnumerable<NhanVienResponse>>, IEnumerable<NhanVienResponse>>(CodeMessage._545, status: StatusEnum.Failed);
             }
         }
 
-        public async Task<BaseResult<AirportResponse>> UpdateAsync(UpdateAirportRequest request)
+        public async Task<BaseResult<NhanVienResponse>> UpdateAsync(UpdateNhanVienRequest request)
         {
-            // Mapping Resource to Airport
-            var airport = Mapper.Map<UpdateAirportRequest, Models.Airport>(request);
-            SearchAirportRequest searchRequest = new SearchAirportRequest() { Code = request.Code, Name = request.Name };
+            // Mapping Resource to NhanVien
+            var airport = Mapper.Map<UpdateNhanVienRequest, Models.NhanVien>(request);
+            SearchNhanVienRequest searchRequest = new SearchNhanVienRequest() { Code = request.Code, Name = request.Name };
             //Tìm mã code hoặc name đã tồn tại chưa?
             var records = await _nhanVienDAO.GetByCodeOrNameAsync(searchRequest);
             if (records.isSuccess)
@@ -92,7 +95,7 @@ namespace HRMBackend.Services.NhanVien
                 var anyExist = records.data.Where(x => x.Id != request.Id).ToList();
                 if (anyExist.Count > 0)
                 {
-                    return GetBaseResult(CodeMessage._547, data: Mapper.Map<AirportResponse>(anyExist.FirstOrDefault()));
+                    return GetBaseResult(CodeMessage._547, data: Mapper.Map<NhanVienResponse>(anyExist.FirstOrDefault()));
                 }
             }
 
@@ -100,9 +103,9 @@ namespace HRMBackend.Services.NhanVien
             await _unitOfWork.SaveChangesAsync();
 
             if (result.isSuccess)
-                return GetBaseResult(CodeMessage._200, data: Mapper.Map<AirportResponse>(result.data));
+                return GetBaseResult(CodeMessage._200, data: Mapper.Map<NhanVienResponse>(result.data));
             else
-                return GetBaseResult<AirportResponse>(CodeMessage._236, status: StatusEnum.Failed);
+                return GetBaseResult<NhanVienResponse>(CodeMessage._236, status: StatusEnum.Failed);
         }
     }
 }

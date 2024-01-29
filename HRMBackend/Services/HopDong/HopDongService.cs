@@ -6,6 +6,9 @@ using HRMBackend.Resources;
 using HRMBackend.Results;
 using HRMBackend.Services.HopDong;
 using Microsoft.Extensions.Options;
+using HRMBackend.Resources.DTO.HopDong.Response;
+using HRMBackend.Resources.DTO.HopDong.Request;
+using HRMBackend.Extensions;
 
 namespace HRMBackend.Services.HopDong
 {
@@ -27,47 +30,47 @@ namespace HRMBackend.Services.HopDong
         }
         #endregion
 
-        public async Task<BaseResult<AirportResponse>> CreateAsync(CreateAirportRequest request)
+        public async Task<BaseResult<HopDongResponse>> CreateAsync(CreateHopDongRequest request)
         {
-            // Mapping Resource to Airport
-            var airport = Mapper.Map<CreateAirportRequest, Models.Airport>(request);
-            SearchAirportRequest searchRequest = new SearchAirportRequest() { Code = request.Code, Name = request.Name };
+            // Mapping Resource to HopDong
+            var airport = Mapper.Map<CreateHopDongRequest, Models.HopDong>(request);
+            SearchHopDongRequest searchRequest = new SearchHopDongRequest() { Code = request.Code, Name = request.Name };
             //Tìm mã code hoặc name đã tồn tại chưa?
             var records = await _hopDongDAO.GetByCodeOrNameAsync(searchRequest);
             if (records.isSuccess)
             {
-                return GetBaseResult(CodeMessage._547, data: Mapper.Map<AirportResponse>(records.data.First()));
+                return GetBaseResult(CodeMessage._547, data: Mapper.Map<HopDongResponse>(records.data.First()));
             }
 
             var result = await _hopDongDAO.CreateAsync(airport);
             await _unitOfWork.SaveChangesAsync();
 
             if (result.isSuccess)
-                return GetBaseResult(CodeMessage._200, data: Mapper.Map<AirportResponse>(result.data));
+                return GetBaseResult(CodeMessage._200, data: Mapper.Map<HopDongResponse>(result.data));
             else
-                return GetBaseResult<AirportResponse>(CodeMessage._209, status: StatusEnum.Failed);
+                return GetBaseResult<HopDongResponse>(CodeMessage._209, status: StatusEnum.Failed);
         }
 
-        public async Task<BaseResult<IEnumerable<AirportResponse>>> GetByCodeOrNameAsync(SearchAirportRequest request)
+        public async Task<BaseResult<IEnumerable<HopDongResponse>>> GetByCodeOrNameAsync(SearchHopDongRequest request)
         {
             var records = await _hopDongDAO.GetByCodeOrNameAsync(request);
             if (records.isSuccess)
             {
-                return GetBaseResult(CodeMessage._200, data: Mapper.Map<IEnumerable<AirportResponse>>(records.data));
+                return GetBaseResult(CodeMessage._200, data: Mapper.Map<IEnumerable<HopDongResponse>>(records.data));
             }
-            return GetBaseResult<IEnumerable<AirportResponse>>(CodeMessage._545, status: StatusEnum.Failed);
+            return GetBaseResult<IEnumerable<HopDongResponse>>(CodeMessage._545, status: StatusEnum.Failed);
         }
 
-        public async Task<PaginationResult<IEnumerable<AirportResponse>>> PaginationGetByCodeAndNameAsync(PaginationAirportRequest request)
+        public async Task<PaginationResult<IEnumerable<HopDongResponse>>> PaginationGetByCodeAndNameAsync(PaginationHopDongRequest request)
         {
             var resultDAO = await _hopDongDAO.PaginationAsync(request);
 
             if (resultDAO.isSuccess)
             {
                 // Mapping
-                var resource = Mapper.Map<IEnumerable<AirportResponse>>(resultDAO.data);
+                var resource = Mapper.Map<IEnumerable<HopDongResponse>>(resultDAO.data);
 
-                var result = GetPaginationResult<PaginationResult<IEnumerable<AirportResponse>>, IEnumerable<AirportResponse>>(CodeMessage._200, resource);
+                var result = GetPaginationResult<PaginationResult<IEnumerable<HopDongResponse>>, IEnumerable<HopDongResponse>>(CodeMessage._200, resource);
 
                 // Using extension-method for pagination
                 result.CreatePaginationResponse(request, resultDAO.totalRecords);
@@ -76,15 +79,15 @@ namespace HRMBackend.Services.HopDong
             }
             else
             {
-                return GetPaginationResult<PaginationResult<IEnumerable<AirportResponse>>, IEnumerable<AirportResponse>>(CodeMessage._545, status: StatusEnum.Failed);
+                return GetPaginationResult<PaginationResult<IEnumerable<HopDongResponse>>, IEnumerable<HopDongResponse>>(CodeMessage._545, status: StatusEnum.Failed);
             }
         }
 
-        public async Task<BaseResult<AirportResponse>> UpdateAsync(UpdateAirportRequest request)
+        public async Task<BaseResult<HopDongResponse>> UpdateAsync(UpdateHopDongRequest request)
         {
-            // Mapping Resource to Airport
-            var airport = Mapper.Map<UpdateAirportRequest, Models.Airport>(request);
-            SearchAirportRequest searchRequest = new SearchAirportRequest() { Code = request.Code, Name = request.Name };
+            // Mapping Resource to HopDong
+            var airport = Mapper.Map<UpdateHopDongRequest, Models.HopDong>(request);
+            SearchHopDongRequest searchRequest = new SearchHopDongRequest() { Code = request.Code, Name = request.Name };
             //Tìm mã code hoặc name đã tồn tại chưa?
             var records = await _hopDongDAO.GetByCodeOrNameAsync(searchRequest);
             if (records.isSuccess)
@@ -92,7 +95,7 @@ namespace HRMBackend.Services.HopDong
                 var anyExist = records.data.Where(x => x.Id != request.Id).ToList();
                 if (anyExist.Count > 0)
                 {
-                    return GetBaseResult(CodeMessage._547, data: Mapper.Map<AirportResponse>(anyExist.FirstOrDefault()));
+                    return GetBaseResult(CodeMessage._547, data: Mapper.Map<HopDongResponse>(anyExist.FirstOrDefault()));
                 }
             }
 
@@ -100,9 +103,9 @@ namespace HRMBackend.Services.HopDong
             await _unitOfWork.SaveChangesAsync();
 
             if (result.isSuccess)
-                return GetBaseResult(CodeMessage._200, data: Mapper.Map<AirportResponse>(result.data));
+                return GetBaseResult(CodeMessage._200, data: Mapper.Map<HopDongResponse>(result.data));
             else
-                return GetBaseResult<AirportResponse>(CodeMessage._236, status: StatusEnum.Failed);
+                return GetBaseResult<HopDongResponse>(CodeMessage._236, status: StatusEnum.Failed);
         }
     }
 }

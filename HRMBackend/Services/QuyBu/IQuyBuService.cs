@@ -1,36 +1,38 @@
-﻿using HRMBackend.Results;
+﻿using HRMBackend.Resources.DTO.QuyBu.Request;
+using HRMBackend.Resources.DTO.QuyBu.Response;
+using HRMBackend.Results;
 
 namespace HRMBackend.Services.QuyBu
 {
     public interface IQuyBuService
     {
         /// <summary>
-        /// Chức năng: Tạo mới một Airport
+        /// Chức năng: Tạo mới một QuyBu
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<BaseResult<AirportResponse>> CreateAsync(CreateAirportRequest request);
+        Task<BaseResult<QuyBuResponse>> CreateAsync(CreateQuyBuRequest request);
 
         /// <summary>
         /// Chức năng: lấy dữ liệu cảng theo mã code và name được phân trang
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<BaseResult<IEnumerable<AirportResponse>>> GetByCodeOrNameAsync(SearchAirportRequest request);
+        Task<BaseResult<IEnumerable<QuyBuResponse>>> GetByCodeOrNameAsync(SearchQuyBuRequest request);
 
         /// <summary>
         /// Chức năng: lấy dữ liệu cảng theo mã code và name được phân trang
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<PaginationResult<IEnumerable<AirportResponse>>> PaginationGetByCodeAndNameAsync(PaginationAirportRequest request);
+        Task<PaginationResult<IEnumerable<QuyBuResponse>>> PaginationGetByCodeAndNameAsync(PaginationQuyBuRequest request);
 
         /// <summary>
-        /// Chức năng: Cập nhật Airport bằng name
+        /// Chức năng: Cập nhật QuyBu bằng name
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        Task<BaseResult<AirportResponse>> UpdateAsync(UpdateAirportRequest request);
+        Task<BaseResult<QuyBuResponse>> UpdateAsync(UpdateQuyBuRequest request);
 
     }
 }

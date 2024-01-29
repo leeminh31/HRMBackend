@@ -6,6 +6,9 @@ using HRMBackend.Resources;
 using HRMBackend.Results;
 using HRMBackend.Services.PhongBan;
 using Microsoft.Extensions.Options;
+using HRMBackend.Resources.DTO.PhongBan.Response;
+using HRMBackend.Resources.DTO.PhongBan.Request;
+using HRMBackend.Extensions;
 
 namespace HRMBackend.Services.PhongBan
 {
@@ -27,47 +30,47 @@ namespace HRMBackend.Services.PhongBan
         }
         #endregion
 
-        public async Task<BaseResult<AirportResponse>> CreateAsync(CreateAirportRequest request)
+        public async Task<BaseResult<PhongBanResponse>> CreateAsync(CreatePhongBanRequest request)
         {
-            // Mapping Resource to Airport
-            var airport = Mapper.Map<CreateAirportRequest, Models.Airport>(request);
-            SearchAirportRequest searchRequest = new SearchAirportRequest() { Code = request.Code, Name = request.Name };
+            // Mapping Resource to PhongBan
+            var airport = Mapper.Map<CreatePhongBanRequest, Models.PhongBan>(request);
+            SearchPhongBanRequest searchRequest = new SearchPhongBanRequest() { Code = request.Code, Name = request.Name };
             //Tìm mã code hoặc name đã tồn tại chưa?
             var records = await _phongBanDAO.GetByCodeOrNameAsync(searchRequest);
             if (records.isSuccess)
             {
-                return GetBaseResult(CodeMessage._547, data: Mapper.Map<AirportResponse>(records.data.First()));
+                return GetBaseResult(CodeMessage._547, data: Mapper.Map<PhongBanResponse>(records.data.First()));
             }
 
             var result = await _phongBanDAO.CreateAsync(airport);
             await _unitOfWork.SaveChangesAsync();
 
             if (result.isSuccess)
-                return GetBaseResult(CodeMessage._200, data: Mapper.Map<AirportResponse>(result.data));
+                return GetBaseResult(CodeMessage._200, data: Mapper.Map<PhongBanResponse>(result.data));
             else
-                return GetBaseResult<AirportResponse>(CodeMessage._209, status: StatusEnum.Failed);
+                return GetBaseResult<PhongBanResponse>(CodeMessage._209, status: StatusEnum.Failed);
         }
 
-        public async Task<BaseResult<IEnumerable<AirportResponse>>> GetByCodeOrNameAsync(SearchAirportRequest request)
+        public async Task<BaseResult<IEnumerable<PhongBanResponse>>> GetByCodeOrNameAsync(SearchPhongBanRequest request)
         {
             var records = await _phongBanDAO.GetByCodeOrNameAsync(request);
             if (records.isSuccess)
             {
-                return GetBaseResult(CodeMessage._200, data: Mapper.Map<IEnumerable<AirportResponse>>(records.data));
+                return GetBaseResult(CodeMessage._200, data: Mapper.Map<IEnumerable<PhongBanResponse>>(records.data));
             }
-            return GetBaseResult<IEnumerable<AirportResponse>>(CodeMessage._545, status: StatusEnum.Failed);
+            return GetBaseResult<IEnumerable<PhongBanResponse>>(CodeMessage._545, status: StatusEnum.Failed);
         }
 
-        public async Task<PaginationResult<IEnumerable<AirportResponse>>> PaginationGetByCodeAndNameAsync(PaginationAirportRequest request)
+        public async Task<PaginationResult<IEnumerable<PhongBanResponse>>> PaginationGetByCodeAndNameAsync(PaginationPhongBanRequest request)
         {
             var resultDAO = await _phongBanDAO.PaginationAsync(request);
 
             if (resultDAO.isSuccess)
             {
                 // Mapping
-                var resource = Mapper.Map<IEnumerable<AirportResponse>>(resultDAO.data);
+                var resource = Mapper.Map<IEnumerable<PhongBanResponse>>(resultDAO.data);
 
-                var result = GetPaginationResult<PaginationResult<IEnumerable<AirportResponse>>, IEnumerable<AirportResponse>>(CodeMessage._200, resource);
+                var result = GetPaginationResult<PaginationResult<IEnumerable<PhongBanResponse>>, IEnumerable<PhongBanResponse>>(CodeMessage._200, resource);
 
                 // Using extension-method for pagination
                 result.CreatePaginationResponse(request, resultDAO.totalRecords);
@@ -76,15 +79,15 @@ namespace HRMBackend.Services.PhongBan
             }
             else
             {
-                return GetPaginationResult<PaginationResult<IEnumerable<AirportResponse>>, IEnumerable<AirportResponse>>(CodeMessage._545, status: StatusEnum.Failed);
+                return GetPaginationResult<PaginationResult<IEnumerable<PhongBanResponse>>, IEnumerable<PhongBanResponse>>(CodeMessage._545, status: StatusEnum.Failed);
             }
         }
 
-        public async Task<BaseResult<AirportResponse>> UpdateAsync(UpdateAirportRequest request)
+        public async Task<BaseResult<PhongBanResponse>> UpdateAsync(UpdatePhongBanRequest request)
         {
-            // Mapping Resource to Airport
-            var airport = Mapper.Map<UpdateAirportRequest, Models.Airport>(request);
-            SearchAirportRequest searchRequest = new SearchAirportRequest() { Code = request.Code, Name = request.Name };
+            // Mapping Resource to PhongBan
+            var airport = Mapper.Map<UpdatePhongBanRequest, Models.PhongBan>(request);
+            SearchPhongBanRequest searchRequest = new SearchPhongBanRequest() { Code = request.Code, Name = request.Name };
             //Tìm mã code hoặc name đã tồn tại chưa?
             var records = await _phongBanDAO.GetByCodeOrNameAsync(searchRequest);
             if (records.isSuccess)
@@ -92,7 +95,7 @@ namespace HRMBackend.Services.PhongBan
                 var anyExist = records.data.Where(x => x.Id != request.Id).ToList();
                 if (anyExist.Count > 0)
                 {
-                    return GetBaseResult(CodeMessage._547, data: Mapper.Map<AirportResponse>(anyExist.FirstOrDefault()));
+                    return GetBaseResult(CodeMessage._547, data: Mapper.Map<PhongBanResponse>(anyExist.FirstOrDefault()));
                 }
             }
 
@@ -100,9 +103,9 @@ namespace HRMBackend.Services.PhongBan
             await _unitOfWork.SaveChangesAsync();
 
             if (result.isSuccess)
-                return GetBaseResult(CodeMessage._200, data: Mapper.Map<AirportResponse>(result.data));
+                return GetBaseResult(CodeMessage._200, data: Mapper.Map<PhongBanResponse>(result.data));
             else
-                return GetBaseResult<AirportResponse>(CodeMessage._236, status: StatusEnum.Failed);
+                return GetBaseResult<PhongBanResponse>(CodeMessage._236, status: StatusEnum.Failed);
         }
     }
 }
