@@ -1,4 +1,6 @@
-﻿namespace HRMBackend.DataAccess.PhongBan
+﻿using HRMBackend.Resources.DTO.PhongBan.Request;
+
+namespace HRMBackend.DataAccess.PhongBan
 {
     public interface IPhongBanDAO
     {
@@ -7,40 +9,40 @@
         /// </summary>
         /// <param name="searchKey"></param>
         /// <returns></returns>
-        Task<(bool hasValue, IEnumerable<Models.CaLamViec> data)> GetFilterAsync(string searchKey);
+        Task<(bool hasValue, IEnumerable<Models.PhongBan> data)> GetFilterAsync(string searchKey);
 
         /// <summary>
         /// Chức năng: Lấy thông tin cảng hàng không đang hoạt động theo Id
         /// </summary>
         /// <returns></returns>
-        Task<(bool hasValue, Models.CaLamViec data)> GetByIdAsync(int id);
+        Task<(bool hasValue, Models.PhongBan data)> GetByIdAsync(int id);
 
         /// <summary>
-        /// Chức năng: tạo CaLamViec
+        /// Chức năng: tạo PhongBan
         /// </summary>
-        /// <param name="CaLamViec"></param>
+        /// <param name="PhongBan"></param>
         /// <returns></returns>
-        Task<(bool isSuccess, Models.CaLamViec data)> CreateAsync(Models.CaLamViec caLamViec);
+        Task<(bool isSuccess, Models.PhongBan data)> CreateAsync(Models.PhongBan caLamViec);
 
         /// <summary>
-        /// Chức năng: lấy ra CaLamViec dựa vào code và name theo phân trang
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        Task<(bool isSuccess, IEnumerable<Models.CaLamViec> data, int totalRecords)> PaginationAsync(PaginationAirportRequest request);
-
-        /// <summary>
-        /// Chức năng: kiểm tra CaLamViec đã tồn tại chưa dựa vào code hoặc name
+        /// Chức năng: lấy ra PhongBan dựa vào code và name theo phân trang
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<(bool isSuccess, IEnumerable<Models.CaLamViec> data)> GetByCodeOrNameAsync(SearchAirportRequest request);
+        Task<(bool isSuccess, IEnumerable<Models.PhongBan> data, int totalRecords)> PaginationAsync(PaginationPhongBanRequest request);
 
         /// <summary>
-        /// Chức năng: cập nhật CaLamViec
+        /// Chức năng: kiểm tra PhongBan đã tồn tại chưa dựa vào code hoặc name
         /// </summary>
-        /// <param name="CaLamViec"></param>
+        /// <param name="request"></param>
         /// <returns></returns>
-        Task<(bool isSuccess, Models.CaLamViec data)> UpdateAsync(Models.CaLamViec caLamViec);
+        Task<(bool isSuccess, IEnumerable<Models.PhongBan> data)> GetByCodeOrNameAsync(SearchPhongBanRequest request);
+
+        /// <summary>
+        /// Chức năng: cập nhật PhongBan
+        /// </summary>
+        /// <param name="PhongBan"></param>
+        /// <returns></returns>
+        Task<(bool isSuccess, Models.PhongBan data)> UpdateAsync(Models.PhongBan caLamViec);
     }
 }

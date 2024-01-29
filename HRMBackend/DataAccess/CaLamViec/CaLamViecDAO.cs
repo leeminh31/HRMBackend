@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using HRMBackend.DataAccess.UnitOfWork;
 using HRMBackend.Resources;
+using HRMBackend.Resources.DTO.CaLamViec.Request;
 
 namespace HRMBackend.DataAccess.CaLamViec
 {
@@ -64,7 +65,7 @@ namespace HRMBackend.DataAccess.CaLamViec
             return (false, airport);
         }
 
-        public async Task<(bool isSuccess, IEnumerable<Models.CaLamViec> data)> GetByCodeOrNameAsync(SearchAirportRequest request)
+        public async Task<(bool isSuccess, IEnumerable<Models.CaLamViec> data)> GetByCodeOrNameAsync(SearchCaLamViecRequest request)
         {
             var query = GetByCodeOrNameQuery(request);
             var queryResult = await Context.QueryAsync<Models.CaLamViec>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
@@ -76,7 +77,7 @@ namespace HRMBackend.DataAccess.CaLamViec
             return (false, default);
         }
 
-        public async Task<(bool isSuccess, IEnumerable<Models.CaLamViec> data, int totalRecords)> PaginationAsync(PaginationAirportRequest request)
+        public async Task<(bool isSuccess, IEnumerable<Models.CaLamViec> data, int totalRecords)> PaginationAsync(PaginationCaLamViecRequest request)
         {
             // Excute
             var query = PaginationQuery(request);

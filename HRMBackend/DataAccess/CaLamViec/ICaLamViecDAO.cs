@@ -1,4 +1,6 @@
-﻿namespace HRMBackend.DataAccess.CaLamViec
+﻿using HRMBackend.Resources.DTO.CaLamViec.Request;
+
+namespace HRMBackend.DataAccess.CaLamViec
 {
     public interface ICaLamViecDAO
     {
@@ -27,14 +29,14 @@
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<(bool isSuccess, IEnumerable<Models.CaLamViec> data, int totalRecords)> PaginationAsync(PaginationAirportRequest request);
+        Task<(bool isSuccess, IEnumerable<Models.CaLamViec> data, int totalRecords)> PaginationAsync(PaginationCaLamViecRequest request);
 
         /// <summary>
         /// Chức năng: kiểm tra CaLamViec đã tồn tại chưa dựa vào code hoặc name
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<(bool isSuccess, IEnumerable<Models.CaLamViec> data)> GetByCodeOrNameAsync(SearchAirportRequest request);
+        Task<(bool isSuccess, IEnumerable<Models.CaLamViec> data)> GetByCodeOrNameAsync(SearchCaLamViecRequest request);
 
         /// <summary>
         /// Chức năng: cập nhật CaLamViec

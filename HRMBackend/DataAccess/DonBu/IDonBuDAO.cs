@@ -1,4 +1,6 @@
-﻿namespace HRMBackend.DataAccess.DonBu
+﻿using HRMBackend.Resources.DTO.DonBu.Request;
+
+namespace HRMBackend.DataAccess.DonBu
 {
     public interface IDonBuDAO
     {
@@ -7,40 +9,40 @@
         /// </summary>
         /// <param name="searchKey"></param>
         /// <returns></returns>
-        Task<(bool hasValue, IEnumerable<Models.CaLamViec> data)> GetFilterAsync(string searchKey);
+        Task<(bool hasValue, IEnumerable<Models.DonBu> data)> GetFilterAsync(string searchKey);
 
         /// <summary>
         /// Chức năng: Lấy thông tin cảng hàng không đang hoạt động theo Id
         /// </summary>
         /// <returns></returns>
-        Task<(bool hasValue, Models.CaLamViec data)> GetByIdAsync(int id);
+        Task<(bool hasValue, Models.DonBu data)> GetByIdAsync(int id);
 
         /// <summary>
-        /// Chức năng: tạo CaLamViec
+        /// Chức năng: tạo DonBu
         /// </summary>
-        /// <param name="CaLamViec"></param>
+        /// <param name="DonBu"></param>
         /// <returns></returns>
-        Task<(bool isSuccess, Models.CaLamViec data)> CreateAsync(Models.CaLamViec caLamViec);
+        Task<(bool isSuccess, Models.DonBu data)> CreateAsync(Models.DonBu caLamViec);
 
         /// <summary>
-        /// Chức năng: lấy ra CaLamViec dựa vào code và name theo phân trang
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        Task<(bool isSuccess, IEnumerable<Models.CaLamViec> data, int totalRecords)> PaginationAsync(PaginationAirportRequest request);
-
-        /// <summary>
-        /// Chức năng: kiểm tra CaLamViec đã tồn tại chưa dựa vào code hoặc name
+        /// Chức năng: lấy ra DonBu dựa vào code và name theo phân trang
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<(bool isSuccess, IEnumerable<Models.CaLamViec> data)> GetByCodeOrNameAsync(SearchAirportRequest request);
+        Task<(bool isSuccess, IEnumerable<Models.DonBu> data, int totalRecords)> PaginationAsync(PaginationDonBuRequest request);
 
         /// <summary>
-        /// Chức năng: cập nhật CaLamViec
+        /// Chức năng: kiểm tra DonBu đã tồn tại chưa dựa vào code hoặc name
         /// </summary>
-        /// <param name="CaLamViec"></param>
+        /// <param name="request"></param>
         /// <returns></returns>
-        Task<(bool isSuccess, Models.CaLamViec data)> UpdateAsync(Models.CaLamViec caLamViec);
+        Task<(bool isSuccess, IEnumerable<Models.DonBu> data)> GetByCodeOrNameAsync(SearchDonBuRequest request);
+
+        /// <summary>
+        /// Chức năng: cập nhật DonBu
+        /// </summary>
+        /// <param name="DonBu"></param>
+        /// <returns></returns>
+        Task<(bool isSuccess, Models.DonBu data)> UpdateAsync(Models.DonBu caLamViec);
     }
 }

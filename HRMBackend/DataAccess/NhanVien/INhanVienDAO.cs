@@ -1,4 +1,6 @@
-﻿namespace HRMBackend.DataAccess.NhanVien
+﻿using HRMBackend.Resources.DTO.NhanVien.Request;
+
+namespace HRMBackend.DataAccess.NhanVien
 {
     public interface INhanVienDAO
     {
@@ -7,40 +9,40 @@
         /// </summary>
         /// <param name="searchKey"></param>
         /// <returns></returns>
-        Task<(bool hasValue, IEnumerable<Models.CaLamViec> data)> GetFilterAsync(string searchKey);
+        Task<(bool hasValue, IEnumerable<Models.NhanVien> data)> GetFilterAsync(string searchKey);
 
         /// <summary>
         /// Chức năng: Lấy thông tin cảng hàng không đang hoạt động theo Id
         /// </summary>
         /// <returns></returns>
-        Task<(bool hasValue, Models.CaLamViec data)> GetByIdAsync(int id);
+        Task<(bool hasValue, Models.NhanVien data)> GetByIdAsync(int id);
 
         /// <summary>
-        /// Chức năng: tạo CaLamViec
+        /// Chức năng: tạo NhanVien
         /// </summary>
-        /// <param name="CaLamViec"></param>
+        /// <param name="NhanVien"></param>
         /// <returns></returns>
-        Task<(bool isSuccess, Models.CaLamViec data)> CreateAsync(Models.CaLamViec caLamViec);
+        Task<(bool isSuccess, Models.NhanVien data)> CreateAsync(Models.NhanVien caLamViec);
 
         /// <summary>
-        /// Chức năng: lấy ra CaLamViec dựa vào code và name theo phân trang
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        Task<(bool isSuccess, IEnumerable<Models.CaLamViec> data, int totalRecords)> PaginationAsync(PaginationAirportRequest request);
-
-        /// <summary>
-        /// Chức năng: kiểm tra CaLamViec đã tồn tại chưa dựa vào code hoặc name
+        /// Chức năng: lấy ra NhanVien dựa vào code và name theo phân trang
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<(bool isSuccess, IEnumerable<Models.CaLamViec> data)> GetByCodeOrNameAsync(SearchAirportRequest request);
+        Task<(bool isSuccess, IEnumerable<Models.NhanVien> data, int totalRecords)> PaginationAsync(PaginationNhanVienRequest request);
 
         /// <summary>
-        /// Chức năng: cập nhật CaLamViec
+        /// Chức năng: kiểm tra NhanVien đã tồn tại chưa dựa vào code hoặc name
         /// </summary>
-        /// <param name="CaLamViec"></param>
+        /// <param name="request"></param>
         /// <returns></returns>
-        Task<(bool isSuccess, Models.CaLamViec data)> UpdateAsync(Models.CaLamViec caLamViec);
+        Task<(bool isSuccess, IEnumerable<Models.NhanVien> data)> GetByCodeOrNameAsync(SearchNhanVienRequest request);
+
+        /// <summary>
+        /// Chức năng: cập nhật NhanVien
+        /// </summary>
+        /// <param name="NhanVien"></param>
+        /// <returns></returns>
+        Task<(bool isSuccess, Models.NhanVien data)> UpdateAsync(Models.NhanVien caLamViec);
     }
 }

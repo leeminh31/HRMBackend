@@ -1,4 +1,6 @@
-﻿namespace HRMBackend.DataAccess.QuyPhep
+﻿using HRMBackend.Resources.DTO.QuyPhep.Request;
+
+namespace HRMBackend.DataAccess.QuyPhep
 {
     public interface IQuyPhepDAO
     {
@@ -7,40 +9,40 @@
         /// </summary>
         /// <param name="searchKey"></param>
         /// <returns></returns>
-        Task<(bool hasValue, IEnumerable<Models.CaLamViec> data)> GetFilterAsync(string searchKey);
+        Task<(bool hasValue, IEnumerable<Models.QuyPhep> data)> GetFilterAsync(string searchKey);
 
         /// <summary>
         /// Chức năng: Lấy thông tin cảng hàng không đang hoạt động theo Id
         /// </summary>
         /// <returns></returns>
-        Task<(bool hasValue, Models.CaLamViec data)> GetByIdAsync(int id);
+        Task<(bool hasValue, Models.QuyPhep data)> GetByIdAsync(int id);
 
         /// <summary>
-        /// Chức năng: tạo CaLamViec
+        /// Chức năng: tạo QuyPhep
         /// </summary>
-        /// <param name="CaLamViec"></param>
+        /// <param name="QuyPhep"></param>
         /// <returns></returns>
-        Task<(bool isSuccess, Models.CaLamViec data)> CreateAsync(Models.CaLamViec caLamViec);
+        Task<(bool isSuccess, Models.QuyPhep data)> CreateAsync(Models.QuyPhep caLamViec);
 
         /// <summary>
-        /// Chức năng: lấy ra CaLamViec dựa vào code và name theo phân trang
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        Task<(bool isSuccess, IEnumerable<Models.CaLamViec> data, int totalRecords)> PaginationAsync(PaginationAirportRequest request);
-
-        /// <summary>
-        /// Chức năng: kiểm tra CaLamViec đã tồn tại chưa dựa vào code hoặc name
+        /// Chức năng: lấy ra QuyPhep dựa vào code và name theo phân trang
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<(bool isSuccess, IEnumerable<Models.CaLamViec> data)> GetByCodeOrNameAsync(SearchAirportRequest request);
+        Task<(bool isSuccess, IEnumerable<Models.QuyPhep> data, int totalRecords)> PaginationAsync(PaginationQuyPhepRequest request);
 
         /// <summary>
-        /// Chức năng: cập nhật CaLamViec
+        /// Chức năng: kiểm tra QuyPhep đã tồn tại chưa dựa vào code hoặc name
         /// </summary>
-        /// <param name="CaLamViec"></param>
+        /// <param name="request"></param>
         /// <returns></returns>
-        Task<(bool isSuccess, Models.CaLamViec data)> UpdateAsync(Models.CaLamViec caLamViec);
+        Task<(bool isSuccess, IEnumerable<Models.QuyPhep> data)> GetByCodeOrNameAsync(SearchQuyPhepRequest request);
+
+        /// <summary>
+        /// Chức năng: cập nhật QuyPhep
+        /// </summary>
+        /// <param name="QuyPhep"></param>
+        /// <returns></returns>
+        Task<(bool isSuccess, Models.QuyPhep data)> UpdateAsync(Models.QuyPhep caLamViec);
     }
 }

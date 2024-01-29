@@ -2,6 +2,7 @@
 using System.Data;
 using System.Text.RegularExpressions;
 using System.Text;
+using HRMBackend.Resources.DTO.DuLieuChamCong.Request;
 
 namespace HRMBackend.DataAccess.DuLieuChamCong
 {
@@ -24,7 +25,7 @@ namespace HRMBackend.DataAccess.DuLieuChamCong
             string query = @"SELECT * FROM TBL_AIRPORT WHERE STATUS = 1 AND ID = :id";
             return (query, param);
         }
-        private static (string sql, DynamicParameters param) CreateQuery(Models.CaLamViec model)
+        private static (string sql, DynamicParameters param) CreateQuery(Models.DuLieuChamCong model)
         {
             // Param component
             var param = new DynamicParameters();
@@ -44,7 +45,7 @@ namespace HRMBackend.DataAccess.DuLieuChamCong
             return (query, param);
         }
 
-        private static (string sql, DynamicParameters param) PaginationQuery(PaginationAirportRequest request)
+        private static (string sql, DynamicParameters param) PaginationQuery(PaginationDuLieuChamCongRequest request)
         {
             // Process data
             int pageBegin = (request.Page - 1) * request.PageSize + 1;
@@ -80,7 +81,7 @@ namespace HRMBackend.DataAccess.DuLieuChamCong
             return (query, param);
         }
 
-        private static (string sql, DynamicParameters param) GetByCodeOrNameQuery(SearchAirportRequest request)
+        private static (string sql, DynamicParameters param) GetByCodeOrNameQuery(SearchDuLieuChamCongRequest request)
         {
             // Param component
             var param = new DynamicParameters();
@@ -98,7 +99,7 @@ namespace HRMBackend.DataAccess.DuLieuChamCong
             return (query, param);
         }
 
-        private static (string sql, DynamicParameters param) UpdateQuery(Models.CaLamViec model)
+        private static (string sql, DynamicParameters param) UpdateQuery(Models.DuLieuChamCong model)
         {
             // Param component
             var param = new DynamicParameters();

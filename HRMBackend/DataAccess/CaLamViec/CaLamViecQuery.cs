@@ -1,8 +1,9 @@
 ﻿using Dapper;
-//using MonitorCenterSystem.API.Resources.DTO.Airport.Request;
+//using MonitorCenterSystem.API.Resources.DTO.CaLamViec.Request;
 using System.Data;
 using System.Text.RegularExpressions;
 using System.Text;
+using HRMBackend.Resources.DTO.CaLamViec.Request;
 
 namespace HRMBackend.DataAccess.CaLamViec
 {
@@ -45,7 +46,7 @@ namespace HRMBackend.DataAccess.CaLamViec
             return (query, param);
         }
 
-        private static (string sql, DynamicParameters param) PaginationQuery(PaginationAirportRequest request)
+        private static (string sql, DynamicParameters param) PaginationQuery(PaginationCaLamViecRequest request)
         {
             // Process data
             int pageBegin = (request.Page - 1) * request.PageSize + 1;
@@ -81,7 +82,7 @@ namespace HRMBackend.DataAccess.CaLamViec
             return (query, param);
         }
 
-        private static (string sql, DynamicParameters param) GetByCodeOrNameQuery(SearchAirportRequest request)
+        private static (string sql, DynamicParameters param) GetByCodeOrNameQuery(SearchCaLamViecRequest request)
         {
             // Param component
             var param = new DynamicParameters();

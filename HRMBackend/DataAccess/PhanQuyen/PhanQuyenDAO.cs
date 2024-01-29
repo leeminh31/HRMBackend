@@ -1,7 +1,8 @@
 ﻿using Dapper;
-using HRMBackend.DataAccess.CaLamViec;
+using HRMBackend.DataAccess.PhanQuyen;
 using HRMBackend.DataAccess.UnitOfWork;
 using HRMBackend.Resources;
+using HRMBackend.Resources.DTO.PhanQuyen.Request;
 
 namespace HRMBackend.DataAccess.PhanQuyen
 {
@@ -17,11 +18,11 @@ namespace HRMBackend.DataAccess.PhanQuyen
 
         #region Method
 
-        public async Task<(bool hasValue, IEnumerable<Models.CaLamViec> data)> GetFilterAsync(string searchKey)
+        public async Task<(bool hasValue, IEnumerable<Models.PhanQuyen> data)> GetFilterAsync(string searchKey)
         {
             // Excute
             var query = GetFilterQuery(searchKey);
-            var queryResult = await Context.QueryAsync<Models.CaLamViec>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+            var queryResult = await Context.QueryAsync<Models.PhanQuyen>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
             // Process result
             if (queryResult.GetEnumerator().MoveNext())
@@ -30,11 +31,11 @@ namespace HRMBackend.DataAccess.PhanQuyen
             return (false, default);
         }
 
-        public async Task<(bool hasValue, Models.CaLamViec data)> GetByIdAsync(int id)
+        public async Task<(bool hasValue, Models.PhanQuyen data)> GetByIdAsync(int id)
         {
             // Excute
             var query = GetByIdQuery(id);
-            var queryResult = await Context.QuerySingleOrDefaultAsync<Models.CaLamViec>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+            var queryResult = await Context.QuerySingleOrDefaultAsync<Models.PhanQuyen>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
             // Process result
             if (queryResult != null)
@@ -42,7 +43,7 @@ namespace HRMBackend.DataAccess.PhanQuyen
 
             return (false, default);
         }
-        public async Task<(bool isSuccess, Models.CaLamViec data)> CreateAsync(Models.CaLamViec airport)
+        public async Task<(bool isSuccess, Models.PhanQuyen data)> CreateAsync(Models.PhanQuyen airport)
         {
             try
             {
@@ -65,10 +66,10 @@ namespace HRMBackend.DataAccess.PhanQuyen
             return (false, airport);
         }
 
-        public async Task<(bool isSuccess, IEnumerable<Models.CaLamViec> data)> GetByCodeOrNameAsync(SearchAirportRequest request)
+        public async Task<(bool isSuccess, IEnumerable<Models.PhanQuyen> data)> GetByCodeOrNameAsync(SearchPhanQuyenRequest request)
         {
             var query = GetByCodeOrNameQuery(request);
-            var queryResult = await Context.QueryAsync<Models.CaLamViec>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+            var queryResult = await Context.QueryAsync<Models.PhanQuyen>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
             // Process result
             if (queryResult.GetEnumerator().MoveNext())
@@ -77,11 +78,11 @@ namespace HRMBackend.DataAccess.PhanQuyen
             return (false, default);
         }
 
-        public async Task<(bool isSuccess, IEnumerable<Models.CaLamViec> data, int totalRecords)> PaginationAsync(PaginationAirportRequest request)
+        public async Task<(bool isSuccess, IEnumerable<Models.PhanQuyen> data, int totalRecords)> PaginationAsync(PaginationPhanQuyenRequest request)
         {
             // Excute
             var query = PaginationQuery(request);
-            var queryResult = await Context.QueryAsync<Models.CaLamViec>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+            var queryResult = await Context.QueryAsync<Models.PhanQuyen>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
             // Process result
             if (queryResult.GetEnumerator().MoveNext())
@@ -90,7 +91,7 @@ namespace HRMBackend.DataAccess.PhanQuyen
             return (false, default, 0);
         }
 
-        public async Task<(bool isSuccess, Models.CaLamViec data)> UpdateAsync(Models.CaLamViec airport)
+        public async Task<(bool isSuccess, Models.PhanQuyen data)> UpdateAsync(Models.PhanQuyen airport)
         {
             var query = UpdateQuery(airport);
             var result = await Context.ExecuteAsync(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);

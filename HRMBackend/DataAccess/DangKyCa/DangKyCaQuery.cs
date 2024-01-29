@@ -2,6 +2,7 @@
 using System.Data;
 using System.Text.RegularExpressions;
 using System.Text;
+using HRMBackend.Resources.DTO.DangKyCa.Request;
 
 namespace HRMBackend.DataAccess.DangKyCa
 {
@@ -44,7 +45,7 @@ namespace HRMBackend.DataAccess.DangKyCa
             return (query, param);
         }
 
-        private static (string sql, DynamicParameters param) PaginationQuery(PaginationAirportRequest request)
+        private static (string sql, DynamicParameters param) PaginationQuery(PaginationDangKyCaRequest request)
         {
             // Process data
             int pageBegin = (request.Page - 1) * request.PageSize + 1;
@@ -80,7 +81,7 @@ namespace HRMBackend.DataAccess.DangKyCa
             return (query, param);
         }
 
-        private static (string sql, DynamicParameters param) GetByCodeOrNameQuery(SearchAirportRequest request)
+        private static (string sql, DynamicParameters param) GetByCodeOrNameQuery(SearchDangKyCaRequest request)
         {
             // Param component
             var param = new DynamicParameters();

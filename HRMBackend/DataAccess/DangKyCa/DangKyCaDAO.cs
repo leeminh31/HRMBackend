@@ -1,7 +1,8 @@
 ﻿using Dapper;
-using HRMBackend.DataAccess.CaLamViec;
+using HRMBackend.DataAccess.DangKyCa;
 using HRMBackend.DataAccess.UnitOfWork;
 using HRMBackend.Resources;
+using HRMBackend.Resources.DTO.DangKyCa.Request;
 
 
 namespace HRMBackend.DataAccess.DangKyCa
@@ -18,11 +19,11 @@ namespace HRMBackend.DataAccess.DangKyCa
 
         #region Method
 
-        public async Task<(bool hasValue, IEnumerable<Models.CaLamViec> data)> GetFilterAsync(string searchKey)
+        public async Task<(bool hasValue, IEnumerable<Models.DangKyCa> data)> GetFilterAsync(string searchKey)
         {
             // Excute
             var query = GetFilterQuery(searchKey);
-            var queryResult = await Context.QueryAsync<Models.CaLamViec>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+            var queryResult = await Context.QueryAsync<Models.DangKyCa>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
             // Process result
             if (queryResult.GetEnumerator().MoveNext())
@@ -31,11 +32,11 @@ namespace HRMBackend.DataAccess.DangKyCa
             return (false, default);
         }
 
-        public async Task<(bool hasValue, Models.CaLamViec data)> GetByIdAsync(int id)
+        public async Task<(bool hasValue, Models.DangKyCa data)> GetByIdAsync(int id)
         {
             // Excute
             var query = GetByIdQuery(id);
-            var queryResult = await Context.QuerySingleOrDefaultAsync<Models.CaLamViec>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+            var queryResult = await Context.QuerySingleOrDefaultAsync<Models.DangKyCa>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
             // Process result
             if (queryResult != null)
@@ -43,7 +44,7 @@ namespace HRMBackend.DataAccess.DangKyCa
 
             return (false, default);
         }
-        public async Task<(bool isSuccess, Models.CaLamViec data)> CreateAsync(Models.CaLamViec airport)
+        public async Task<(bool isSuccess, Models.DangKyCa data)> CreateAsync(Models.DangKyCa airport)
         {
             try
             {
@@ -66,10 +67,10 @@ namespace HRMBackend.DataAccess.DangKyCa
             return (false, airport);
         }
 
-        public async Task<(bool isSuccess, IEnumerable<Models.CaLamViec> data)> GetByCodeOrNameAsync(SearchAirportRequest request)
+        public async Task<(bool isSuccess, IEnumerable<Models.DangKyCa> data)> GetByCodeOrNameAsync(SearchDangKyCaRequest request)
         {
             var query = GetByCodeOrNameQuery(request);
-            var queryResult = await Context.QueryAsync<Models.CaLamViec>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+            var queryResult = await Context.QueryAsync<Models.DangKyCa>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
             // Process result
             if (queryResult.GetEnumerator().MoveNext())
@@ -78,11 +79,11 @@ namespace HRMBackend.DataAccess.DangKyCa
             return (false, default);
         }
 
-        public async Task<(bool isSuccess, IEnumerable<Models.CaLamViec> data, int totalRecords)> PaginationAsync(PaginationAirportRequest request)
+        public async Task<(bool isSuccess, IEnumerable<Models.DangKyCa> data, int totalRecords)> PaginationAsync(PaginationDangKyCaRequest request)
         {
             // Excute
             var query = PaginationQuery(request);
-            var queryResult = await Context.QueryAsync<Models.CaLamViec>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+            var queryResult = await Context.QueryAsync<Models.DangKyCa>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
             // Process result
             if (queryResult.GetEnumerator().MoveNext())
@@ -91,7 +92,7 @@ namespace HRMBackend.DataAccess.DangKyCa
             return (false, default, 0);
         }
 
-        public async Task<(bool isSuccess, Models.CaLamViec data)> UpdateAsync(Models.CaLamViec airport)
+        public async Task<(bool isSuccess, Models.DangKyCa data)> UpdateAsync(Models.DangKyCa airport)
         {
             var query = UpdateQuery(airport);
             var result = await Context.ExecuteAsync(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
