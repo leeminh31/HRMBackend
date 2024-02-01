@@ -1,12 +1,12 @@
 ﻿using Dapper;
+using HRMBackend.Resources.DTO.ChiTietQuyPhep.Request;
 using System.Data;
 using System.Text.RegularExpressions;
 using System.Text;
-using HRMBackend.Resources.DTO.DangKyCa.Request;
 
-namespace HRMBackend.DataAccess.DangKyCa
+namespace HRMBackend.DataAccess.ChiTietQuyPhep
 {
-    public partial class DangKyCaDAO
+    public partial class ChiTietQuyPhepDAO
     {
         #region Method
         private static (string sql, DynamicParameters param) GetFilterQuery(string searchKey)
@@ -25,7 +25,7 @@ namespace HRMBackend.DataAccess.DangKyCa
             string query = @"SELECT * FROM TBL_AIRPORT WHERE STATUS = 1 AND ID = :id";
             return (query, param);
         }
-        private static (string sql, DynamicParameters param) CreateQuery(Models.CaLamViec model)
+        private static (string sql, DynamicParameters param) CreateQuery(Models.ChiTietQuyPhep model)
         {
             // Param component
             var param = new DynamicParameters();
@@ -45,7 +45,7 @@ namespace HRMBackend.DataAccess.DangKyCa
             return (query, param);
         }
 
-        private static (string sql, DynamicParameters param) PaginationQuery(PaginationChiTietQuyBuRequest request)
+        private static (string sql, DynamicParameters param) PaginationQuery(PaginationChiTietQuyPhepRequest request)
         {
             // Process data
             int pageBegin = (request.Page - 1) * request.PageSize + 1;
@@ -81,7 +81,7 @@ namespace HRMBackend.DataAccess.DangKyCa
             return (query, param);
         }
 
-        private static (string sql, DynamicParameters param) GetByCodeOrNameQuery(SearchChiTietQuyBuRequest request)
+        private static (string sql, DynamicParameters param) GetByCodeOrNameQuery(SearchChiTietQuyPhepRequest request)
         {
             // Param component
             var param = new DynamicParameters();
@@ -99,7 +99,7 @@ namespace HRMBackend.DataAccess.DangKyCa
             return (query, param);
         }
 
-        private static (string sql, DynamicParameters param) UpdateQuery(Models.CaLamViec model)
+        private static (string sql, DynamicParameters param) UpdateQuery(Models.ChiTietQuyPhep model)
         {
             // Param component
             var param = new DynamicParameters();

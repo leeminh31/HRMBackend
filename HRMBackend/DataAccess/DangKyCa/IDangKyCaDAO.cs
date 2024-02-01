@@ -29,14 +29,14 @@ namespace HRMBackend.DataAccess.DangKyCa
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<(bool isSuccess, IEnumerable<Models.DangKyCa> data, int totalRecords)> PaginationAsync(PaginationDangKyCaRequest request);
+        Task<(bool isSuccess, IEnumerable<Models.DangKyCa> data, int totalRecords)> PaginationAsync(PaginationChiTietQuyBuRequest request);
 
         /// <summary>
         /// Chức năng: kiểm tra DangKyCa đã tồn tại chưa dựa vào code hoặc name
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<(bool isSuccess, IEnumerable<Models.DangKyCa> data)> GetByCodeOrNameAsync(SearchDangKyCaRequest request);
+        Task<(bool isSuccess, IEnumerable<Models.DangKyCa> data)> GetByCodeOrNameAsync(SearchChiTietQuyBuRequest request);
 
         /// <summary>
         /// Chức năng: cập nhật DangKyCa

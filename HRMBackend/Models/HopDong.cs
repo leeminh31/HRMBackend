@@ -11,12 +11,14 @@ namespace HRMBackend.Models
         [Key]
         [Column("tenHopDong")]
         public string TenHopDong { get; set; }
+        [Column("maNhanVien")]
+        public string MaNhanVien { get; set; }
         [Column("ngayBatDauHopDong")]
         public DateOnly NgayBatDauHopDong { get; set; }
         [Column("ngayKetThucHopDong")]
         public DateOnly NgayKetThucHopDong { get; set; }
-        [Column("maLoaiHopDong")]
-        public int MaLoaiHopDong { get; set; }
+        [Column("loaiHopDong")]
+        public string loaiHopDong { get; set; }
         [Column("tiLeHuongLuong")]
         public double TiLeHuongLuong { get; set; }
         [Column("gioLamViec")]

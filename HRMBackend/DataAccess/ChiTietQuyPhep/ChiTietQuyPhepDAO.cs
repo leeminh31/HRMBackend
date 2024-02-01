@@ -1,16 +1,15 @@
 ﻿using Dapper;
-using HRMBackend.DataAccess.DangKyCa;
+using HRMBackend.DataAccess.ChiTietQuyPhep;
 using HRMBackend.DataAccess.UnitOfWork;
-using HRMBackend.Resources;
-using HRMBackend.Resources.DTO.DangKyCa.Request;
+using HRMBackend.Resources.DTO.ChiTietQuyPhep.Request;
+using HRMBackend.Resources.DTO.ChiTietQuyPhep.Request;
 
-
-namespace HRMBackend.DataAccess.DangKyCa
+namespace HRMBackend.DataAccess.ChiTietQuyPhep
 {
-    public partial class DangKyCaDAO : BaseDAO, IDangKyCaDAO
+    public partial class ChiTietQuyPhepDAO : BaseDAO, IChiTietQuyPhepDAO
     {
         #region Constructor
-        public DangKyCaDAO(IUnitOfWorkContext unitOfWorkContext)
+        public ChiTietQuyPhepDAO(IUnitOfWorkContext unitOfWorkContext)
         {
             this.Context = unitOfWorkContext.Context;
             this.Transaction = unitOfWorkContext.Transaction;
@@ -19,11 +18,11 @@ namespace HRMBackend.DataAccess.DangKyCa
 
         #region Method
 
-        public async Task<(bool hasValue, IEnumerable<Models.DangKyCa> data)> GetFilterAsync(string searchKey)
+        public async Task<(bool hasValue, IEnumerable<Models.ChiTietQuyPhep> data)> GetFilterAsync(string searchKey)
         {
             // Excute
             var query = GetFilterQuery(searchKey);
-            var queryResult = await Context.QueryAsync<Models.DangKyCa>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+            var queryResult = await Context.QueryAsync<Models.ChiTietQuyPhep>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
             // Process result
             if (queryResult.GetEnumerator().MoveNext())
@@ -32,11 +31,11 @@ namespace HRMBackend.DataAccess.DangKyCa
             return (false, default);
         }
 
-        public async Task<(bool hasValue, Models.DangKyCa data)> GetByIdAsync(int id)
+        public async Task<(bool hasValue, Models.ChiTietQuyPhep data)> GetByIdAsync(int id)
         {
             // Excute
             var query = GetByIdQuery(id);
-            var queryResult = await Context.QuerySingleOrDefaultAsync<Models.DangKyCa>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+            var queryResult = await Context.QuerySingleOrDefaultAsync<Models.ChiTietQuyPhep>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
             // Process result
             if (queryResult != null)
@@ -44,7 +43,7 @@ namespace HRMBackend.DataAccess.DangKyCa
 
             return (false, default);
         }
-        public async Task<(bool isSuccess, Models.DangKyCa data)> CreateAsync(Models.DangKyCa airport)
+        public async Task<(bool isSuccess, Models.ChiTietQuyPhep data)> CreateAsync(Models.ChiTietQuyPhep airport)
         {
             try
             {
@@ -67,10 +66,10 @@ namespace HRMBackend.DataAccess.DangKyCa
             return (false, airport);
         }
 
-        public async Task<(bool isSuccess, IEnumerable<Models.DangKyCa> data)> GetByCodeOrNameAsync(SearchChiTietQuyBuRequest request)
+        public async Task<(bool isSuccess, IEnumerable<Models.ChiTietQuyPhep> data)> GetByCodeOrNameAsync(SearchChiTietQuyPhepRequest request)
         {
             var query = GetByCodeOrNameQuery(request);
-            var queryResult = await Context.QueryAsync<Models.DangKyCa>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+            var queryResult = await Context.QueryAsync<Models.ChiTietQuyPhep>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
             // Process result
             if (queryResult.GetEnumerator().MoveNext())
@@ -79,11 +78,11 @@ namespace HRMBackend.DataAccess.DangKyCa
             return (false, default);
         }
 
-        public async Task<(bool isSuccess, IEnumerable<Models.DangKyCa> data, int totalRecords)> PaginationAsync(PaginationChiTietQuyBuRequest request)
+        public async Task<(bool isSuccess, IEnumerable<Models.ChiTietQuyPhep> data, int totalRecords)> PaginationAsync(PaginationChiTietQuyPhepRequest request)
         {
             // Excute
             var query = PaginationQuery(request);
-            var queryResult = await Context.QueryAsync<Models.DangKyCa>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+            var queryResult = await Context.QueryAsync<Models.ChiTietQuyPhep>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
             // Process result
             if (queryResult.GetEnumerator().MoveNext())
@@ -92,7 +91,7 @@ namespace HRMBackend.DataAccess.DangKyCa
             return (false, default, 0);
         }
 
-        public async Task<(bool isSuccess, Models.DangKyCa data)> UpdateAsync(Models.DangKyCa airport)
+        public async Task<(bool isSuccess, Models.ChiTietQuyPhep data)> UpdateAsync(Models.ChiTietQuyPhep airport)
         {
             var query = UpdateQuery(airport);
             var result = await Context.ExecuteAsync(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
@@ -105,5 +104,4 @@ namespace HRMBackend.DataAccess.DangKyCa
         }
         #endregion
     }
-}
 }

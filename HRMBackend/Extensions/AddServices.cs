@@ -1,4 +1,6 @@
 ﻿using HRMBackend.DataAccess.CaLamViec;
+using HRMBackend.DataAccess.ChiTietQuyBu;
+using HRMBackend.DataAccess.ChiTietQuyPhep;
 using HRMBackend.DataAccess.DangKyCa;
 using HRMBackend.DataAccess.DonBu;
 using HRMBackend.DataAccess.DonConNho;
@@ -7,10 +9,7 @@ using HRMBackend.DataAccess.DonTangCa;
 using HRMBackend.DataAccess.DuLieuChamCong;
 using HRMBackend.DataAccess.GiaiTrinh;
 using HRMBackend.DataAccess.HopDong;
-using HRMBackend.DataAccess.LoaiGiaiTrinh;
-using HRMBackend.DataAccess.LoaiHopDong;
 using HRMBackend.DataAccess.NhanVien;
-using HRMBackend.DataAccess.PhanQuyen;
 using HRMBackend.DataAccess.PhongBan;
 using HRMBackend.DataAccess.QuyBu;
 using HRMBackend.DataAccess.QuyPhep;
@@ -19,6 +18,8 @@ using HRMBackend.DataAccess.UnitOfWork;
 using HRMBackend.Mapping.TaiKhoan;
 using HRMBackend.Resources;
 using HRMBackend.Services.CaLamViec;
+using HRMBackend.Services.ChiTietQuyBu;
+using HRMBackend.Services.ChiTietQuyPhep;
 using HRMBackend.Services.DangKyCa;
 using HRMBackend.Services.DonBu;
 using HRMBackend.Services.DonConNho;
@@ -27,10 +28,7 @@ using HRMBackend.Services.DonTangCa;
 using HRMBackend.Services.DuLieuChamCong;
 using HRMBackend.Services.GiaiTrinh;
 using HRMBackend.Services.HopDong;
-using HRMBackend.Services.LoaiGiaiTrinh;
-using HRMBackend.Services.LoaiHopDong;
 using HRMBackend.Services.NhanVien;
-using HRMBackend.Services.PhanQuyen;
 using HRMBackend.Services.PhongBan;
 using HRMBackend.Services.QuyBu;
 using HRMBackend.Services.QuyPhep;
@@ -71,17 +69,11 @@ namespace HRMBackend.Extensions
             services.AddScoped<IHopDongDAO, HopDongDAO>();
             services.AddScoped<IHopDongService, HopDongService>();
 
-            services.AddScoped<ILoaiGiaiTrinhDAO, LoaiGiaiTrinhDAO>();
-            services.AddScoped<ILoaiGiaiTrinhService, LoaiGiaiTrinhService>();
+            services.AddScoped<IChiTietQuyBuDAO, ChiTietQuyBuDAO>();
+            services.AddScoped<IChiTietQuyBuService, ChiTietQuyBuService>();
 
-            services.AddScoped<ILoaiHopDongDAO, LoaiHopDongDAO>();
-            services.AddScoped<ILoaiHopDongService, LoaiHopDongService>();
-
-            services.AddScoped<INhanVienDAO, NhanVienDAO>();
-            services.AddScoped<INhanVienService, NhanVienService>();
-
-            services.AddScoped<IPhanQuyenDAO, PhanQuyenDAO>();
-            services.AddScoped<IPhanQuyenService, PhanQuyenService>();
+            services.AddScoped<IChiTietQuyPhepDAO, ChiTietQuyPhepDAO>();
+            services.AddScoped<IChiTietQuyPhepService, ChiTietQuyPhepService>();
 
             services.AddScoped<IPhongBanDAO, PhongBanDAO>();
             services.AddScoped<IPhongBanService, PhongBanService>();

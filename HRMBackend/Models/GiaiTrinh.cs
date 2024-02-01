@@ -15,8 +15,8 @@ namespace HRMBackend.Models
         public DateOnly NgayTaoGiaiTrinh { get; set; }
         [Column("ngayLamViec")]
         public DateOnly NgayLamViec { get; set; }
-        [Column("maLoaiGiaiTrinh")]
-        public int MaLoaiGiaiTrinh { get; set; }
+        [Column("loaiGiaiTrinh")]
+        public string LoaiGiaiTrinh { get; set; }
         [Column("lyDo")]
         public string LyDo { get; set; }
         [Column("nguoiDuyet")]
