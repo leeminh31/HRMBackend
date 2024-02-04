@@ -75,14 +75,14 @@ namespace HRMBackend.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        [HttpPost("update")]
-        [SwaggerOperation(summary: "Cập nhật thông tin cảng")]
-        [Authorize]
-        public async Task<IActionResult> UpdateAsync([FromBody] UpdateDuLieuChamCongRequest request)
-        {
-            var result = await _duLieuChamCongService.UpdateAsync(request);
-            return Ok(result);
-        }
+        //[HttpPost("update")]
+        //[SwaggerOperation(summary: "Cập nhật thông tin cảng")]
+        //[Authorize]
+        //public async Task<IActionResult> UpdateAsync([FromBody] UpdateDuLieuChamCongRequest request)
+        //{
+        //    var result = await _duLieuChamCongService.UpdateAsync(request);
+        //    return Ok(result);
+        //}
 
         #endregion
     }

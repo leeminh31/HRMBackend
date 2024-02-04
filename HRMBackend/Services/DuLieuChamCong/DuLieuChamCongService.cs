@@ -83,30 +83,30 @@ namespace HRMBackend.Services.DuLieuChamCong
             }
         }
 
-        public async Task<BaseResult<DuLieuChamCongResponse>> UpdateAsync(UpdateDuLieuChamCongRequest request)
-        {
-            // Mapping Resource to DuLieuChamCong
-            var airport = Mapper.Map<UpdateDuLieuChamCongRequest, Models.DuLieuChamCong>(request);
-            SearchDuLieuChamCongRequest searchRequest = new SearchDuLieuChamCongRequest() { Code = request.Code, Name = request.Name };
-            //Tìm mã code hoặc name đã tồn tại chưa?
-            var records = await _duLieuChamCongDAO.GetByCodeOrNameAsync(searchRequest);
-            if (records.isSuccess)
-            {
-                var anyExist = records.data.Where(x => x.Id != request.Id).ToList();
-                if (anyExist.Count > 0)
-                {
-                    return GetBaseResult(CodeMessage._547, data: Mapper.Map<DuLieuChamCongResponse>(anyExist.FirstOrDefault()));
-                }
-            }
+    //    public async Task<BaseResult<DuLieuChamCongResponse>> UpdateAsync(UpdateDuLieuChamCongRequest request)
+    //    {
+    //        // Mapping Resource to DuLieuChamCong
+    //        var airport = Mapper.Map<UpdateDuLieuChamCongRequest, Models.DuLieuChamCong>(request);
+    //        SearchDuLieuChamCongRequest searchRequest = new SearchDuLieuChamCongRequest() { Code = request.Code, Name = request.Name };
+    //        //Tìm mã code hoặc name đã tồn tại chưa?
+    //        var records = await _duLieuChamCongDAO.GetByCodeOrNameAsync(searchRequest);
+    //        if (records.isSuccess)
+    //        {
+    //            var anyExist = records.data.Where(x => x.Id != request.Id).ToList();
+    //            if (anyExist.Count > 0)
+    //            {
+    //                return GetBaseResult(CodeMessage._547, data: Mapper.Map<DuLieuChamCongResponse>(anyExist.FirstOrDefault()));
+    //            }
+    //        }
 
-            var result = await _duLieuChamCongDAO.UpdateAsync(airport);
-            await _unitOfWork.SaveChangesAsync();
+    //        var result = await _duLieuChamCongDAO.UpdateAsync(airport);
+    //        await _unitOfWork.SaveChangesAsync();
 
-            if (result.isSuccess)
-                return GetBaseResult(CodeMessage._200, data: Mapper.Map<DuLieuChamCongResponse>(result.data));
-            else
-                return GetBaseResult<DuLieuChamCongResponse>(CodeMessage._236, status: StatusEnum.Failed);
-        }
-    }
+    //        if (result.isSuccess)
+    //            return GetBaseResult(CodeMessage._200, data: Mapper.Map<DuLieuChamCongResponse>(result.data));
+    //        else
+    //            return GetBaseResult<DuLieuChamCongResponse>(CodeMessage._236, status: StatusEnum.Failed);
+    //    }
+    //}
 }
 }

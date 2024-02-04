@@ -2,14 +2,22 @@
 {
     public class NhanVienResponse
     {
-        public int Id { get; set; }
-        public string Code { get; set; }
-
-        public string Name { get; set; }
-        public string Url { get; set; }
-
-        public int Status { get; set; }
-        public string Description { get; set; }
+        public string MaNhanVien { get; set; }
+        public string HoTen { get; set; }
+        public string ChucVu { get; set; }
+        public string Mail { get; set; }
+        public DateOnly NgaySinh { get; set; }
+        public string SoCCCD { get; set; }
+        public DateOnly NgayCap { get; set; }
+        public string QueQuan { get; set; }
+        public string NoiOHienTai { get; set; }
+        public string NguoiThanLienHe { get; set; }
+        public string SoDienThoaiNguoiLienHe { get; set; }
+        public string STKNganHang { get; set; }
+        public string NganHang { get; set; }
+        public int MaPhongBan { get; set; }
+        public string SoDienThoai { get; set; }
+        public int IDVanTay { get; set; }
 
     }
 }

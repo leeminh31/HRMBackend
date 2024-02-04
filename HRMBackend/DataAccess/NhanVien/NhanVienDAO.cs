@@ -43,27 +43,27 @@ namespace HRMBackend.DataAccess.NhanVien
 
             return (false, default);
         }
-        public async Task<(bool isSuccess, Models.NhanVien data)> CreateAsync(Models.NhanVien airport)
+        public async Task<(bool isSuccess, Models.NhanVien data)> CreateAsync(Models.NhanVien nhanvien)
         {
             try
             {
-                var query = CreateQuery(airport);
+                var query = CreateQuery(nhanvien);
                 var res = await Context.ExecuteAsync(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
                 // Process result
                 if (res > 0)
                 {
-                    airport.Id = query.param.Get<int>("idOutput");
-                    return (true, airport);
+                    //nhanvien.MaNhanVien = query.param.Get<string>("idOutput");
+                    return (true, nhanvien);
                 }
             }
             catch (Exception ex)
             {
 
-                return (false, airport);
+                return (false, nhanvien);
             }
 
-            return (false, airport);
+            return (false, nhanvien);
         }
 
         public async Task<(bool isSuccess, IEnumerable<Models.NhanVien> data)> GetByCodeOrNameAsync(SearchNhanVienRequest request)
@@ -78,18 +78,18 @@ namespace HRMBackend.DataAccess.NhanVien
             return (false, default);
         }
 
-        public async Task<(bool isSuccess, IEnumerable<Models.NhanVien> data, int totalRecords)> PaginationAsync(PaginationNhanVienRequest request)
-        {
-            // Excute
-            var query = PaginationQuery(request);
-            var queryResult = await Context.QueryAsync<Models.NhanVien>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+        //public async Task<(bool isSuccess, IEnumerable<Models.NhanVien> data, int totalRecords)> PaginationAsync(PaginationNhanVienRequest request)
+        //{
+        //    // Excute
+        //    var query = PaginationQuery(request);
+        //    var queryResult = await Context.QueryAsync<Models.NhanVien>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
-            // Process result
-            if (queryResult.GetEnumerator().MoveNext())
-                return (true, queryResult, queryResult.First().TotalRecords);
+        //    // Process result
+        //    if (queryResult.GetEnumerator().MoveNext())
+        //        return (true, queryResult, queryResult.First().TotalRecords);
 
-            return (false, default, 0);
-        }
+        //    return (false, default, 0);
+        //}
 
         public async Task<(bool isSuccess, Models.NhanVien data)> UpdateAsync(Models.NhanVien airport)
         {

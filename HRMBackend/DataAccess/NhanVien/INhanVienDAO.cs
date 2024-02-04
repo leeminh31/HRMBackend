@@ -29,7 +29,7 @@ namespace HRMBackend.DataAccess.NhanVien
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<(bool isSuccess, IEnumerable<Models.NhanVien> data, int totalRecords)> PaginationAsync(PaginationNhanVienRequest request);
+        //Task<(bool isSuccess, IEnumerable<Models.NhanVien> data, int totalRecords)> PaginationAsync(PaginationNhanVienRequest request);
 
         /// <summary>
         /// Chức năng: kiểm tra NhanVien đã tồn tại chưa dựa vào code hoặc name

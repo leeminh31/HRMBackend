@@ -32,7 +32,7 @@ namespace HRMBackend.Services.DuLieuChamCong
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        Task<BaseResult<DuLieuChamCongResponse>> UpdateAsync(UpdateDuLieuChamCongRequest request);
+        //Task<BaseResult<DuLieuChamCongResponse>> UpdateAsync(UpdateDuLieuChamCongRequest request);
 
     }
 }

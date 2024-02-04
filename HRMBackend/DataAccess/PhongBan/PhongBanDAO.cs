@@ -17,7 +17,18 @@ namespace HRMBackend.DataAccess.PhongBan
         #endregion
 
         #region Method
+        public async Task<(bool hasValue, IEnumerable<Models.PhongBan> data)> GetAllPhongBanAsync()
+        {
+            // Excute
+            var query = GetAllPhongBanQuery();
+            var queryResult = await Context.QueryAsync<Models.PhongBan>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
+            // Process result
+            if (queryResult.GetEnumerator().MoveNext())
+                return (true, queryResult);
+
+            return (false, default);
+        }
         public async Task<(bool hasValue, IEnumerable<Models.PhongBan> data)> GetFilterAsync(string searchKey)
         {
             // Excute
@@ -45,23 +56,23 @@ namespace HRMBackend.DataAccess.PhongBan
         }
         public async Task<(bool isSuccess, Models.PhongBan data)> CreateAsync(Models.PhongBan airport)
         {
-            try
-            {
-                var query = CreateQuery(airport);
-                var res = await Context.ExecuteAsync(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+            //try
+            //{
+            //    var query = CreateQuery(airport);
+            //    var res = await Context.ExecuteAsync(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
-                // Process result
-                if (res > 0)
-                {
-                    airport.Id = query.param.Get<int>("idOutput");
-                    return (true, airport);
-                }
-            }
-            catch (Exception ex)
-            {
+            //    // Process result
+            //    if (res > 0)
+            //    {
+            //        airport.Id = query.param.Get<int>("idOutput");
+            //        return (true, airport);
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
 
-                return (false, airport);
-            }
+            //    return (false, airport);
+            //}
 
             return (false, airport);
         }
@@ -81,24 +92,24 @@ namespace HRMBackend.DataAccess.PhongBan
         public async Task<(bool isSuccess, IEnumerable<Models.PhongBan> data, int totalRecords)> PaginationAsync(PaginationPhongBanRequest request)
         {
             // Excute
-            var query = PaginationQuery(request);
-            var queryResult = await Context.QueryAsync<Models.PhongBan>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+            //var query = PaginationQuery(request);
+            //var queryResult = await Context.QueryAsync<Models.PhongBan>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
-            // Process result
-            if (queryResult.GetEnumerator().MoveNext())
-                return (true, queryResult, queryResult.First().TotalRecords);
+            //// Process result
+            //if (queryResult.GetEnumerator().MoveNext())
+            //    return (true, queryResult, queryResult.First().TotalRecords);
 
             return (false, default, 0);
         }
 
         public async Task<(bool isSuccess, Models.PhongBan data)> UpdateAsync(Models.PhongBan airport)
         {
-            var query = UpdateQuery(airport);
-            var result = await Context.ExecuteAsync(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+            //var query = UpdateQuery(airport);
+            //var result = await Context.ExecuteAsync(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
-            // Process result
-            if (result > 0)
-                return (true, airport);
+            //// Process result
+            //if (result > 0)
+            //    return (true, airport);
 
             return (false, airport);
         }

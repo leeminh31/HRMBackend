@@ -25,14 +25,14 @@ namespace HRMBackend.Services.NhanVien
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<PaginationResult<IEnumerable<NhanVienResponse>>> PaginationGetByCodeAndNameAsync(PaginationNhanVienRequest request);
+        //Task<PaginationResult<IEnumerable<NhanVienResponse>>> PaginationGetByCodeAndNameAsync(PaginationNhanVienRequest request);
 
         /// <summary>
         /// Chức năng: Cập nhật NhanVien bằng name
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        Task<BaseResult<NhanVienResponse>> UpdateAsync(UpdateNhanVienRequest request);
+        //Task<BaseResult<NhanVienResponse>> UpdateAsync(UpdateNhanVienRequest request);
 
     }
 }

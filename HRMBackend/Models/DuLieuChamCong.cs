@@ -11,7 +11,7 @@ namespace HRMBackend.Models
         [Key]
         [Column("maChamCong")]
         public int MaChamCong { get; set; }
-        [Column("maVanTay")]
+        [Column("IDVanTay")]
         public int MaVanTay { get; set; }
         [Column("maNhanVien")]
         public string MaNhanVien { get; set; }

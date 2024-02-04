@@ -32,7 +32,7 @@ namespace HRMBackend.Controllers
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost("create")]
-        [SwaggerOperation(summary: "Tạo thông tin cảng")]
+        [SwaggerOperation(summary: "Tạo thông tin nhân viên")]
         //[Authorize]
         public async Task<IActionResult> CreateAsync([FromBody] CreateNhanVienRequest request)
         {
@@ -61,28 +61,28 @@ namespace HRMBackend.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        [HttpPost("pagination")]
-        [SwaggerOperation(summary: "Lấy danh sách thông tin cảng dựa theo param (like code và like name)")]
+        //[HttpPost("pagination")]
+        //[SwaggerOperation(summary: "Lấy danh sách thông tin cảng dựa theo param (like code và like name)")]
         //[Authorize]
-        public async Task<IActionResult> PaginationGetByCodeAndNameAsync([FromBody] PaginationNhanVienRequest request)
-        {
-            var result = await _nhanVienService.PaginationGetByCodeAndNameAsync(request);
-            return Ok(result);
-        }
+        //public async Task<IActionResult> PaginationGetByCodeAndNameAsync([FromBody] PaginationNhanVienRequest request)
+        //{
+        //    var result = await _nhanVienService.PaginationGetByCodeAndNameAsync(request);
+        //    return Ok(result);
+        //}
 
         /// <summary>
         /// Chức năng: cập nhật thông tin cảng bằng id
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        [HttpPost("update")]
-        [SwaggerOperation(summary: "Cập nhật thông tin cảng")]
-        [Authorize]
-        public async Task<IActionResult> UpdateAsync([FromBody] UpdateNhanVienRequest request)
-        {
-            var result = await _nhanVienService.UpdateAsync(request);
-            return Ok(result);
-        }
+        //[HttpPost("update")]
+        //[SwaggerOperation(summary: "Cập nhật thông tin cảng")]
+        //[Authorize]
+        //public async Task<IActionResult> UpdateAsync([FromBody] UpdateNhanVienRequest request)
+        //{
+        //    var result = await _nhanVienService.UpdateAsync(request);
+        //    return Ok(result);
+        //}
 
         #endregion
     }

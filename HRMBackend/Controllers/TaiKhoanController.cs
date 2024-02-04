@@ -61,28 +61,28 @@ namespace HRMBackend.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        [HttpPost("pagination")]
-        [SwaggerOperation(summary: "Lấy danh sách thông tin cảng dựa theo param (like code và like name)")]
-        //[Authorize]
-        public async Task<IActionResult> PaginationGetByCodeAndNameAsync([FromBody] PaginationTaiKhoanRequest request)
-        {
-            var result = await _taiKhoanService.PaginationGetByCodeAndNameAsync(request);
-            return Ok(result);
-        }
+        //[HttpPost("pagination")]
+        //[SwaggerOperation(summary: "Lấy danh sách thông tin cảng dựa theo param (like code và like name)")]
+        ////[Authorize]
+        //public async Task<IActionResult> PaginationGetByCodeAndNameAsync([FromBody] PaginationTaiKhoanRequest request)
+        //{
+        //    var result = await _taiKhoanService.PaginationGetByCodeAndNameAsync(request);
+        //    return Ok(result);
+        //}
 
         /// <summary>
         /// Chức năng: cập nhật thông tin cảng bằng id
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        [HttpPost("update")]
-        [SwaggerOperation(summary: "Cập nhật thông tin cảng")]
-        [Authorize]
-        public async Task<IActionResult> UpdateAsync([FromBody] UpdateTaiKhoanRequest request)
-        {
-            var result = await _taiKhoanService.UpdateAsync(request);
-            return Ok(result);
-        }
+        //[HttpPost("update")]
+        //[SwaggerOperation(summary: "Cập nhật thông tin cảng")]
+        //[Authorize]
+        //public async Task<IActionResult> UpdateAsync([FromBody] UpdateTaiKhoanRequest request)
+        //{
+        //    var result = await _taiKhoanService.UpdateAsync(request);
+        //    return Ok(result);
+        //}
 
         #endregion
     }

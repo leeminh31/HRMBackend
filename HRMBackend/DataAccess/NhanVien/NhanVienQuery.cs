@@ -2,12 +2,20 @@
 using System.Data;
 using System.Text.RegularExpressions;
 using System.Text;
+using HRMBackend.Resources.DTO.NhanVien.Request;
 
 namespace HRMBackend.DataAccess.NhanVien
 {
     public partial class NhanVienDAO
     {
         #region Method
+        private static (string sql, DynamicParameters param) GetAllEmployee()
+        {
+            // Param component
+            var param = new DynamicParameters();
+            string query = @"SELECT * FROM tbl_NhanVien";
+            return (query, param);
+        }
         private static (string sql, DynamicParameters param) GetFilterQuery(string searchKey)
         {
             // Param component
@@ -28,19 +36,26 @@ namespace HRMBackend.DataAccess.NhanVien
         {
             // Param component
             var param = new DynamicParameters();
-            param.Add(":code", model.Code, dbType: DbType.String, direction: ParameterDirection.Input);
-            param.Add(":name", model.Name, dbType: DbType.String, direction: ParameterDirection.Input);
-            param.Add(":url", model.Url, dbType: DbType.String, direction: ParameterDirection.Input);
-            param.Add(":status", model.Status, dbType: DbType.Int32, direction: ParameterDirection.Input);
-            param.Add(":description", model.Description, dbType: DbType.String, direction: ParameterDirection.Input);
-            param.Add(":createDateUtc", model.CreatedDateUtc, dbType: DbType.DateTime, direction: ParameterDirection.Input);
-            param.Add(":updateDateUtc", model.UpdatedDateUtc, dbType: DbType.DateTime, direction: ParameterDirection.Input);
-            param.Add(":idOutput", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            param.Add(":manhanvien", model.MaNhanVien,dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":maphongban", model.MaPhongBan, dbType: DbType.Int32, direction: ParameterDirection.Input);
+            param.Add(":hoten", model.HoTen, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":chucvu", model.ChucVu, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":mail", model.Mail, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":ngaysinh", model.NgaySinh, dbType: DbType.Date, direction: ParameterDirection.Input);
+            param.Add(":sodienthoai", model.SoDienThoai, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":socccd", model.SoCCCD, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":ngaycap", model.NgayCap, dbType: DbType.Date, direction: ParameterDirection.Input);
+            param.Add(":quequan", model.QueQuan, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":noiohientai", model.NoiOHienTai, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":nguoithanlienhe", model.NguoiThanLienHe, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":sodienthoainguoilienhe", model.SoDienThoaiNguoiLienHe, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":stknganhang", model.STKNganHang, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":nganhang", model.SoCCCD, dbType: DbType.String, direction: ParameterDirection.Input);
 
             // SQL component
-            string query = @"INSERT INTO TBL_AIRPORT(ID, CODE, NAME, URL, STATUS, DESCRIPTION, CREATED_DATE_UTC, UPDATED_DATE_UTC)
-                VALUES (TBL_AIRPORT_SEQ.nextval, :code, :name, :url, :status, :description, :createDateUtc, :updateDateUtc)
-            RETURNING ID INTO :idOutput";
+            string query = @"INSERT INTO public.tbl_nhanvien(
+	        manhanvien, maphongban, hoten, chucvu, mail, ngaysinh, sodienthoai, socccd, ngaycap, quequan, noiohientai, nguoithanlienhe, sodienthoainguoilienhe, stknganhang, nganhang)
+	        VALUES (:manhanvien, :maphongban, :hoten, :chucvu, :mail, :ngaysinh, :sodienthoai, :socccd, :ngaycap, :quequan, :noiohientai, :nguoithanlienhe, :sodienthoainguoilienhe, :stknganhang, :nganhang);";
             return (query, param);
         }
 
@@ -102,21 +117,37 @@ namespace HRMBackend.DataAccess.NhanVien
         {
             // Param component
             var param = new DynamicParameters();
-            param.Add(":id", model.Id, dbType: DbType.Int32, direction: ParameterDirection.Input);
-            param.Add(":code", model.Code, dbType: DbType.String, direction: ParameterDirection.Input);
-            param.Add(":name", model.Name, dbType: DbType.String, direction: ParameterDirection.Input);
-            param.Add(":url", model.Url, dbType: DbType.String, direction: ParameterDirection.Input);
-            param.Add(":status", model.Status, dbType: DbType.Int32, direction: ParameterDirection.Input);
-            param.Add(":description", model.Description, dbType: DbType.String, direction: ParameterDirection.Input);
-            param.Add(":updateDateUtc", model.UpdatedDateUtc, dbType: DbType.DateTime, direction: ParameterDirection.Input);
-            string query = @"UPDATE TBL_AIRPORT
-                        SET CODE = :code,
-                            NAME = :name,
-                            URL = :url,
-                            STATUS = :status,
-                            DESCRIPTION = :description,
-                            UPDATED_DATE_UTC = :updateDateUtc
-                        WHERE ID = :id";
+            param.Add(":manhanvien", model.MaNhanVien, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":maphongban", model.MaPhongBan, dbType: DbType.Int32, direction: ParameterDirection.Input);
+            param.Add(":hoten", model.HoTen, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":chucvu", model.ChucVu, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":mail", model.Mail, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":ngaysinh", model.NgaySinh, dbType: DbType.Date, direction: ParameterDirection.Input);
+            param.Add(":sodienthoai", model.SoDienThoai, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":socccd", model.SoCCCD, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":ngaycap", model.NgayCap, dbType: DbType.Date, direction: ParameterDirection.Input);
+            param.Add(":quequan", model.QueQuan, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":noiohientai", model.NoiOHienTai, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":nguoithanlienhe", model.NguoiThanLienHe, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":sodienthoainguoilienhe", model.SoDienThoaiNguoiLienHe, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":stknganhang", model.STKNganHang, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":nganhang", model.SoCCCD, dbType: DbType.String, direction: ParameterDirection.Input);
+            string query = @"UPDATE tbl_nhanvien
+                        SET maphongban = :maphongban,
+                            hoten = :hoten,
+                            chucvu = :chucvu,
+                            mail = :mail,
+                            ngaysinh = :ngaysinh,
+                            sodienthoai = :sodienthoai,
+                            socccd = :socccd,
+                            ngaycap = :ngaycap,
+                            quequan = :quequan,
+                            noiohientai = :noiohientai,
+                            nguoithanlienhe = :nguoithanlienhe,
+                            sodienthoainguoilienhe = :sodienthoainguoilienhe,
+                            stknganhang = :stknganhang, 
+                            nganhang = :nganhang
+                        WHERE manhanvien = :manhanvien";
             return (query, param);
         }
         #endregion

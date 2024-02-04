@@ -43,6 +43,6 @@ namespace HRMBackend.DataAccess.DuLieuChamCong
         /// </summary>
         /// <param name="DuLieuChamCong"></param>
         /// <returns></returns>
-        Task<(bool isSuccess, Models.DuLieuChamCong data)> UpdateAsync(Models.DuLieuChamCong caLamViec);
+        //Task<(bool isSuccess, Models.DuLieuChamCong data)> UpdateAsync(Models.DuLieuChamCong caLamViec);
     }
 }

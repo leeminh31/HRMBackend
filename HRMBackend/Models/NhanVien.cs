@@ -37,5 +37,9 @@ namespace HRMBackend.Models
         public string NganHang { get; set; }
         [Column("maPhongBan")]
         public int MaPhongBan { get; set; }
+        [Column("soDienThoai")]
+        public string SoDienThoai { get; set; }
+        [Column("IDVanTay")]
+        public int IDVanTay { get; set; }
     }
 }

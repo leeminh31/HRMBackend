@@ -29,7 +29,7 @@ namespace HRMBackend.DataAccess.TaiKhoan
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<(bool isSuccess, IEnumerable<Models.TaiKhoan> data, int totalRecords)> PaginationAsync(PaginationTaiKhoanRequest request);
+        //Task<(bool isSuccess, IEnumerable<Models.TaiKhoan> data, int totalRecords)> PaginationAsync(PaginationTaiKhoanRequest request);
 
         /// <summary>
         /// Chức năng: kiểm tra TaiKhoan đã tồn tại chưa dựa vào code hoặc name
@@ -43,6 +43,6 @@ namespace HRMBackend.DataAccess.TaiKhoan
         /// </summary>
         /// <param name="TaiKhoan"></param>
         /// <returns></returns>
-        Task<(bool isSuccess, Models.TaiKhoan data)> UpdateAsync(Models.TaiKhoan caLamViec);
+        //Task<(bool isSuccess, Models.TaiKhoan data)> UpdateAsync(Models.TaiKhoan caLamViec);
     }
 }

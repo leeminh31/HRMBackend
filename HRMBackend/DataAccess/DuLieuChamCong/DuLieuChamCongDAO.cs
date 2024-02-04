@@ -31,6 +31,19 @@ namespace HRMBackend.DataAccess.DuLieuChamCong
             return (false, default);
         }
 
+        //public async Task<(bool hasValue, Models.DuLieuChamCong data)> GetByMaNhanVienAsync(string manhanvien)
+        //{
+        //    // Excute
+        //    var query = GetByMaNhanVienQuery(manhanvien);
+        //    var queryResult = await Context.QuerySingleOrDefaultAsync<Models.DuLieuChamCong>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+
+        //    // Process result
+        //    if (queryResult != null)
+        //        return (true, queryResult);
+
+        //    return (false, default);
+        //}
+
         public async Task<(bool hasValue, Models.DuLieuChamCong data)> GetByIdAsync(int id)
         {
             // Excute
@@ -45,23 +58,23 @@ namespace HRMBackend.DataAccess.DuLieuChamCong
         }
         public async Task<(bool isSuccess, Models.DuLieuChamCong data)> CreateAsync(Models.DuLieuChamCong airport)
         {
-            try
-            {
-                var query = CreateQuery(airport);
-                var res = await Context.ExecuteAsync(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+            //try
+            //{
+            //    var query = CreateQuery(airport);
+            //    var res = await Context.ExecuteAsync(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
-                // Process result
-                if (res > 0)
-                {
-                    airport.Id = query.param.Get<int>("idOutput");
-                    return (true, airport);
-                }
-            }
-            catch (Exception ex)
-            {
+            //    // Process result
+            //    if (res > 0)
+            //    {
+            //        airport.Id = query.param.Get<int>("idOutput");
+            //        return (true, airport);
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
 
-                return (false, airport);
-            }
+            //    return (false, airport);
+            //}
 
             return (false, airport);
         }
@@ -81,27 +94,27 @@ namespace HRMBackend.DataAccess.DuLieuChamCong
         public async Task<(bool isSuccess, IEnumerable<Models.DuLieuChamCong> data, int totalRecords)> PaginationAsync(PaginationDuLieuChamCongRequest request)
         {
             // Excute
-            var query = PaginationQuery(request);
-            var queryResult = await Context.QueryAsync<Models.DuLieuChamCong>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+            //var query = PaginationQuery(request);
+            //var queryResult = await Context.QueryAsync<Models.DuLieuChamCong>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
-            // Process result
-            if (queryResult.GetEnumerator().MoveNext())
-                return (true, queryResult, queryResult.First().TotalRecords);
+            //// Process result
+            //if (queryResult.GetEnumerator().MoveNext())
+            //    return (true, queryResult, queryResult.First().TotalRecords);
 
             return (false, default, 0);
         }
 
-        public async Task<(bool isSuccess, Models.DuLieuChamCong data)> UpdateAsync(Models.DuLieuChamCong airport)
-        {
-            var query = UpdateQuery(airport);
-            var result = await Context.ExecuteAsync(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+        //public async Task<(bool isSuccess, Models.DuLieuChamCong data)> UpdateAsync(Models.DuLieuChamCong airport)
+        //{
+        //    var query = UpdateQuery(airport);
+        //    var result = await Context.ExecuteAsync(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
-            // Process result
-            if (result > 0)
-                return (true, airport);
+        //    // Process result
+        //    if (result > 0)
+        //        return (true, airport);
 
-            return (false, airport);
-        }
+        //    return (false, airport);
+        //}
         #endregion
     }
 }

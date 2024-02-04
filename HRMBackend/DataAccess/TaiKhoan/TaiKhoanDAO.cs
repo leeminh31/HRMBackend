@@ -2,6 +2,7 @@
 using HRMBackend.DataAccess.TaiKhoan;
 using HRMBackend.DataAccess.UnitOfWork;
 using HRMBackend.Resources;
+using HRMBackend.Resources.DTO.TaiKhoan.Request;
 
 namespace HRMBackend.DataAccess.TaiKhoan
 {
@@ -42,27 +43,27 @@ namespace HRMBackend.DataAccess.TaiKhoan
 
             return (false, default);
         }
-        public async Task<(bool isSuccess, Models.TaiKhoan data)> CreateAsync(Models.TaiKhoan airport)
+        public async Task<(bool isSuccess, Models.TaiKhoan data)> CreateAsync(Models.TaiKhoan taikhoan)
         {
             try
             {
-                var query = CreateQuery(airport);
+                var query = CreateQuery(taikhoan);
                 var res = await Context.ExecuteAsync(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
                 // Process result
                 if (res > 0)
                 {
-                    airport.Id = query.param.Get<int>("idOutput");
-                    return (true, airport);
+                    taikhoan.MaTaiKhoan = query.param.Get<int>("mataikhoan");
+                    return (true, taikhoan);
                 }
             }
             catch (Exception ex)
             {
 
-                return (false, airport);
+                return (false, taikhoan);
             }
 
-            return (false, airport);
+            return (false, taikhoan);
         }
 
         public async Task<(bool isSuccess, IEnumerable<Models.TaiKhoan> data)> GetByCodeOrNameAsync(SearchTaiKhoanRequest request)
@@ -77,31 +78,30 @@ namespace HRMBackend.DataAccess.TaiKhoan
             return (false, default);
         }
 
-        public async Task<(bool isSuccess, IEnumerable<Models.TaiKhoan> data, int totalRecords)> PaginationAsync(PaginationTaiKhoanRequest request)
-        {
-            // Excute
-            var query = PaginationQuery(request);
-            var queryResult = await Context.QueryAsync<Models.TaiKhoan>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+        //public async Task<(bool isSuccess, IEnumerable<Models.TaiKhoan> data, int totalRecords)> PaginationAsync(PaginationTaiKhoanRequest request)
+        //{
+        //    // Excute
+        //    var query = PaginationQuery(request);
+        //    var queryResult = await Context.QueryAsync<Models.TaiKhoan>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
-            // Process result
-            if (queryResult.GetEnumerator().MoveNext())
-                return (true, queryResult, queryResult.First().TotalRecords);
+        //    // Process result
+        //    if (queryResult.GetEnumerator().MoveNext())
+        //        return (true, queryResult, queryResult.First().TotalRecords);
 
-            return (false, default, 0);
-        }
+        //    return (false, default, 0);
+        //}
 
-        public async Task<(bool isSuccess, Models.TaiKhoan data)> UpdateAsync(Models.TaiKhoan airport)
-        {
-            var query = UpdateQuery(airport);
-            var result = await Context.ExecuteAsync(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+        //public async Task<(bool isSuccess, Models.TaiKhoan data)> UpdateAsync(Models.TaiKhoan airport)
+        //{
+        //    var query = UpdateQuery(airport);
+        //    var result = await Context.ExecuteAsync(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
-            // Process result
-            if (result > 0)
-                return (true, airport);
+        //    // Process result
+        //    if (result > 0)
+        //        return (true, airport);
 
-            return (false, airport);
-        }
+        //    return (false, airport);
+        //}
         #endregion
     }
-}
 }
