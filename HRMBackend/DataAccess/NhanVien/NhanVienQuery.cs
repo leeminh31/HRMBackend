@@ -50,12 +50,13 @@ namespace HRMBackend.DataAccess.NhanVien
             param.Add(":nguoithanlienhe", model.NguoiThanLienHe, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(":sodienthoainguoilienhe", model.SoDienThoaiNguoiLienHe, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(":stknganhang", model.STKNganHang, dbType: DbType.String, direction: ParameterDirection.Input);
-            param.Add(":nganhang", model.SoCCCD, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":nganhang", model.NganHang, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":idvantay", model.IDVanTay, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
             // SQL component
             string query = @"INSERT INTO public.tbl_nhanvien(
-	        manhanvien, maphongban, hoten, chucvu, mail, ngaysinh, sodienthoai, socccd, ngaycap, quequan, noiohientai, nguoithanlienhe, sodienthoainguoilienhe, stknganhang, nganhang)
-	        VALUES (:manhanvien, :maphongban, :hoten, :chucvu, :mail, :ngaysinh, :sodienthoai, :socccd, :ngaycap, :quequan, :noiohientai, :nguoithanlienhe, :sodienthoainguoilienhe, :stknganhang, :nganhang);";
+	        manhanvien, maphongban, hoten, chucvu, mail, ngaysinh, sodienthoai, socccd, ngaycap, quequan, noiohientai, nguoithanlienhe, sodienthoainguoilienhe, stknganhang, nganhang, idvantay)
+	        VALUES (:manhanvien, :maphongban, :hoten, :chucvu, :mail, :ngaysinh, :sodienthoai, :socccd, :ngaycap, :quequan, :noiohientai, :nguoithanlienhe, :sodienthoainguoilienhe, :stknganhang, :nganhang, :idvantay);";
             return (query, param);
         }
 
@@ -131,7 +132,9 @@ namespace HRMBackend.DataAccess.NhanVien
             param.Add(":nguoithanlienhe", model.NguoiThanLienHe, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(":sodienthoainguoilienhe", model.SoDienThoaiNguoiLienHe, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(":stknganhang", model.STKNganHang, dbType: DbType.String, direction: ParameterDirection.Input);
-            param.Add(":nganhang", model.SoCCCD, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":nganhang", model.NganHang, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":idvantay", model.IDVanTay, dbType: DbType.Int32, direction: ParameterDirection.Input);
+
             string query = @"UPDATE tbl_nhanvien
                         SET maphongban = :maphongban,
                             hoten = :hoten,
@@ -146,7 +149,8 @@ namespace HRMBackend.DataAccess.NhanVien
                             nguoithanlienhe = :nguoithanlienhe,
                             sodienthoainguoilienhe = :sodienthoainguoilienhe,
                             stknganhang = :stknganhang, 
-                            nganhang = :nganhang
+                            nganhang = :nganhang,
+                            idvantay = :idvantay
                         WHERE manhanvien = :manhanvien";
             return (query, param);
         }

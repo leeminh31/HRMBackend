@@ -75,14 +75,14 @@ namespace HRMBackend.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        //[HttpPost("update")]
-        //[SwaggerOperation(summary: "Cập nhật thông tin cảng")]
+        [HttpPost("update")]
+        [SwaggerOperation(summary: "Cập nhật thông tin nhân viên")]
         //[Authorize]
-        //public async Task<IActionResult> UpdateAsync([FromBody] UpdateNhanVienRequest request)
-        //{
-        //    var result = await _nhanVienService.UpdateAsync(request);
-        //    return Ok(result);
-        //}
+        public async Task<IActionResult> UpdateAsync([FromBody] UpdateNhanVienRequest request)
+        {
+            var result = await _nhanVienService.UpdateAsync(request);
+            return Ok(result);
+        }
 
         #endregion
     }

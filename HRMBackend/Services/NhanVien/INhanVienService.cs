@@ -32,7 +32,7 @@ namespace HRMBackend.Services.NhanVien
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        //Task<BaseResult<NhanVienResponse>> UpdateAsync(UpdateNhanVienRequest request);
+        Task<BaseResult<NhanVienResponse>> UpdateAsync(UpdateNhanVienRequest request);
 
     }
 }
