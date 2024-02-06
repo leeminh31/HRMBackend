@@ -17,6 +17,18 @@ namespace HRMBackend.DataAccess.NhanVien
         #endregion
 
         #region Method
+        public async Task<(bool hasValue, IEnumerable<Models.NhanVien> data)> GetAllEmployeeAsync()
+        {
+            // Excute
+            var query = GetAllEmployeeQuery();
+            var queryResult = await Context.QueryAsync<Models.NhanVien>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+
+            // Process result
+            if (queryResult.GetEnumerator().MoveNext())
+                return (true, queryResult);
+
+            return (false, default);
+        }
 
         public async Task<(bool hasValue, IEnumerable<Models.NhanVien> data)> GetFilterAsync(string searchKey)
         {
@@ -31,10 +43,10 @@ namespace HRMBackend.DataAccess.NhanVien
             return (false, default);
         }
 
-        public async Task<(bool hasValue, Models.NhanVien data)> GetByIdAsync(int id)
+        public async Task<(bool hasValue, Models.NhanVien data)> GetByIDAsync(string maNhanVien)
         {
             // Excute
-            var query = GetByIdQuery(id);
+            var query = GetByIdQuery(maNhanVien);
             var queryResult = await Context.QuerySingleOrDefaultAsync<Models.NhanVien>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
             // Process result
@@ -66,9 +78,21 @@ namespace HRMBackend.DataAccess.NhanVien
             return (false, nhanvien);
         }
 
-        public async Task<(bool isSuccess, IEnumerable<Models.NhanVien> data)> GetByCodeOrNameAsync(SearchNhanVienRequest request)
+        //public async Task<(bool isSuccess, IEnumerable<Models.NhanVien> data)> GetByCodeOrNameAsync(SearchNhanVienRequest request)
+        //{
+        //    var query = GetByCodeOrNameQuery(request);
+        //    var queryResult = await Context.QueryAsync<Models.NhanVien>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+
+        //    // Process result
+        //    if (queryResult.GetEnumerator().MoveNext())
+        //        return (true, queryResult);
+
+        //    return (false, default);
+        //}
+
+        public async Task<(bool isSuccess, IEnumerable<Models.NhanVien> data)> GetByParamsAsync(SearchNhanVienRequest request)
         {
-            var query = GetByCodeOrNameQuery(request);
+            var query = GetByParamsQuery(request);
             var queryResult = await Context.QueryAsync<Models.NhanVien>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
             // Process result

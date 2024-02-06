@@ -9,6 +9,15 @@ namespace HRMBackend.DataAccess.TaiKhoan
     public partial class TaiKhoanDAO
     {
         #region Method
+        private static (string sql, DynamicParameters param) ChangePasswordQuery(string maNhanVien, string password)
+        {
+            // Param component
+            var param = new DynamicParameters();
+            param.Add(":manhanvien", maNhanVien, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":password", password, dbType: DbType.String, direction: ParameterDirection.Input);
+            string query = @"SELECT * FROM TBL_TAIKHOAN WHERE (:password IS NULL OR UPPER(NAME) LIKE '%' || :password || '%') AND (:manhanvien IS NULL OR UPPER(NAME) LIKE '%' || :manhanvien || '%')";
+            return (query, param);
+        }
         private static (string sql, DynamicParameters param) GetFilterQuery(string searchKey)
         {
             // Param component

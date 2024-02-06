@@ -107,5 +107,30 @@ namespace HRMBackend.Services.TaiKhoan
         //    else
         //        return GetBaseResult<TaiKhoanResponse>(CodeMessage._236, status: StatusEnum.Failed);
         //}
+
+        public async Task<BaseResult<TaiKhoanResponse>> ChangePasswordAsync(string maNhanVien, string password)
+        {
+            //// Mapping Resource to TaiKhoan
+            //var airport = Mapper.Map<UpdateTaiKhoanRequest, Models.TaiKhoan>(request);
+            //SearchTaiKhoanRequest searchRequest = new SearchTaiKhoanRequest() { Code = request.Code, Name = request.Name };
+            ////Tìm mã code hoặc name đã tồn tại chưa?
+            //var records = await _taiKhoanDAO.GetByCodeOrNameAsync(searchRequest);
+            //if (records.isSuccess)
+            //{
+            //    var anyExist = records.data.Where(x => x.Id != request.Id).ToList();
+            //    if (anyExist.Count > 0)
+            //    {
+            //        return GetBaseResult(CodeMessage._547, data: Mapper.Map<TaiKhoanResponse>(anyExist.FirstOrDefault()));
+            //    }
+            //}
+
+            var result = await _taiKhoanDAO.ChangePasswordAsync(maNhanVien, password);
+            await _unitOfWork.SaveChangesAsync();
+
+            if (result.isSuccess)
+                return GetBaseResult(CodeMessage._200, data: Mapper.Map<TaiKhoanResponse>(result.data));
+            else
+                return GetBaseResult<TaiKhoanResponse>(CodeMessage._236, status: StatusEnum.Failed);
+        }
     }
 }

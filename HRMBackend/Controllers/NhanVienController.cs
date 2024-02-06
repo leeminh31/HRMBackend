@@ -27,6 +27,35 @@ namespace HRMBackend.Controllers
 
         #region Action
         /// <summary>
+        /// Chức năng: Lấy thông tin nhân viên theo mã nhân viên
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpGet()]
+        [SwaggerOperation(summary: "Lấy thông tin nhân viên theo điều kiện tìm kiếm")]
+        //[Authorize]
+        public async Task<IActionResult> GetByParamsAsync(SearchNhanVienRequest request)
+        {
+            var result = await _nhanVienService.GetByParamsAsync(request);
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Chức năng: Lấy thông tin nhân viên theo mã nhân viên
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpGet("{maNhanVien}")]
+        [SwaggerOperation(summary: "Lấy thông tin nhân viên theo mã nhân viên")]
+        //[Authorize]
+        public async Task<IActionResult> GetByIDAsync(string maNhanVien)
+        {
+            var result = await _nhanVienService.GetByIDAsync(maNhanVien);
+
+            return Ok(result);
+        }
+        /// <summary>
         /// Chức năng: tạo mới nhanVien
         /// </summary>
         /// <param name="request"></param>
@@ -47,12 +76,12 @@ namespace HRMBackend.Controllers
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost("search")]
-        [SwaggerOperation(summary: "Lấy danh sách thông tin cảng dựa theo param (== code hoặc == name)")]
+        [SwaggerOperation(summary: "Lấy danh sách thông tin nhân viên dựa theo param")]
         //[Authorize]
         //[NonAction]
-        public async Task<IActionResult> GetByCodeOrNameAsync([FromBody] SearchNhanVienRequest request)
+        public async Task<IActionResult> GetByParamsAsync([FromBody] SearchNhanVienRequest request)
         {
-            var result = await _nhanVienService.GetByCodeOrNameAsync(request);
+            var result = await _nhanVienService.GetByParamsAsync(request);
             return Ok(result);
         }
 

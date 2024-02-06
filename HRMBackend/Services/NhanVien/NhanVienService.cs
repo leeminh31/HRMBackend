@@ -51,10 +51,39 @@ namespace HRMBackend.Services.NhanVien
                 return GetBaseResult<NhanVienResponse>(CodeMessage._209, status: StatusEnum.Failed);
         }
 
-        public async Task<BaseResult<IEnumerable<NhanVienResponse>>> GetByCodeOrNameAsync(SearchNhanVienRequest request)
+        //public async Task<BaseResult<IEnumerable<NhanVienResponse>>> GetByCodeOrNameAsync(SearchNhanVienRequest request)
+        //{
+        //    var records = await _nhanVienDAO.GetByCodeOrNameAsync(request);
+        //    if (records.isSuccess)
+        //    {
+        //        return GetBaseResult(CodeMessage._200, data: Mapper.Map<IEnumerable<NhanVienResponse>>(records.data));
+        //    }
+        //    return GetBaseResult<IEnumerable<NhanVienResponse>>(CodeMessage._545, status: StatusEnum.Failed);
+        //}
+        public async Task<BaseResult<IEnumerable<NhanVienResponse>>> GetByParamsAsync(SearchNhanVienRequest request)
         {
-            var records = await _nhanVienDAO.GetByCodeOrNameAsync(request);
+            var records = await _nhanVienDAO.GetByParamsAsync(request);
             if (records.isSuccess)
+            {
+                return GetBaseResult(CodeMessage._200, data: Mapper.Map<IEnumerable<NhanVienResponse>>(records.data));
+            }
+            return GetBaseResult<IEnumerable<NhanVienResponse>>(CodeMessage._545, status: StatusEnum.Failed);
+        }
+
+        public async Task<BaseResult<IEnumerable<NhanVienResponse>>> GetAllEmployeeAsync()
+        {
+            var records = await _nhanVienDAO.GetAllEmployeeAsync();
+            if (records.hasValue)
+            {
+                return GetBaseResult(CodeMessage._200, data: Mapper.Map<IEnumerable<NhanVienResponse>>(records.data));
+            }
+            return GetBaseResult<IEnumerable<NhanVienResponse>>(CodeMessage._545, status: StatusEnum.Failed);
+        }
+
+        public async Task<BaseResult<IEnumerable<NhanVienResponse>>> GetByIDAsync(string maNhanVien)
+        {
+            var records = await _nhanVienDAO.GetByIDAsync(maNhanVien);
+            if (records.hasValue)
             {
                 return GetBaseResult(CodeMessage._200, data: Mapper.Map<IEnumerable<NhanVienResponse>>(records.data));
             }

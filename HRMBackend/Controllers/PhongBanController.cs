@@ -27,6 +27,21 @@ namespace HRMBackend.Controllers
 
         #region Action
         /// <summary>
+        /// Chức năng: Lấy danh sách mã phòng ban + tên phòng ban
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpGet()]
+        [SwaggerOperation(summary: "Lấy thông tin phòng ban")]
+        //[Authorize]
+        public async Task<IActionResult> GetAllPhongBanAsync()
+        {
+            var result = await _phongBanService.GetAllPhongBanAsync();
+
+            return Ok(result);
+        }
+
+        /// <summary>
         /// Chức năng: tạo mới phongBan
         /// </summary>
         /// <param name="request"></param>

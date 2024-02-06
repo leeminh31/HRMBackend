@@ -2,7 +2,10 @@
 {
     public class SearchNhanVienRequest
     {
-        public string Code { get; set; }
-        public string Name { get; set; }
+        public string MaNhanVien { get; set; }
+        public string HoTen { get; set; }
+        public string ChucVu { get; set; }
+        public int MaPhongBan { get; set; }
+        public int IDVanTay { get; set; }
     }
 }

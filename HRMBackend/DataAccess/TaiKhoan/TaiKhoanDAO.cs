@@ -91,17 +91,29 @@ namespace HRMBackend.DataAccess.TaiKhoan
         //    return (false, default, 0);
         //}
 
-        //public async Task<(bool isSuccess, Models.TaiKhoan data)> UpdateAsync(Models.TaiKhoan airport)
+        //public async Task<(bool isSuccess, Models.TaiKhoan data)> UpdateAsync(Models.TaiKhoan taikhoan)
         //{
-        //    var query = UpdateQuery(airport);
+        //    var query = UpdateQuery(taikhoan);
         //    var result = await Context.ExecuteAsync(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
         //    // Process result
         //    if (result > 0)
-        //        return (true, airport);
+        //        return (true, taikhoan);
 
-        //    return (false, airport);
+        //    return (false, taikhoan);
         //}
+
+        public async Task<(bool isSuccess, Models.TaiKhoan data)> ChangePasswordAsync(string maNhanVien, string password)
+        {
+            var query = ChangePasswordQuery(maNhanVien, password);
+            var result = await Context.ExecuteAsync(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+
+            // Process result
+            if (result > 0)
+                return (true, taikhoan);
+
+            return (false, taikhoan);
+        }
         #endregion
     }
 }

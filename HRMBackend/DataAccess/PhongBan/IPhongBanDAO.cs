@@ -5,6 +5,12 @@ namespace HRMBackend.DataAccess.PhongBan
     public interface IPhongBanDAO
     {
         /// <summary>
+        /// Chức năng: Lấy danh sách mã phòng ban và tên phòng ban
+        /// </summary>
+        /// <param name="searchKey"></param>
+        /// <returns></returns>
+        Task<(bool hasValue, IEnumerable<Models.PhongBan> data)> GetAllPhongBanAsync();
+        /// <summary>
         /// Chức năng: Lấy danh sách các cảng hàng không đang hoạt động theo từ khoá tìm kiếm
         /// </summary>
         /// <param name="searchKey"></param>
@@ -15,7 +21,7 @@ namespace HRMBackend.DataAccess.PhongBan
         /// Chức năng: Lấy thông tin cảng hàng không đang hoạt động theo Id
         /// </summary>
         /// <returns></returns>
-        Task<(bool hasValue, Models.PhongBan data)> GetByIdAsync(int id);
+        //Task<(bool hasValue, Models.PhongBan data)> GetByIdAsync(int id);
 
         /// <summary>
         /// Chức năng: tạo PhongBan

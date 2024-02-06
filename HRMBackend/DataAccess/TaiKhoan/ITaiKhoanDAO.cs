@@ -44,5 +44,6 @@ namespace HRMBackend.DataAccess.TaiKhoan
         /// <param name="TaiKhoan"></param>
         /// <returns></returns>
         //Task<(bool isSuccess, Models.TaiKhoan data)> UpdateAsync(Models.TaiKhoan caLamViec);
+        Task<(bool isSuccess, Models.TaiKhoan data)> ChangePasswordAsync(Models.TaiKhoan taikhoan);
     }
 }

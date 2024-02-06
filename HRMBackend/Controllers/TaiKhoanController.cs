@@ -31,8 +31,23 @@ namespace HRMBackend.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
+        [HttpPost("change-password")]
+        [SwaggerOperation(summary: "Thay đổi mật khẩu")]
+        //[Authorize]
+        public async Task<IActionResult> ChangePasswordAsync(string maNhanVien, string password)
+        {
+            var result = await _taiKhoanService.ChangePasswordAsync(maNhanVien, password);
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Chức năng: tạo mới taiKhoan
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost("create")]
-        [SwaggerOperation(summary: "Tạo thông tin cảng")]
+        [SwaggerOperation(summary: "Tạo tài khoản mới")]
         //[Authorize]
         public async Task<IActionResult> CreateAsync([FromBody] CreateTaiKhoanRequest request)
         {

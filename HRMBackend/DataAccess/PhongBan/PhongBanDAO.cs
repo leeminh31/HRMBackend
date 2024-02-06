@@ -42,14 +42,13 @@ namespace HRMBackend.DataAccess.PhongBan
             return (false, default);
         }
 
-        public async Task<(bool hasValue, Models.PhongBan data)> GetByIdAsync(int id)
+        public async Task<(bool hasValue, IEnumerable<Models.PhongBan> data)> GetByIdAsync()
         {
-            // Excute
-            var query = GetByIdQuery(id);
-            var queryResult = await Context.QuerySingleOrDefaultAsync<Models.PhongBan>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+            var query = GetAllPhongBanQuery();
+            var queryResult = await Context.QueryAsync<Models.PhongBan>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
             // Process result
-            if (queryResult != null)
+            if (queryResult.GetEnumerator().MoveNext())
                 return (true, queryResult);
 
             return (false, default);
