@@ -2,14 +2,15 @@
 {
     public class DonTangCaResponse
     {
-        public int Id { get; set; }
-        public string Code { get; set; }
-
-        public string Name { get; set; }
-        public string Url { get; set; }
-
-        public int Status { get; set; }
-        public string Description { get; set; }
+        public int MaDonTangCa { get; set; }
+        public DateOnly NgayTaoDon { get; set; }
+        public DateOnly NgayLamViec { get; set; }
+        public TimeOnly TangCaTu { get; set; }
+        public TimeOnly TangCaDen { get; set; }
+        public string LyDo { get; set; }
+        public string NguoiDuyet { get; set; }
+        public bool TrangThai { get; set; }
+        public string MaNhanVien { get; set; }
 
     }
 }

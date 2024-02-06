@@ -2,14 +2,12 @@
 {
     public class ChiTietQuyBuResponse
     {
-        public int Id { get; set; }
-        public string Code { get; set; }
-
-        public string Name { get; set; }
-        public string Url { get; set; }
-
-        public int Status { get; set; }
-        public string Description { get; set; }
+        public int MaChiTietQuyBu { get; set; }
+        public int MaQuyBu { get; set; }
+        public int Thang { get; set; }
+        public int PhatSinh { get; set; }
+        public int Nam { get; set; }
+        public int SuDung { get; set; }
 
     }
 }

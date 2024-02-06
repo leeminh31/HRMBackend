@@ -1,15 +1,12 @@
-﻿namespace HRMBackend.Resources.DTO.QuyPhep.Response
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
+namespace HRMBackend.Resources.DTO.QuyPhep.Response
 {
     public class QuyPhepResponse
     {
-        public int Id { get; set; }
-        public string Code { get; set; }
-
-        public string Name { get; set; }
-        public string Url { get; set; }
-
-        public int Status { get; set; }
-        public string Description { get; set; }
+        public int MaQuyPhep { get; set; }
+        public string MaNhanVien { get; set; }
 
     }
 }

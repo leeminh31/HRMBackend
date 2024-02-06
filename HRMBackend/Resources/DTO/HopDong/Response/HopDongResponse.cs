@@ -1,15 +1,17 @@
-﻿namespace HRMBackend.Resources.DTO.HopDong.Response
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
+namespace HRMBackend.Resources.DTO.HopDong.Response
 {
     public class HopDongResponse
     {
-        public int Id { get; set; }
-        public string Code { get; set; }
-
-        public string Name { get; set; }
-        public string Url { get; set; }
-
-        public int Status { get; set; }
-        public string Description { get; set; }
-
+        public string TenHopDong { get; set; }
+        public string MaNhanVien { get; set; }
+        public DateOnly NgayBatDauHopDong { get; set; }
+        public DateOnly NgayKetThucHopDong { get; set; }
+        public string loaiHopDong { get; set; }
+        public double TiLeHuongLuong { get; set; }
+        public double GioLamViec { get; set; }
+        public double CongChuan { get; set; }
     }
 }
