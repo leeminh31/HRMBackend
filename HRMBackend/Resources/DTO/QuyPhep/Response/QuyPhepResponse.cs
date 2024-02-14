@@ -1,0 +1,12 @@
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
+namespace HRMBackend.Resources.DTO.QuyPhep.Response
+{
+    public class QuyPhepResponse
+    {
+        public int MaQuyPhep { get; set; }
+        public string MaNhanVien { get; set; }
+
+    }
+}
