@@ -27,12 +27,41 @@ namespace HRMBackend.Controllers
 
         #region Action
         /// <summary>
+        /// Chức năng: Lấy thông tin nhân viên theo mã nhân viên
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpGet()]
+        [SwaggerOperation(summary: "Lấy thông tin nhân viên theo điều kiện tìm kiếm")]
+        //[Authorize]
+        public async Task<IActionResult> GetByParamsAsync(string? maNhanVien, int? maPhongBan, int? idVanTay, string? chucVu, string? hoTen)
+        {
+            var result = await _nhanVienService.GetByParamsAsync(maNhanVien, maPhongBan, idVanTay, chucVu, hoTen);
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Chức năng: Lấy thông tin nhân viên theo mã nhân viên
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpGet("{maNhanVien}")]
+        [SwaggerOperation(summary: "Lấy thông tin nhân viên theo mã nhân viên")]
+        //[Authorize]
+        public async Task<IActionResult> GetByIDAsync(string maNhanVien)
+        {
+            var result = await _nhanVienService.GetByIDAsync(maNhanVien);
+
+            return Ok(result);
+        }
+        /// <summary>
         /// Chức năng: tạo mới nhanVien
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost("create")]
-        [SwaggerOperation(summary: "Tạo thông tin cảng")]
+        [SwaggerOperation(summary: "Tạo thông tin nhân viên")]
         //[Authorize]
         public async Task<IActionResult> CreateAsync([FromBody] CreateNhanVienRequest request)
         {
@@ -46,29 +75,29 @@ namespace HRMBackend.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        [HttpPost("search")]
-        [SwaggerOperation(summary: "Lấy danh sách thông tin cảng dựa theo param (== code hoặc == name)")]
-        //[Authorize]
-        //[NonAction]
-        public async Task<IActionResult> GetByCodeOrNameAsync([FromBody] SearchNhanVienRequest request)
-        {
-            var result = await _nhanVienService.GetByCodeOrNameAsync(request);
-            return Ok(result);
-        }
+        //[HttpPost("search")]
+        //[SwaggerOperation(summary: "Lấy danh sách thông tin nhân viên dựa theo param")]
+        ////[Authorize]
+        ////[NonAction]
+        //public async Task<IActionResult> GetByParamsAsync([FromBody] SearchNhanVienRequest request)
+        //{
+        //    var result = await _nhanVienService.GetByParamsAsync(request);
+        //    return Ok(result);
+        //}
 
         /// <summary>
         /// Chức năng: lấy dữ liệu cảng bằng mã kí hiệu và tên theo phân trang
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        [HttpPost("pagination")]
-        [SwaggerOperation(summary: "Lấy danh sách thông tin cảng dựa theo param (like code và like name)")]
+        //[HttpPost("pagination")]
+        //[SwaggerOperation(summary: "Lấy danh sách thông tin cảng dựa theo param (like code và like name)")]
         //[Authorize]
-        public async Task<IActionResult> PaginationGetByCodeAndNameAsync([FromBody] PaginationNhanVienRequest request)
-        {
-            var result = await _nhanVienService.PaginationGetByCodeAndNameAsync(request);
-            return Ok(result);
-        }
+        //public async Task<IActionResult> PaginationGetByCodeAndNameAsync([FromBody] PaginationNhanVienRequest request)
+        //{
+        //    var result = await _nhanVienService.PaginationGetByCodeAndNameAsync(request);
+        //    return Ok(result);
+        //}
 
         /// <summary>
         /// Chức năng: cập nhật thông tin cảng bằng id
@@ -76,8 +105,8 @@ namespace HRMBackend.Controllers
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost("update")]
-        [SwaggerOperation(summary: "Cập nhật thông tin cảng")]
-        [Authorize]
+        [SwaggerOperation(summary: "Cập nhật thông tin nhân viên")]
+        //[Authorize]
         public async Task<IActionResult> UpdateAsync([FromBody] UpdateNhanVienRequest request)
         {
             var result = await _nhanVienService.UpdateAsync(request);

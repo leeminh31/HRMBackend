@@ -18,14 +18,25 @@ namespace HRMBackend.Services.NhanVien
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<BaseResult<IEnumerable<NhanVienResponse>>> GetByCodeOrNameAsync(SearchNhanVienRequest request);
+        //Task<BaseResult<IEnumerable<NhanVienResponse>>> GetByCodeOrNameAsync(SearchNhanVienRequest request);
+
+        /// <summary>
+        /// Chức năng: lấy thông tin nhân viên
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        Task<BaseResult<IEnumerable<NhanVienResponse>>> GetByIDAsync(string maNhanVien);
+
+        Task<BaseResult<IEnumerable<NhanVienResponse>>> GetByParamsAsync(string? maNhanVien, int? maPhongBan, int? idVanTay, string? chucVu, string? hoTen);
+
+        Task<BaseResult<IEnumerable<NhanVienResponse>>> GetAllEmployeeAsync();
 
         /// <summary>
         /// Chức năng: lấy dữ liệu cảng theo mã code và name được phân trang
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<PaginationResult<IEnumerable<NhanVienResponse>>> PaginationGetByCodeAndNameAsync(PaginationNhanVienRequest request);
+        //Task<PaginationResult<IEnumerable<NhanVienResponse>>> PaginationGetByCodeAndNameAsync(PaginationNhanVienRequest request);
 
         /// <summary>
         /// Chức năng: Cập nhật NhanVien bằng name

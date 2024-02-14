@@ -31,8 +31,23 @@ namespace HRMBackend.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
+        //[HttpPost("change-password")]
+        //[SwaggerOperation(summary: "Thay đổi mật khẩu")]
+        ////[Authorize]
+        //public async Task<IActionResult> ChangePasswordAsync(string maNhanVien, string password)
+        //{
+        //    var result = await _taiKhoanService.ChangePasswordAsync(maNhanVien, password);
+
+        //    return Ok(result);
+        //}
+
+        /// <summary>
+        /// Chức năng: tạo mới taiKhoan
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost("create")]
-        [SwaggerOperation(summary: "Tạo thông tin cảng")]
+        [SwaggerOperation(summary: "Tạo tài khoản mới")]
         //[Authorize]
         public async Task<IActionResult> CreateAsync([FromBody] CreateTaiKhoanRequest request)
         {
@@ -61,28 +76,28 @@ namespace HRMBackend.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        [HttpPost("pagination")]
-        [SwaggerOperation(summary: "Lấy danh sách thông tin cảng dựa theo param (like code và like name)")]
-        //[Authorize]
-        public async Task<IActionResult> PaginationGetByCodeAndNameAsync([FromBody] PaginationTaiKhoanRequest request)
-        {
-            var result = await _taiKhoanService.PaginationGetByCodeAndNameAsync(request);
-            return Ok(result);
-        }
+        //[HttpPost("pagination")]
+        //[SwaggerOperation(summary: "Lấy danh sách thông tin cảng dựa theo param (like code và like name)")]
+        ////[Authorize]
+        //public async Task<IActionResult> PaginationGetByCodeAndNameAsync([FromBody] PaginationTaiKhoanRequest request)
+        //{
+        //    var result = await _taiKhoanService.PaginationGetByCodeAndNameAsync(request);
+        //    return Ok(result);
+        //}
 
         /// <summary>
         /// Chức năng: cập nhật thông tin cảng bằng id
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        [HttpPost("update")]
-        [SwaggerOperation(summary: "Cập nhật thông tin cảng")]
-        [Authorize]
-        public async Task<IActionResult> UpdateAsync([FromBody] UpdateTaiKhoanRequest request)
-        {
-            var result = await _taiKhoanService.UpdateAsync(request);
-            return Ok(result);
-        }
+        //[HttpPost("update")]
+        //[SwaggerOperation(summary: "Cập nhật thông tin cảng")]
+        //[Authorize]
+        //public async Task<IActionResult> UpdateAsync([FromBody] UpdateTaiKhoanRequest request)
+        //{
+        //    var result = await _taiKhoanService.UpdateAsync(request);
+        //    return Ok(result);
+        //}
 
         #endregion
     }

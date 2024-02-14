@@ -60,23 +60,20 @@ namespace HRMBackend.DataAccess
             var map11 = new CustomPropertyTypeMap(typeof(Models.TaiKhoan), (type, columnName) => type.GetProperties().FirstOrDefault(prop => GetDescriptionFromAttribute(prop) == columnName));
             SqlMapper.SetTypeMap(typeof(Models.TaiKhoan), map11);
 
-            var map12 = new CustomPropertyTypeMap(typeof(Models.LoaiGiaiTrinh), (type, columnName) => type.GetProperties().FirstOrDefault(prop => GetDescriptionFromAttribute(prop) == columnName));
-            SqlMapper.SetTypeMap(typeof(Models.LoaiGiaiTrinh), map12);
+            var map12 = new CustomPropertyTypeMap(typeof(Models.ChiTietQuyBu), (type, columnName) => type.GetProperties().FirstOrDefault(prop => GetDescriptionFromAttribute(prop) == columnName));
+            SqlMapper.SetTypeMap(typeof(Models.ChiTietQuyBu), map12);
 
-            var map13 = new CustomPropertyTypeMap(typeof(Models.LoaiHopDong), (type, columnName) => type.GetProperties().FirstOrDefault(prop => GetDescriptionFromAttribute(prop) == columnName));
-            SqlMapper.SetTypeMap(typeof(Models.LoaiHopDong), map13);
+            var map13 = new CustomPropertyTypeMap(typeof(Models.ChiTietQuyPhep), (type, columnName) => type.GetProperties().FirstOrDefault(prop => GetDescriptionFromAttribute(prop) == columnName));
+            SqlMapper.SetTypeMap(typeof(Models.ChiTietQuyPhep), map13);
 
             var map14 = new CustomPropertyTypeMap(typeof(Models.NhanVien), (type, columnName) => type.GetProperties().FirstOrDefault(prop => GetDescriptionFromAttribute(prop) == columnName));
             SqlMapper.SetTypeMap(typeof(Models.NhanVien), map14);
 
-            var map15 = new CustomPropertyTypeMap(typeof(Models.PhanQuyen), (type, columnName) => type.GetProperties().FirstOrDefault(prop => GetDescriptionFromAttribute(prop) == columnName));
-            SqlMapper.SetTypeMap(typeof(Models.PhanQuyen), map15);
+            var map15 = new CustomPropertyTypeMap(typeof(Models.PhongBan), (type, columnName) => type.GetProperties().FirstOrDefault(prop => GetDescriptionFromAttribute(prop) == columnName));
+            SqlMapper.SetTypeMap(typeof(Models.PhongBan), map15);
 
-            var map16 = new CustomPropertyTypeMap(typeof(Models.PhongBan), (type, columnName) => type.GetProperties().FirstOrDefault(prop => GetDescriptionFromAttribute(prop) == columnName));
-            SqlMapper.SetTypeMap(typeof(Models.NhanVien), map16);
-
-            var map17 = new CustomPropertyTypeMap(typeof(Models.QuyBu), (type, columnName) => type.GetProperties().FirstOrDefault(prop => GetDescriptionFromAttribute(prop) == columnName));
-            SqlMapper.SetTypeMap(typeof(Models.QuyBu), map17);
+            var map16 = new CustomPropertyTypeMap(typeof(Models.QuyBu), (type, columnName) => type.GetProperties().FirstOrDefault(prop => GetDescriptionFromAttribute(prop) == columnName));
+            SqlMapper.SetTypeMap(typeof(Models.QuyBu), map16);
         }
 
         private static string GetDescriptionFromAttribute(MemberInfo member)

@@ -17,7 +17,7 @@ namespace HRMBackend.Models
         public string TenDangNhap { get; set; }
         [Column("matKhau")]
         public string MatKhau { get; set; }
-        [Column("maPhanQuyen")]
-        public int MaPhanQuyen { get; set; }
+        [Column("phanQuyen")]
+        public string PhanQuyen { get; set; }
     }
 }

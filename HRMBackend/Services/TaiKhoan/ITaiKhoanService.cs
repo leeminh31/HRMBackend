@@ -25,14 +25,15 @@ namespace HRMBackend.Services.TaiKhoan
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<PaginationResult<IEnumerable<TaiKhoanResponse>>> PaginationGetByCodeAndNameAsync(PaginationTaiKhoanRequest request);
+        //Task<PaginationResult<IEnumerable<TaiKhoanResponse>>> PaginationGetByCodeAndNameAsync(PaginationTaiKhoanRequest request);
 
         /// <summary>
         /// Chức năng: Cập nhật TaiKhoan bằng name
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        Task<BaseResult<TaiKhoanResponse>> UpdateAsync(UpdateTaiKhoanRequest request);
+        //Task<BaseResult<TaiKhoanResponse>> UpdateAsync(UpdateTaiKhoanRequest request);
+        //Task<BaseResult<TaiKhoanResponse>> ChangePasswordAsync(string maNhanVien, string password);
 
     }
 }

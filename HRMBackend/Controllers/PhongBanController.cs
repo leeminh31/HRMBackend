@@ -27,6 +27,21 @@ namespace HRMBackend.Controllers
 
         #region Action
         /// <summary>
+        /// Chức năng: Lấy danh sách mã phòng ban + tên phòng ban
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpGet()]
+        [SwaggerOperation(summary: "Lấy thông tin phòng ban")]
+        //[Authorize]
+        public async Task<IActionResult> GetAllPhongBanAsync()
+        {
+            var result = await _phongBanService.GetAllPhongBanAsync();
+
+            return Ok(result);
+        }
+
+        /// <summary>
         /// Chức năng: tạo mới phongBan
         /// </summary>
         /// <param name="request"></param>
@@ -75,14 +90,14 @@ namespace HRMBackend.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        [HttpPost("update")]
-        [SwaggerOperation(summary: "Cập nhật thông tin cảng")]
-        [Authorize]
-        public async Task<IActionResult> UpdateAsync([FromBody] UpdatePhongBanRequest request)
-        {
-            var result = await _phongBanService.UpdateAsync(request);
-            return Ok(result);
-        }
+        //[HttpPost("update")]
+        //[SwaggerOperation(summary: "Cập nhật thông tin cảng")]
+        //[Authorize]
+        //public async Task<IActionResult> UpdateAsync([FromBody] UpdatePhongBanRequest request)
+        //{
+        //    var result = await _phongBanService.UpdateAsync(request);
+        //    return Ok(result);
+        //}
 
         #endregion
     }

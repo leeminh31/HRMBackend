@@ -9,6 +9,15 @@ namespace HRMBackend.DataAccess.TaiKhoan
     public partial class TaiKhoanDAO
     {
         #region Method
+        private static (string sql, DynamicParameters param) ChangePasswordQuery(string maNhanVien, string password)
+        {
+            // Param component
+            var param = new DynamicParameters();
+            param.Add(":manhanvien", maNhanVien, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":password", password, dbType: DbType.String, direction: ParameterDirection.Input);
+            string query = @"SELECT * FROM TBL_TAIKHOAN WHERE (:password IS NULL OR UPPER(NAME) LIKE '%' || :password || '%') AND (:manhanvien IS NULL OR UPPER(NAME) LIKE '%' || :manhanvien || '%')";
+            return (query, param);
+        }
         private static (string sql, DynamicParameters param) GetFilterQuery(string searchKey)
         {
             // Param component
@@ -29,19 +38,17 @@ namespace HRMBackend.DataAccess.TaiKhoan
         {
             // Param component
             var param = new DynamicParameters();
-            param.Add(":code", model.Code, dbType: DbType.String, direction: ParameterDirection.Input);
-            param.Add(":name", model.Name, dbType: DbType.String, direction: ParameterDirection.Input);
-            param.Add(":url", model.Url, dbType: DbType.String, direction: ParameterDirection.Input);
-            param.Add(":status", model.Status, dbType: DbType.Int32, direction: ParameterDirection.Input);
-            param.Add(":description", model.Description, dbType: DbType.String, direction: ParameterDirection.Input);
-            param.Add(":createDateUtc", model.CreatedDateUtc, dbType: DbType.DateTime, direction: ParameterDirection.Input);
-            param.Add(":updateDateUtc", model.UpdatedDateUtc, dbType: DbType.DateTime, direction: ParameterDirection.Input);
-            param.Add(":idOutput", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            param.Add(":manhanvien", model.MaNhanVien, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":phanquyen", model.PhanQuyen, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":tendangnhap", model.TenDangNhap, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":matkhau", model.MatKhau, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":mataikhoan", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
             // SQL component
-            string query = @"INSERT INTO TBL_AIRPORT(ID, CODE, NAME, URL, STATUS, DESCRIPTION, CREATED_DATE_UTC, UPDATED_DATE_UTC)
-                VALUES (TBL_AIRPORT_SEQ.nextval, :code, :name, :url, :status, :description, :createDateUtc, :updateDateUtc)
-            RETURNING ID INTO :idOutput";
+            string query = @"INSERT INTO public.tbl_taikhoan(
+	        manhanvien, phanquyen, tendangnhap, matkhau)
+	        VALUES (?, ?, ?, ?);
+            RETURNING mataikhoan INTO :mataikhoan";
             return (query, param);
         }
 
@@ -99,27 +106,27 @@ namespace HRMBackend.DataAccess.TaiKhoan
             return (query, param);
         }
 
-        private static (string sql, DynamicParameters param) UpdateQuery(Models.TaiKhoan model)
-        {
-            // Param component
-            var param = new DynamicParameters();
-            param.Add(":id", model.Id, dbType: DbType.Int32, direction: ParameterDirection.Input);
-            param.Add(":code", model.Code, dbType: DbType.String, direction: ParameterDirection.Input);
-            param.Add(":name", model.Name, dbType: DbType.String, direction: ParameterDirection.Input);
-            param.Add(":url", model.Url, dbType: DbType.String, direction: ParameterDirection.Input);
-            param.Add(":status", model.Status, dbType: DbType.Int32, direction: ParameterDirection.Input);
-            param.Add(":description", model.Description, dbType: DbType.String, direction: ParameterDirection.Input);
-            param.Add(":updateDateUtc", model.UpdatedDateUtc, dbType: DbType.DateTime, direction: ParameterDirection.Input);
-            string query = @"UPDATE TBL_AIRPORT
-                        SET CODE = :code,
-                            NAME = :name,
-                            URL = :url,
-                            STATUS = :status,
-                            DESCRIPTION = :description,
-                            UPDATED_DATE_UTC = :updateDateUtc
-                        WHERE ID = :id";
-            return (query, param);
-        }
+        //private static (string sql, DynamicParameters param) UpdateQuery(Models.TaiKhoan model)
+        //{
+        //    // Param component
+        //    var param = new DynamicParameters();
+        //    param.Add(":id", model.Id, dbType: DbType.Int32, direction: ParameterDirection.Input);
+        //    param.Add(":code", model.Code, dbType: DbType.String, direction: ParameterDirection.Input);
+        //    param.Add(":name", model.Name, dbType: DbType.String, direction: ParameterDirection.Input);
+        //    param.Add(":url", model.Url, dbType: DbType.String, direction: ParameterDirection.Input);
+        //    param.Add(":status", model.Status, dbType: DbType.Int32, direction: ParameterDirection.Input);
+        //    param.Add(":description", model.Description, dbType: DbType.String, direction: ParameterDirection.Input);
+        //    param.Add(":updateDateUtc", model.UpdatedDateUtc, dbType: DbType.DateTime, direction: ParameterDirection.Input);
+        //    string query = @"UPDATE TBL_AIRPORT
+        //                SET CODE = :code,
+        //                    NAME = :name,
+        //                    URL = :url,
+        //                    STATUS = :status,
+        //                    DESCRIPTION = :description,
+        //                    UPDATED_DATE_UTC = :updateDateUtc
+        //                WHERE ID = :id";
+        //    return (query, param);
+        //}
         #endregion
 
         public static string RemoveSignUnicodeString(string s, bool toUpper = false)

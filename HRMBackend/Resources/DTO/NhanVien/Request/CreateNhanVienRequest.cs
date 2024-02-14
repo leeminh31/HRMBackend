@@ -1,23 +1,25 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HRMBackend.Resources.DTO.NhanVien.Request
 {
     public class CreateNhanVienRequest
     {
-        [Required(ErrorMessage = "Dữ liệu ký hiệu là bắt buộc!")]
-        [MinLength(3, ErrorMessage = "Độ dài ký hiệu tối thiểu 3 ký tự")]
-        [MaxLength(10, ErrorMessage = "Độ dài ký hiệu tối đa 10 ký tự")]
-        public string Code { get; set; }
-
-        [Required(ErrorMessage = "Dữ liệu tên cảng là bắt buộc!")]
-        [MinLength(5, ErrorMessage = "Độ dài tên cảng tối thiểu 5 ký tự")]
-        [MaxLength(50, ErrorMessage = "Độ dài tên cảng tối đa 50 ký tự")]
-        public string Name { get; set; }
-
-        public string Url { get; set; }
-        public int Status { get; set; }
-
-        [MaxLength(1000, ErrorMessage = "Độ dài tối đa 1000 ký tự")]
-        public string Description { get; set; }
+        public string MaNhanVien { get; set; }
+        public string HoTen { get; set; }
+        public string ChucVu { get; set; }
+        public string Mail { get; set; }
+        public DateOnly NgaySinh { get; set; }
+        public string SoCCCD { get; set; }
+        public DateOnly NgayCap { get; set; }
+        public string QueQuan { get; set; }
+        public string NoiOHienTai { get; set; }
+        public string NguoiThanLienHe { get; set; }
+        public string SoDienThoaiNguoiLienHe { get; set; }
+        public string STKNganHang { get; set; }
+        public string NganHang { get; set; }
+        public int MaPhongBan { get; set; }
+        public string SoDienThoai { get; set; }
+        public int IDVanTay { get; set; }
     }
 }

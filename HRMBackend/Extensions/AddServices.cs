@@ -1,37 +1,11 @@
-﻿using HRMBackend.DataAccess.CaLamViec;
-using HRMBackend.DataAccess.ChiTietQuyBu;
-using HRMBackend.DataAccess.ChiTietQuyPhep;
-using HRMBackend.DataAccess.DangKyCa;
-using HRMBackend.DataAccess.DonBu;
-using HRMBackend.DataAccess.DonConNho;
-using HRMBackend.DataAccess.DonPhep;
-using HRMBackend.DataAccess.DonTangCa;
-using HRMBackend.DataAccess.DuLieuChamCong;
-using HRMBackend.DataAccess.GiaiTrinh;
-using HRMBackend.DataAccess.HopDong;
-using HRMBackend.DataAccess.NhanVien;
+﻿using HRMBackend.DataAccess.NhanVien;
 using HRMBackend.DataAccess.PhongBan;
-using HRMBackend.DataAccess.QuyBu;
-using HRMBackend.DataAccess.QuyPhep;
 using HRMBackend.DataAccess.TaiKhoan;
 using HRMBackend.DataAccess.UnitOfWork;
 using HRMBackend.Mapping.TaiKhoan;
 using HRMBackend.Resources;
-using HRMBackend.Services.CaLamViec;
-using HRMBackend.Services.ChiTietQuyBu;
-using HRMBackend.Services.ChiTietQuyPhep;
-using HRMBackend.Services.DangKyCa;
-using HRMBackend.Services.DonBu;
-using HRMBackend.Services.DonConNho;
-using HRMBackend.Services.DonPhep;
-using HRMBackend.Services.DonTangCa;
-using HRMBackend.Services.DuLieuChamCong;
-using HRMBackend.Services.GiaiTrinh;
-using HRMBackend.Services.HopDong;
 using HRMBackend.Services.NhanVien;
 using HRMBackend.Services.PhongBan;
-using HRMBackend.Services.QuyBu;
-using HRMBackend.Services.QuyPhep;
 using HRMBackend.Services.TaiKhoan;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
@@ -42,47 +16,50 @@ namespace HRMBackend.Extensions
     {
         public static void AddDependencyInjection(this IServiceCollection services, ConfigurationManager configuration)
         {
-            services.AddScoped<ICaLamViecDAO, CaLamViecDAO>();
-            services.AddScoped<ICaLamViecService, CaLamViecService>();
+            //services.AddScoped<ICaLamViecDAO, CaLamViecDAO>();
+            //services.AddScoped<ICaLamViecService, CaLamViecService>();
 
-            services.AddScoped<IDangKyCaDAO, DangKyCaDAO>();
-            services.AddScoped<IDangKyCaService, DangKyCaService>();
+            //services.AddScoped<IDangKyCaDAO, DangKyCaDAO>();
+            //services.AddScoped<IDangKyCaService, DangKyCaService>();
 
-            services.AddScoped<IDonBuDAO, DonBuDAO>();
-            services.AddScoped<IDonBuService, DonBuService>();
+            //services.AddScoped<IDonBuDAO, DonBuDAO>();
+            //services.AddScoped<IDonBuService, DonBuService>();
 
-            services.AddScoped<IDonConNhoDAO, DonConNhoDAO>();
-            services.AddScoped<IDonConNhoService, DonConNhoService>();
+            //services.AddScoped<IDonConNhoDAO, DonConNhoDAO>();
+            //services.AddScoped<IDonConNhoService, DonConNhoService>();
 
-            services.AddScoped<IDonPhepDAO, DonPhepDAO>();
-            services.AddScoped<IDonPhepService, DonPhepService>();
+            //services.AddScoped<IDonPhepDAO, DonPhepDAO>();
+            //services.AddScoped<IDonPhepService, DonPhepService>();
 
-            services.AddScoped<IDonTangCaDAO, DonTangCaDAO>();
-            services.AddScoped<IDonTangCaService, DonTangCaService>();
+            //services.AddScoped<IDonTangCaDAO, DonTangCaDAO>();
+            //services.AddScoped<IDonTangCaService, DonTangCaService>();
 
-            services.AddScoped<IDuLieuChamCongDAO, DuLieuChamCongDAO>();
-            services.AddScoped<IDuLieuChamCongService, DuLieuChamCongService>();
+            services.AddScoped<INhanVienDAO, NhanVienDAO>();
+            services.AddScoped<INhanVienService, NhanVienService>();
 
-            services.AddScoped<IGiaiTrinhDAO, GiaiTrinhDAO>();
-            services.AddScoped<IGiaiTrinhService, GiaiTrinhService>();
+            //services.AddScoped<IDuLieuChamCongDAO, DuLieuChamCongDAO>();
+            //services.AddScoped<IDuLieuChamCongService, DuLieuChamCongService>();
 
-            services.AddScoped<IHopDongDAO, HopDongDAO>();
-            services.AddScoped<IHopDongService, HopDongService>();
+            //services.AddScoped<IGiaiTrinhDAO, GiaiTrinhDAO>();
+            //services.AddScoped<IGiaiTrinhService, GiaiTrinhService>();
 
-            services.AddScoped<IChiTietQuyBuDAO, ChiTietQuyBuDAO>();
-            services.AddScoped<IChiTietQuyBuService, ChiTietQuyBuService>();
+            //services.AddScoped<IHopDongDAO, HopDongDAO>();
+            //services.AddScoped<IHopDongService, HopDongService>();
 
-            services.AddScoped<IChiTietQuyPhepDAO, ChiTietQuyPhepDAO>();
-            services.AddScoped<IChiTietQuyPhepService, ChiTietQuyPhepService>();
+            //services.AddScoped<IChiTietQuyBuDAO, ChiTietQuyBuDAO>();
+            //services.AddScoped<IChiTietQuyBuService, ChiTietQuyBuService>();
+
+            //services.AddScoped<IChiTietQuyPhepDAO, ChiTietQuyPhepDAO>();
+            //services.AddScoped<IChiTietQuyPhepService, ChiTietQuyPhepService>();
 
             services.AddScoped<IPhongBanDAO, PhongBanDAO>();
             services.AddScoped<IPhongBanService, PhongBanService>();
 
-            services.AddScoped<IQuyBuDAO, QuyBuDAO>();
-            services.AddScoped<IQuyBuService, QuyBuService>();
+            //services.AddScoped<IQuyBuDAO, QuyBuDAO>();
+            //services.AddScoped<IQuyBuService, QuyBuService>();
 
-            services.AddScoped<IQuyPhepDAO, QuyPhepDAO>();
-            services.AddScoped<IQuyPhepService, QuyPhepService>();
+            //services.AddScoped<IQuyPhepDAO, QuyPhepDAO>();
+            //services.AddScoped<IQuyPhepService, QuyPhepService>();
 
             services.AddScoped<ITaiKhoanDAO, TaiKhoanDAO>();
             services.AddScoped<ITaiKhoanService, TaiKhoanService>();

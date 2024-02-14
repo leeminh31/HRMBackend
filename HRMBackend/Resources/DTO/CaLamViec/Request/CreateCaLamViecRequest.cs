@@ -1,25 +1,18 @@
 ﻿using HRMBackend.Extensions.Validation;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HRMBackend.Resources.DTO.CaLamViec.Request
 {
     public class CreateCaLamViecRequest
     {
-        [Required(ErrorMessage = "Dữ liệu ký hiệu là bắt buộc!")]
-        [MinLength(3, ErrorMessage = "Độ dài ký hiệu tối thiểu 3 ký tự")]
-        [MaxLength(10, ErrorMessage = "Độ dài ký hiệu tối đa 10 ký tự")]
-        public string Code { get; set; }
-
-        [Required(ErrorMessage = "Dữ liệu tên cảng là bắt buộc!")]
-        [MinLength(5, ErrorMessage = "Độ dài tên cảng tối thiểu 5 ký tự")]
-        [MaxLength(50, ErrorMessage = "Độ dài tên cảng tối đa 50 ký tự")]
-        public string Name { get; set; }
-
-        public string Url { get; set; }
-        public int Status { get; set; }
-
-        [MaxLength(1000, ErrorMessage = "Độ dài tối đa 1000 ký tự")]
-        public string Description { get; set; }
+        public int MaCa { get; set; }
+        public string TenCa { get; set; }
+        public TimeOnly GioBatDauCa { get; set; }
+        public TimeOnly GioKetThucCa { get; set; }
+        public TimeOnly GioBatDauNghi { get; set; }
+        public TimeOnly GioKetThucNghi { get; set; }
+        public string MaNhanVien { get; set; }
     }
 }
