@@ -9,37 +9,37 @@ namespace HRMBackend.Models
     public partial class NhanVien
     {
         [Key]
-        [Column("maNhanVien")]
+        [Column("manhanvien")]
         public string MaNhanVien { get; set; }
-        [Column("hoTen")]
+        [Column("hoten")]
         public string HoTen { get; set; }
-        [Column("chucVu")]
+        [Column("chucvu")]
         public string ChucVu { get; set; }
         [Column("mail")]
         public string Mail { get;set; }
-        [Column("ngaySinh")]
-        public DateOnly NgaySinh { get;set; }
-        [Column("soCCCD")]
+        [Column("ngaysinh")]
+        public DateTime NgaySinh { get;set; }
+        [Column("socccd")]
         public string SoCCCD { get; set; }
-        [Column("ngayCap")]
-        public DateOnly NgayCap { get; set; }
-        [Column("queQuan")]
+        [Column("ngaycap")]
+        public DateTime NgayCap { get; set; }
+        [Column("quequan")]
         public string QueQuan { get; set; }
-        [Column("noiOHienTai")]
+        [Column("noiohientai")]
         public string NoiOHienTai { get; set; }
-        [Column("nguoiThanLienHe")]
+        [Column("nguoithanlienhe")]
         public string NguoiThanLienHe {  get; set; }
-        [Column("soDienThoaiNguoiLienHe")]
+        [Column("sodienthoainguoilienhe")]
         public string SoDienThoaiNguoiLienHe { get; set; }
-        [Column("STKNganHang")]
+        [Column("stknganhang")]
         public string STKNganHang { get; set; }
-        [Column("nganHang")]
+        [Column("nganhang")]
         public string NganHang { get; set; }
-        [Column("maPhongBan")]
+        [Column("maphongban")]
         public int MaPhongBan { get; set; }
-        [Column("soDienThoai")]
+        [Column("sodienthoai")]
         public string SoDienThoai { get; set; }
-        [Column("IDVanTay")]
+        [Column("idvantay")]
         public int IDVanTay { get; set; }
     }
 }

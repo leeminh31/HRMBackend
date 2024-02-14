@@ -33,7 +33,7 @@ namespace HRMBackend.Services.TaiKhoan
         /// <param name="name"></param>
         /// <returns></returns>
         //Task<BaseResult<TaiKhoanResponse>> UpdateAsync(UpdateTaiKhoanRequest request);
-        Task<BaseResult<TaiKhoanResponse>> ChangePasswordAsync(string maNhanVien, string password);
+        //Task<BaseResult<TaiKhoanResponse>> ChangePasswordAsync(string maNhanVien, string password);
 
     }
 }

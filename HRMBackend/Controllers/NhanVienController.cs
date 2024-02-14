@@ -34,9 +34,9 @@ namespace HRMBackend.Controllers
         [HttpGet()]
         [SwaggerOperation(summary: "Lấy thông tin nhân viên theo điều kiện tìm kiếm")]
         //[Authorize]
-        public async Task<IActionResult> GetByParamsAsync(SearchNhanVienRequest request)
+        public async Task<IActionResult> GetByParamsAsync(string? maNhanVien, int? maPhongBan, int? idVanTay, string? chucVu, string? hoTen)
         {
-            var result = await _nhanVienService.GetByParamsAsync(request);
+            var result = await _nhanVienService.GetByParamsAsync(maNhanVien, maPhongBan, idVanTay, chucVu, hoTen);
 
             return Ok(result);
         }
@@ -75,15 +75,15 @@ namespace HRMBackend.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        [HttpPost("search")]
-        [SwaggerOperation(summary: "Lấy danh sách thông tin nhân viên dựa theo param")]
-        //[Authorize]
-        //[NonAction]
-        public async Task<IActionResult> GetByParamsAsync([FromBody] SearchNhanVienRequest request)
-        {
-            var result = await _nhanVienService.GetByParamsAsync(request);
-            return Ok(result);
-        }
+        //[HttpPost("search")]
+        //[SwaggerOperation(summary: "Lấy danh sách thông tin nhân viên dựa theo param")]
+        ////[Authorize]
+        ////[NonAction]
+        //public async Task<IActionResult> GetByParamsAsync([FromBody] SearchNhanVienRequest request)
+        //{
+        //    var result = await _nhanVienService.GetByParamsAsync(request);
+        //    return Ok(result);
+        //}
 
         /// <summary>
         /// Chức năng: lấy dữ liệu cảng bằng mã kí hiệu và tên theo phân trang

@@ -90,9 +90,9 @@ namespace HRMBackend.DataAccess.NhanVien
         //    return (false, default);
         //}
 
-        public async Task<(bool isSuccess, IEnumerable<Models.NhanVien> data)> GetByParamsAsync(SearchNhanVienRequest request)
+        public async Task<(bool isSuccess, IEnumerable<Models.NhanVien> data)> GetByParamsAsync(string? maNhanVien, int? maPhongBan, int? idVanTay, string? chucVu, string? hoTen)
         {
-            var query = GetByParamsQuery(request);
+            var query = GetByParamsQuery(maNhanVien, maPhongBan, idVanTay, chucVu, hoTen);
             var queryResult = await Context.QueryAsync<Models.NhanVien>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
             // Process result

@@ -21,7 +21,7 @@ namespace HRMBackend.DataAccess.NhanVien
         /// Chức năng: Lấy thông tin cảng hàng không đang hoạt động theo Id
         /// </summary>
         /// <returns></returns>
-        Task<(bool isSuccess, IEnumerable<Models.NhanVien> data)> GetByParamsAsync(SearchNhanVienRequest request);
+        Task<(bool isSuccess, IEnumerable<Models.NhanVien> data)> GetByParamsAsync(string? maNhanVien, int? maPhongBan, int? idVanTay, string? chucVu, string? hoTen);
 
         /// <summary>
         /// Chức năng: tạo NhanVien

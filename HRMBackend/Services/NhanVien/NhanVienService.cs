@@ -60,9 +60,9 @@ namespace HRMBackend.Services.NhanVien
         //    }
         //    return GetBaseResult<IEnumerable<NhanVienResponse>>(CodeMessage._545, status: StatusEnum.Failed);
         //}
-        public async Task<BaseResult<IEnumerable<NhanVienResponse>>> GetByParamsAsync(SearchNhanVienRequest request)
+        public async Task<BaseResult<IEnumerable<NhanVienResponse>>> GetByParamsAsync(string? maNhanVien, int? maPhongBan, int? idVanTay, string? chucVu, string? hoTen)
         {
-            var records = await _nhanVienDAO.GetByParamsAsync(request);
+            var records = await _nhanVienDAO.GetByParamsAsync(maNhanVien, maPhongBan, idVanTay, chucVu, hoTen);
             if (records.isSuccess)
             {
                 return GetBaseResult(CodeMessage._200, data: Mapper.Map<IEnumerable<NhanVienResponse>>(records.data));

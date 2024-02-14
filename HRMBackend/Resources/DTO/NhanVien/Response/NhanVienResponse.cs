@@ -1,14 +1,16 @@
-﻿namespace HRMBackend.Resources.DTO.NhanVien.Response
+﻿using System.Text.Json.Serialization;
+
+namespace HRMBackend.Resources.DTO.NhanVien.Response
 {
     public class NhanVienResponse
     {
         public string MaNhanVien { get; set; }
         public string HoTen { get; set; }
         public string ChucVu { get; set; }
-        public string Mail { get; set; }
-        public DateOnly NgaySinh { get; set; }
+        public string mail { get; set; }
+        public string NgaySinh { get; set; }
         public string SoCCCD { get; set; }
-        public DateOnly NgayCap { get; set; }
+        public string NgayCap { get; set; }
         public string QueQuan { get; set; }
         public string NoiOHienTai { get; set; }
         public string NguoiThanLienHe { get; set; }

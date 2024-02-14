@@ -31,7 +31,7 @@ namespace HRMBackend.Services
             string nameStatusCode = Enum.GetName(typeof(CodeMessage), statusCode).TrimStart('_');
 
             string tempCode = string.IsNullOrEmpty(nameStatusCode) ? "217" : nameStatusCode.RemoveSpaceCharacter();
-            string tempMessage = string.IsNullOrEmpty(message) ? "Thành công" : message.RemoveSpaceCharacter();
+            string tempMessage = string.IsNullOrEmpty(message) ? ResponseMessage.Values[tempCode].RemoveSpaceCharacter() : message.RemoveSpaceCharacter();
 
             return new BaseResult<Inner>()
             {

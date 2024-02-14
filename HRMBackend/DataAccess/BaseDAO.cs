@@ -70,7 +70,7 @@ namespace HRMBackend.DataAccess
             SqlMapper.SetTypeMap(typeof(Models.NhanVien), map14);
 
             var map15 = new CustomPropertyTypeMap(typeof(Models.PhongBan), (type, columnName) => type.GetProperties().FirstOrDefault(prop => GetDescriptionFromAttribute(prop) == columnName));
-            SqlMapper.SetTypeMap(typeof(Models.NhanVien), map15);
+            SqlMapper.SetTypeMap(typeof(Models.PhongBan), map15);
 
             var map16 = new CustomPropertyTypeMap(typeof(Models.QuyBu), (type, columnName) => type.GetProperties().FirstOrDefault(prop => GetDescriptionFromAttribute(prop) == columnName));
             SqlMapper.SetTypeMap(typeof(Models.QuyBu), map16);

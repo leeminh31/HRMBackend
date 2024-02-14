@@ -27,7 +27,7 @@ namespace HRMBackend.Services.NhanVien
         /// <returns></returns>
         Task<BaseResult<IEnumerable<NhanVienResponse>>> GetByIDAsync(string maNhanVien);
 
-        Task<BaseResult<IEnumerable<NhanVienResponse>>> GetByParamsAsync(SearchNhanVienRequest request);
+        Task<BaseResult<IEnumerable<NhanVienResponse>>> GetByParamsAsync(string? maNhanVien, int? maPhongBan, int? idVanTay, string? chucVu, string? hoTen);
 
         Task<BaseResult<IEnumerable<NhanVienResponse>>> GetAllEmployeeAsync();
 
