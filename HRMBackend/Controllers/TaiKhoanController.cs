@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
 using HRMBackend.Resources;
+using HRMBackend.Resources.DTO.Authentication.Request;
 using HRMBackend.Resources.DTO.TaiKhoan.Request;
+using HRMBackend.Resources.Enums;
 using HRMBackend.Services.TaiKhoan;
+using HRMBackend.Services.TokenManagement;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -14,18 +17,47 @@ namespace HRMBackend.Controllers
     {
         #region Property
         private readonly ITaiKhoanService _taiKhoanService;
+        private readonly ITokenManagementService _tokenManagementService;
         #endregion
 
         #region Constructor
-        public TaiKhoanController(ITaiKhoanService taiKhoanService,
+        public TaiKhoanController(ITokenManagementService tokenManagementService, 
+            ITaiKhoanService taiKhoanService,
             IMapper mapper,
             IOptionsMonitor<ResponseMessage> responseMessage) : base(mapper, responseMessage)
         {
+            this._tokenManagementService = tokenManagementService;
             this._taiKhoanService = taiKhoanService;
         }
         #endregion
 
         #region Action
+        /// <summary>
+        /// Chức năng: đăng nhập
+        /// </summary>
+        /// <param name="loginRequest"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpPost("login")]
+        [SwaggerOperation(summary: "Đăng nhập hệ thống")]
+        public async Task<IActionResult> LoginAsync([FromBody] LoginRequest loginRequest)
+        {
+            string userAgent = Request.Headers["User-Agent"].ToString();
+            try
+            {
+                var result = await _tokenManagementService.GenerateTokensAsync(loginRequest, DateTime.UtcNow, userAgent);
+
+                return result.Status == StatusEnum.Success ? Ok(result) : Unauthorized(result);
+            }
+            catch (Exception)
+            {
+
+                return BadRequest();
+            }
+
+        }
+
+
         /// <summary>
         /// Chức năng: tạo mới taiKhoan
         /// </summary>
@@ -71,33 +103,7 @@ namespace HRMBackend.Controllers
             return Ok(result);
         }
 
-        /// <summary>
-        /// Chức năng: lấy dữ liệu cảng bằng mã kí hiệu và tên theo phân trang
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        //[HttpPost("pagination")]
-        //[SwaggerOperation(summary: "Lấy danh sách thông tin cảng dựa theo param (like code và like name)")]
-        ////[Authorize]
-        //public async Task<IActionResult> PaginationGetByCodeAndNameAsync([FromBody] PaginationTaiKhoanRequest request)
-        //{
-        //    var result = await _taiKhoanService.PaginationGetByCodeAndNameAsync(request);
-        //    return Ok(result);
-        //}
 
-        /// <summary>
-        /// Chức năng: cập nhật thông tin cảng bằng id
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        //[HttpPost("update")]
-        //[SwaggerOperation(summary: "Cập nhật thông tin cảng")]
-        //[Authorize]
-        //public async Task<IActionResult> UpdateAsync([FromBody] UpdateTaiKhoanRequest request)
-        //{
-        //    var result = await _taiKhoanService.UpdateAsync(request);
-        //    return Ok(result);
-        //}
 
         #endregion
     }

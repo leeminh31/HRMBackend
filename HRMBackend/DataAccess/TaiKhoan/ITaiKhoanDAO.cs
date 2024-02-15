@@ -1,4 +1,5 @@
-﻿using HRMBackend.Resources.DTO.TaiKhoan.Request;
+﻿using HRMBackend.Resources.DTO.Authentication.Request;
+using HRMBackend.Resources.DTO.TaiKhoan.Request;
 
 namespace HRMBackend.DataAccess.TaiKhoan
 {
@@ -45,5 +46,9 @@ namespace HRMBackend.DataAccess.TaiKhoan
         /// <returns></returns>
         //Task<(bool isSuccess, Models.TaiKhoan data)> UpdateAsync(Models.TaiKhoan caLamViec);
         //Task<(bool isSuccess, Models.TaiKhoan data)> ChangePasswordAsync(Models.TaiKhoan taikhoan);
+
+        Task<(bool hasValue, Models.TaiKhoan data)> GetByUsernameAsync(string username);
+
+        Task<(bool isValid, Models.TaiKhoan data)> ValidateCredentialsAsync(LoginRequest loginRequest);
     }
 }
