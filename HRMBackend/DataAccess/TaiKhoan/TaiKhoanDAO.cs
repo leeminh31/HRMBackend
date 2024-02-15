@@ -1,7 +1,9 @@
 ﻿using Dapper;
 using HRMBackend.DataAccess.TaiKhoan;
 using HRMBackend.DataAccess.UnitOfWork;
+using HRMBackend.Extensions;
 using HRMBackend.Resources;
+using HRMBackend.Resources.DTO.Authentication.Request;
 using HRMBackend.Resources.DTO.TaiKhoan.Request;
 
 namespace HRMBackend.DataAccess.TaiKhoan
@@ -59,7 +61,6 @@ namespace HRMBackend.DataAccess.TaiKhoan
             }
             catch (Exception ex)
             {
-
                 return (false, taikhoan);
             }
 
@@ -76,6 +77,34 @@ namespace HRMBackend.DataAccess.TaiKhoan
                 return (true, queryResult);
 
             return (false, default);
+        }
+
+        public async Task<(bool hasValue, Models.TaiKhoan data)> GetByUsernameAsync(string username)
+        {
+            // Excute
+            var query = GetByUsernameQuery(username);
+            var queryResult = await Context.QuerySingleOrDefaultAsync<Models.TaiKhoan>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+
+            // Process result
+            if (queryResult != null)
+                return (true, queryResult);
+
+            return (false, default);
+        }
+
+        public async Task<(bool isValid, Models.TaiKhoan data)> ValidateCredentialsAsync(LoginRequest loginRequest)
+        {
+            bool flag = false;
+            Models.TaiKhoan user = new();
+
+            var result = await GetByUsernameAsync(loginRequest.TenDangNhap);
+            if (result.hasValue)
+            {
+                flag = result.data.MatKhau.CheckingPassword(loginRequest.MatKhau);
+                user = result.data;
+            }
+
+            return (flag, user);
         }
 
         //public async Task<(bool isSuccess, IEnumerable<Models.TaiKhoan> data, int totalRecords)> PaginationAsync(PaginationTaiKhoanRequest request)

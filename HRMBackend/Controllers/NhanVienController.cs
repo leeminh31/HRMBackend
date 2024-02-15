@@ -33,7 +33,7 @@ namespace HRMBackend.Controllers
         /// <returns></returns>
         [HttpGet()]
         [SwaggerOperation(summary: "Lấy thông tin nhân viên theo điều kiện tìm kiếm")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> GetByParamsAsync(string? maNhanVien, int? maPhongBan, int? idVanTay, string? chucVu, string? hoTen)
         {
             var result = await _nhanVienService.GetByParamsAsync(maNhanVien, maPhongBan, idVanTay, chucVu, hoTen);
@@ -48,7 +48,7 @@ namespace HRMBackend.Controllers
         /// <returns></returns>
         [HttpGet("{maNhanVien}")]
         [SwaggerOperation(summary: "Lấy thông tin nhân viên theo mã nhân viên")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> GetByIDAsync(string maNhanVien)
         {
             var result = await _nhanVienService.GetByIDAsync(maNhanVien);
@@ -62,7 +62,7 @@ namespace HRMBackend.Controllers
         /// <returns></returns>
         [HttpPost("create")]
         [SwaggerOperation(summary: "Tạo thông tin nhân viên")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> CreateAsync([FromBody] CreateNhanVienRequest request)
         {
             var result = await _nhanVienService.CreateAsync(request);
@@ -106,7 +106,7 @@ namespace HRMBackend.Controllers
         /// <returns></returns>
         [HttpPost("update")]
         [SwaggerOperation(summary: "Cập nhật thông tin nhân viên")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> UpdateAsync([FromBody] UpdateNhanVienRequest request)
         {
             var result = await _nhanVienService.UpdateAsync(request);

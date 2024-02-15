@@ -33,7 +33,7 @@ namespace HRMBackend.Services.TaiKhoan
         public async Task<BaseResult<TaiKhoanResponse>> CreateAsync(CreateTaiKhoanRequest request)
         {
             // Mapping Resource to TaiKhoan
-            var airport = Mapper.Map<CreateTaiKhoanRequest, Models.TaiKhoan>(request);
+            var taiKhoan = Mapper.Map<CreateTaiKhoanRequest, Models.TaiKhoan>(request);
             //SearchTaiKhoanRequest searchRequest = new SearchTaiKhoanRequest() { Code = request.Code, Name = request.Name };
             //Tìm mã code hoặc name đã tồn tại chưa?
             //var records = await _taiKhoanDAO.GetByCodeOrNameAsync(searchRequest);
@@ -42,7 +42,7 @@ namespace HRMBackend.Services.TaiKhoan
             //    return GetBaseResult(CodeMessage._547, data: Mapper.Map<TaiKhoanResponse>(records.data.First()));
             //}
 
-            var result = await _taiKhoanDAO.CreateAsync(airport);
+            var result = await _taiKhoanDAO.CreateAsync(taiKhoan);
             await _unitOfWork.SaveChangesAsync();
 
             if (result.isSuccess)

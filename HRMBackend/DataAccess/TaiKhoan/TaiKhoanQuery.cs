@@ -9,6 +9,17 @@ namespace HRMBackend.DataAccess.TaiKhoan
     public partial class TaiKhoanDAO
     {
         #region Method
+        private static (string sql, DynamicParameters param) GetByUsernameQuery(string username)
+        {
+            // Param component
+            var param = new DynamicParameters();
+            param.Add(":tendangnhap", username, dbType: DbType.String, direction: ParameterDirection.Input);
+
+            // SQL component
+            string query = @"SELECT * FROM TBL_TAIKHOAN WHERE TENDANGNHAP = :tendangnhap";
+
+            return (query, param);
+        }
         private static (string sql, DynamicParameters param) ChangePasswordQuery(string maNhanVien, string password)
         {
             // Param component
@@ -47,8 +58,8 @@ namespace HRMBackend.DataAccess.TaiKhoan
             // SQL component
             string query = @"INSERT INTO public.tbl_taikhoan(
 	        manhanvien, phanquyen, tendangnhap, matkhau)
-	        VALUES (?, ?, ?, ?);
-            RETURNING mataikhoan INTO :mataikhoan";
+	        VALUES (:manhanvien, :phanquyen, :tendangnhap, :matkhau)
+            RETURNING mataikhoan";
             return (query, param);
         }
 

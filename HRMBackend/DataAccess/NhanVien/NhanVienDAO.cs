@@ -17,6 +17,7 @@ namespace HRMBackend.DataAccess.NhanVien
         #endregion
 
         #region Method
+
         public async Task<(bool hasValue, IEnumerable<Models.NhanVien> data)> GetAllEmployeeAsync()
         {
             // Excute
