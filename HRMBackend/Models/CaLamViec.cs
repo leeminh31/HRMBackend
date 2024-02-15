@@ -9,19 +9,19 @@ namespace HRMBackend.Models
     public partial class CaLamViec
     {
         [Key]
-        [Column("maCa")]
+        [Column("maca")]
         public int MaCa { get; set; }
-        [Column("tenCa")]
+        [Column("tenca")]
         public string TenCa { get; set; }
-        [Column("gioBatDauCa")]
+        [Column("giobatdauca")]
         public TimeOnly GioBatDauCa { get; set; }
-        [Column("gioKetThucCa")]
+        [Column("gioketthucca")]
         public TimeOnly GioKetThucCa { get; set; }
-        [Column("gioBatDauNghi")]
+        [Column("giobatdaunghi")]
         public TimeOnly GioBatDauNghi { get; set; }
-        [Column("gioKetThucNghi")]
+        [Column("gioketthucnghi")]
         public TimeOnly GioKetThucNghi { get; set; }
-        [Column("maNhanVien")]
+        [Column("manhanvien")]
         public string MaNhanVien { get; set; }
     }
 }

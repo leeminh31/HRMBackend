@@ -9,15 +9,15 @@ namespace HRMBackend.Models
     public partial class PhongBan
     {
         [Key]
-        [Column("maPhongBan")]
+        [Column("maphongban")]
         public int MaPhongBan { get; set; }
-        [Column("tenPhongBan")]
+        [Column("tenphongban")]
         public string TenPhongBan { get; set; }
-        [Column("soLanChamCong")]
+        [Column("solanchamcong")]
         public int SoLanChamCong { get; set; }
-        [Column("truongPhongBan")]
+        [Column("truongphongban")]
         public string TruongPhongBan { get; set; }
-        [Column("thuKyPhongBan")]
+        [Column("thukyphongban")]
         public string ThuKyPhongBan { get; set; }
     }
 }

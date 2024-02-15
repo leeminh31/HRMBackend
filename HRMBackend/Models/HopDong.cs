@@ -9,21 +9,21 @@ namespace HRMBackend.Models
     public partial class HopDong
     {
         [Key]
-        [Column("tenHopDong")]
+        [Column("tenhopdong")]
         public string TenHopDong { get; set; }
-        [Column("maNhanVien")]
+        [Column("manhanvien")]
         public string MaNhanVien { get; set; }
-        [Column("ngayBatDauHopDong")]
+        [Column("ngaybatdauhopdong")]
         public DateOnly NgayBatDauHopDong { get; set; }
-        [Column("ngayKetThucHopDong")]
+        [Column("ngayketthuchopdong")]
         public DateOnly NgayKetThucHopDong { get; set; }
-        [Column("loaiHopDong")]
-        public string loaiHopDong { get; set; }
-        [Column("tiLeHuongLuong")]
-        public double TiLeHuongLuong { get; set; }
-        [Column("gioLamViec")]
+        [Column("loaihopdong")]
+        public string LoaiHopDong { get; set; }
+        [Column("tilehuongluong")]
+        public double TyLeHuongLuong { get; set; }
+        [Column("giolamviec")]
         public double GioLamViec { get; set; }
-        [Column("congChuan")]
+        [Column("congchuan")]
         public double CongChuan { get; set; }
     }
 }

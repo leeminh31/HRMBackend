@@ -2,7 +2,8 @@
 {
     public class SearchHopDongRequest
     {
-        public string Code { get; set; }
-        public string Name { get; set; }
+        public string TenHopDong { get; set; }
+        public string TenNhanVien { get; set; }
+        public string LoaiHopDong { get; set; }
     }
 }
