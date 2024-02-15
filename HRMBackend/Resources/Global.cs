@@ -8,5 +8,6 @@
     public static class Constant 
     {
         public const int TimeOutCancelDAO = 5000; // Ms
+        public const int IterationCount = 10000;
     }
 }

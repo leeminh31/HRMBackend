@@ -7,6 +7,7 @@ using HRMBackend.Resources;
 using HRMBackend.Services.NhanVien;
 using HRMBackend.Services.PhongBan;
 using HRMBackend.Services.TaiKhoan;
+using HRMBackend.Services.TokenManagement;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 
@@ -63,6 +64,8 @@ namespace HRMBackend.Extensions
 
             services.AddScoped<ITaiKhoanDAO, TaiKhoanDAO>();
             services.AddScoped<ITaiKhoanService, TaiKhoanService>();
+
+            services.AddScoped<ITokenManagementService, TokenManagementService>();
 
             services.AddScoped<IUnitOfWorkContext>(x => new UnitOfWorkContext(Global.ConnectionString));
             services.AddScoped<IUnitOfWork, UnitOfWork>();

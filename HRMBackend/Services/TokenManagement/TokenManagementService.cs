@@ -65,7 +65,10 @@ namespace HRMBackend.Services.TokenManagement
         private AccessTokenResponse MappingTokenResoure(Models.TaiKhoan user,string accessToken)
         {
             var tokenResponse = Mapper.Map<AccessTokenResponse>(user);
-            tokenResponse.TokenResponse.AccessToken = accessToken;
+            var tokenResult = new TokenResponse();
+            tokenResult.AccessToken = accessToken;
+            tokenResult.ExpireTimeUTC = DateTime.UtcNow.AddMinutes(30);
+            tokenResponse.TokenResponse = tokenResult;
 
             return tokenResponse;
         }

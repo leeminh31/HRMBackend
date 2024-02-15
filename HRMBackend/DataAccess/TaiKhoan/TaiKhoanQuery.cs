@@ -58,8 +58,8 @@ namespace HRMBackend.DataAccess.TaiKhoan
             // SQL component
             string query = @"INSERT INTO public.tbl_taikhoan(
 	        manhanvien, phanquyen, tendangnhap, matkhau)
-	        VALUES (?, ?, ?, ?);
-            RETURNING mataikhoan INTO :mataikhoan";
+	        VALUES (:manhanvien, :phanquyen, :tendangnhap, :matkhau)
+            RETURNING mataikhoan";
             return (query, param);
         }
 

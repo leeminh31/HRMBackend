@@ -80,14 +80,14 @@ namespace HRMBackend.Services.NhanVien
             return GetBaseResult<IEnumerable<NhanVienResponse>>(CodeMessage._545, status: StatusEnum.Failed);
         }
 
-        public async Task<BaseResult<IEnumerable<NhanVienResponse>>> GetByIDAsync(string maNhanVien)
+        public async Task<BaseResult<NhanVienResponse>> GetByIDAsync(string maNhanVien)
         {
             var records = await _nhanVienDAO.GetByIDAsync(maNhanVien);
             if (records.hasValue)
             {
-                return GetBaseResult(CodeMessage._200, data: Mapper.Map<IEnumerable<NhanVienResponse>>(records.data));
+                return GetBaseResult(CodeMessage._200, data: Mapper.Map<NhanVienResponse>(records.data));
             }
-            return GetBaseResult<IEnumerable<NhanVienResponse>>(CodeMessage._545, status: StatusEnum.Failed);
+            return GetBaseResult<NhanVienResponse>(CodeMessage._545, status: StatusEnum.Failed);
         }
 
         //public async Task<PaginationResult<IEnumerable<NhanVienResponse>>> PaginationGetByCodeAndNameAsync(PaginationNhanVienRequest request)

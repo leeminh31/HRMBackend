@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using HRMBackend.Resources.DTO.Authentication.Response;
+using HRMBackend.Resources.DTO.TaiKhoan.Response;
 
 namespace HRMBackend.Mapping.TaiKhoan
 {
@@ -6,6 +8,8 @@ namespace HRMBackend.Mapping.TaiKhoan
     {
         public ModelToResourceProfile()
         {
+            CreateMap<Models.TaiKhoan, TaiKhoanResponse>();
+            CreateMap<Models.TaiKhoan, AccessTokenResponse>();
         }
     }
 }

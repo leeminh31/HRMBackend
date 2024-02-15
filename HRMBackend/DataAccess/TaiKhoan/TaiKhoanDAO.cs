@@ -61,7 +61,6 @@ namespace HRMBackend.DataAccess.TaiKhoan
             }
             catch (Exception ex)
             {
-
                 return (false, taikhoan);
             }
 
