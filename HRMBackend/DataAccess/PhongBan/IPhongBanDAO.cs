@@ -9,7 +9,7 @@ namespace HRMBackend.DataAccess.PhongBan
         /// </summary>
         /// <param name="searchKey"></param>
         /// <returns></returns>
-        Task<(bool hasValue, IEnumerable<Models.PhongBan> data)> GetAllPhongBanAsync();
+        Task<(bool hasValue, IEnumerable<Models.PhongBan> data)> GetByParamsAsync(SearchPhongBanRequest request);
         /// <summary>
         /// Chức năng: Lấy danh sách các cảng hàng không đang hoạt động theo từ khoá tìm kiếm
         /// </summary>

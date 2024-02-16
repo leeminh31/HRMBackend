@@ -2,7 +2,8 @@
 {
     public class SearchPhongBanRequest
     {
-        public string Code { get; set; }
-        public string Name { get; set; }
-    }
+        public string TenPhongBan { get; set; }
+        public string TruongPhongBan { get; set; }
+        public string ThuKyPhongBan { get; set; }
+    } 
 }

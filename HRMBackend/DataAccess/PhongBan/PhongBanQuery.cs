@@ -9,7 +9,7 @@ namespace HRMBackend.DataAccess.PhongBan
     public partial class PhongBanDAO
     {
         #region Method
-        private static (string sql, DynamicParameters param) GetAllPhongBanQuery()
+        private static (string sql, DynamicParameters param) GetByParamsQuery(SearchPhongBanRequest request)
         {
             // Param component
             var param = new DynamicParameters();

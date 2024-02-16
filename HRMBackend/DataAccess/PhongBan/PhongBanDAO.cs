@@ -17,10 +17,10 @@ namespace HRMBackend.DataAccess.PhongBan
         #endregion
 
         #region Method
-        public async Task<(bool hasValue, IEnumerable<Models.PhongBan> data)> GetAllPhongBanAsync()
+        public async Task<(bool hasValue, IEnumerable<Models.PhongBan> data)> GetByParamsAsync(SearchPhongBanRequest request)
         {
             // Excute
-            var query = GetAllPhongBanQuery();
+            var query = GetByParamsQuery(request);
             var queryResult = await Context.QueryAsync<Models.PhongBan>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
             // Process result

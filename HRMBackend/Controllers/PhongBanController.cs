@@ -34,9 +34,9 @@ namespace HRMBackend.Controllers
         [HttpGet()]
         [SwaggerOperation(summary: "Lấy thông tin phòng ban")]
         //[Authorize]
-        public async Task<IActionResult> GetAllPhongBanAsync()
+        public async Task<IActionResult> GetByParamsAsync([FromQuery] SearchPhongBanRequest request)
         {
-            var result = await _phongBanService.GetAllPhongBanAsync();
+            var result = await _phongBanService.GetByParamsAsync(request);
 
             return Ok(result);
         }
