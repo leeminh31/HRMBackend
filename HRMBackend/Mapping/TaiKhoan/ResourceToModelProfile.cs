@@ -11,6 +11,7 @@ namespace HRMBackend.Mapping.TaiKhoan
         {
             CreateMap<CreateTaiKhoanRequest, Models.TaiKhoan>()
                 .ForMember(x => x.MatKhau, opt => opt.MapFrom(src => src.MatKhau.HashingPassword(Constant.IterationCount)));
+            CreateMap<ChangePasswordRequest, Models.TaiKhoan>();
         }
     }
 }

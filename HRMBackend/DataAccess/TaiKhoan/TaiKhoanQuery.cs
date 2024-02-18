@@ -3,12 +3,24 @@ using System.Data;
 using System.Text.RegularExpressions;
 using System.Text;
 using HRMBackend.Resources.DTO.TaiKhoan.Request;
+using HRMBackend.Extensions;
+using HRMBackend.Resources;
 
 namespace HRMBackend.DataAccess.TaiKhoan
 {
     public partial class TaiKhoanDAO
     {
         #region Method
+        private static (string sql, DynamicParameters param) GetEmployeeIdQuery()
+        {
+            // Param component
+            var param = new DynamicParameters();
+
+            // SQL component
+            string query = @"SELECT MANHANVIEN FROM TBL_TAIKHOAN";
+
+            return (query, param);
+        }
         private static (string sql, DynamicParameters param) GetByUsernameQuery(string username)
         {
             // Param component
@@ -20,13 +32,15 @@ namespace HRMBackend.DataAccess.TaiKhoan
 
             return (query, param);
         }
-        private static (string sql, DynamicParameters param) ChangePasswordQuery(string maNhanVien, string password)
+        private static (string sql, DynamicParameters param) ChangePasswordQuery(Models.TaiKhoan taiKhoan)
         {
             // Param component
             var param = new DynamicParameters();
-            param.Add(":manhanvien", maNhanVien, dbType: DbType.String, direction: ParameterDirection.Input);
-            param.Add(":password", password, dbType: DbType.String, direction: ParameterDirection.Input);
-            string query = @"SELECT * FROM TBL_TAIKHOAN WHERE (:password IS NULL OR UPPER(NAME) LIKE '%' || :password || '%') AND (:manhanvien IS NULL OR UPPER(NAME) LIKE '%' || :manhanvien || '%')";
+            param.Add(":manhanvien", taiKhoan.MaNhanVien, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":password", taiKhoan.MatKhau.HashingPassword(Constant.IterationCount), dbType: DbType.String, direction: ParameterDirection.Input);
+            string query = @"UPDATE public.tbl_taikhoan
+	        SET matkhau= :password
+	        WHERE MANHANVIEN = :manhanvien;";
             return (query, param);
         }
         private static (string sql, DynamicParameters param) GetFilterQuery(string searchKey)

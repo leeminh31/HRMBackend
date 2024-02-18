@@ -33,6 +33,19 @@ namespace HRMBackend.DataAccess.TaiKhoan
             return (false, default);
         }
 
+        public async Task<(bool hasValue, IEnumerable<string> data)> GetEmployeeIdAsync()
+        {
+            // Excute
+            var query = GetEmployeeIdQuery();
+            var queryResult = await Context.QueryAsync<string>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+
+            // Process result
+            if (queryResult.GetEnumerator().MoveNext())
+                return (true, queryResult);
+
+            return (false, default);
+        }
+
         public async Task<(bool hasValue, Models.TaiKhoan data)> GetByIdAsync(int id)
         {
             // Excute
@@ -132,17 +145,17 @@ namespace HRMBackend.DataAccess.TaiKhoan
         //    return (false, taikhoan);
         //}
 
-        //public async Task<(bool isSuccess, Models.TaiKhoan data)> ChangePasswordAsync(string maNhanVien, string password)
-        //{
-        //    var query = ChangePasswordQuery(maNhanVien, password);
-        //    var result = await Context.ExecuteAsync(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+        public async Task<(bool isSuccess, Models.TaiKhoan data)> ChangePasswordAsync(Models.TaiKhoan taiKhoan)
+        {
+            var query = ChangePasswordQuery(taiKhoan);
+            var result = await Context.ExecuteAsync(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
-        //    // Process result
-        //    if (result > 0)
-        //        return (true, taikhoan);
+            // Process result
+            if (result > 0)
+                return (true, default);
 
-        //    return (false, taikhoan);
-        //}
+            return (false, default);
+        }
         #endregion
     }
 }

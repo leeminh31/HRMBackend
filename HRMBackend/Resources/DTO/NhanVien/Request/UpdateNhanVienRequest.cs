@@ -8,9 +8,9 @@ namespace HRMBackend.Resources.DTO.NhanVien.Request
         public string? HoTen { get; set; }
         public string? ChucVu { get; set; }
         public string? Mail { get; set; }
-        public DateOnly? NgaySinh { get; set; }
+        public DateTime? NgaySinh { get; set; }
         public string? SoCCCD { get; set; }
-        public DateOnly? NgayCap { get; set; }
+        public DateTime? NgayCap { get; set; }
         public string? QueQuan { get; set; }
         public string? NoiOHienTai { get; set; }
         public string? NguoiThanLienHe { get; set; }

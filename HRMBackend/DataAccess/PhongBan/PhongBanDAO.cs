@@ -44,7 +44,7 @@ namespace HRMBackend.DataAccess.PhongBan
 
         public async Task<(bool hasValue, IEnumerable<Models.PhongBan> data)> GetByIdAsync()
         {
-            var query = GetAllPhongBanQuery();
+            var query = GetByIdQuery(2);
             var queryResult = await Context.QueryAsync<Models.PhongBan>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
             // Process result
@@ -76,17 +76,17 @@ namespace HRMBackend.DataAccess.PhongBan
             return (false, airport);
         }
 
-        public async Task<(bool isSuccess, IEnumerable<Models.PhongBan> data)> GetByCodeOrNameAsync(SearchPhongBanRequest request)
-        {
-            var query = GetByCodeOrNameQuery(request);
-            var queryResult = await Context.QueryAsync<Models.PhongBan>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+        //public async Task<(bool isSuccess, IEnumerable<Models.PhongBan> data)> GetByCodeOrNameAsync(SearchPhongBanRequest request)
+        //{
+        //    var query = GetByCodeOrNameQuery(request);
+        //    var queryResult = await Context.QueryAsync<Models.PhongBan>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
-            // Process result
-            if (queryResult.GetEnumerator().MoveNext())
-                return (true, queryResult);
+        //    // Process result
+        //    if (queryResult.GetEnumerator().MoveNext())
+        //        return (true, queryResult);
 
-            return (false, default);
-        }
+        //    return (false, default);
+        //}
 
         public async Task<(bool isSuccess, IEnumerable<Models.PhongBan> data, int totalRecords)> PaginationAsync(PaginationPhongBanRequest request)
         {

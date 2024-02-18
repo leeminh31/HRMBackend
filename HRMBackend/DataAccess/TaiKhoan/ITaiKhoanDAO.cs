@@ -45,10 +45,12 @@ namespace HRMBackend.DataAccess.TaiKhoan
         /// <param name="TaiKhoan"></param>
         /// <returns></returns>
         //Task<(bool isSuccess, Models.TaiKhoan data)> UpdateAsync(Models.TaiKhoan caLamViec);
-        //Task<(bool isSuccess, Models.TaiKhoan data)> ChangePasswordAsync(Models.TaiKhoan taikhoan);
+        Task<(bool isSuccess, Models.TaiKhoan data)> ChangePasswordAsync(Models.TaiKhoan taiKhoan);
 
         Task<(bool hasValue, Models.TaiKhoan data)> GetByUsernameAsync(string username);
 
         Task<(bool isValid, Models.TaiKhoan data)> ValidateCredentialsAsync(LoginRequest loginRequest);
+
+        Task<(bool hasValue, IEnumerable<string> data)> GetEmployeeIdAsync();
     }
 }

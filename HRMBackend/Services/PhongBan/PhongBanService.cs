@@ -51,15 +51,15 @@ namespace HRMBackend.Services.PhongBan
                 return GetBaseResult<PhongBanResponse>(CodeMessage._209, status: StatusEnum.Failed);
         }
 
-        public async Task<BaseResult<IEnumerable<PhongBanResponse>>> GetByCodeOrNameAsync(SearchPhongBanRequest request)
-        {
-            var records = await _phongBanDAO.GetByCodeOrNameAsync(request);
-            if (records.isSuccess)
-            {
-                return GetBaseResult(CodeMessage._200, data: Mapper.Map<IEnumerable<PhongBanResponse>>(records.data));
-            }
-            return GetBaseResult<IEnumerable<PhongBanResponse>>(CodeMessage._545, status: StatusEnum.Failed);
-        }
+        //public async Task<BaseResult<IEnumerable<PhongBanResponse>>> GetByCodeOrNameAsync(SearchPhongBanRequest request)
+        //{
+        //    var records = await _phongBanDAO.GetByCodeOrNameAsync(request);
+        //    if (records.isSuccess)
+        //    {
+        //        return GetBaseResult(CodeMessage._200, data: Mapper.Map<IEnumerable<PhongBanResponse>>(records.data));
+        //    }
+        //    return GetBaseResult<IEnumerable<PhongBanResponse>>(CodeMessage._545, status: StatusEnum.Failed);
+        //}
 
         public async Task<BaseResult<IEnumerable<PhongBanResponse>>> GetByParamsAsync(SearchPhongBanRequest request)
         {

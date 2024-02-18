@@ -63,15 +63,15 @@ namespace HRMBackend.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        //[HttpPost("change-password")]
-        //[SwaggerOperation(summary: "Thay đổi mật khẩu")]
-        ////[Authorize]
-        //public async Task<IActionResult> ChangePasswordAsync(string maNhanVien, string password)
-        //{
-        //    var result = await _taiKhoanService.ChangePasswordAsync(maNhanVien, password);
+        [HttpPost("change-password")]
+        [SwaggerOperation(summary: "Thay đổi mật khẩu")]
+        //[Authorize]
+        public async Task<IActionResult> ChangePasswordAsync([FromBody] ChangePasswordRequest request)
+        {
+            var result = await _taiKhoanService.ChangePasswordAsync(request);
 
-        //    return Ok(result);
-        //}
+            return Ok(result);
+        }
 
         /// <summary>
         /// Chức năng: tạo mới taiKhoan
@@ -89,21 +89,33 @@ namespace HRMBackend.Controllers
         }
 
         /// <summary>
-        /// Chức năng: lấy dữ liệu cảng bằng mã kí hiệu or tên theo
+        /// Chức năng: lấy danh sách mã nhân viên 
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        [HttpPost("search")]
-        [SwaggerOperation(summary: "Lấy danh sách thông tin cảng dựa theo param (== code hoặc == name)")]
+        [HttpGet("search")]
+        [SwaggerOperation(summary: "Lấy danh sách mã nhân viên")]
         //[Authorize]
-        //[NonAction]
-        public async Task<IActionResult> GetByCodeOrNameAsync([FromBody] SearchTaiKhoanRequest request)
+        public async Task<IActionResult> GetEmployeeIdAsync()
         {
-            var result = await _taiKhoanService.GetByCodeOrNameAsync(request);
+            var result = await _taiKhoanService.GetEmployeeIdAsync();
             return Ok(result);
         }
 
+        /// <summary>
+        /// Chức năng: tạo danh sách tài khoản
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost("create-list")]
+        [SwaggerOperation(summary: "Tạo danh sách tài khoản mới")]
+        //[Authorize]
+        public async Task<IActionResult> CreateListAsync([FromBody] CreateTaiKhoanRequest request)
+        {
+            var result = await _taiKhoanService.CreateAsync(request);
 
+            return Ok(result);
+        }
 
         #endregion
     }

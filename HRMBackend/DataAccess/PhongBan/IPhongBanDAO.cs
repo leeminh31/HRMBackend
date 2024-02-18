@@ -42,7 +42,7 @@ namespace HRMBackend.DataAccess.PhongBan
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<(bool isSuccess, IEnumerable<Models.PhongBan> data)> GetByCodeOrNameAsync(SearchPhongBanRequest request);
+        //Task<(bool isSuccess, IEnumerable<Models.PhongBan> data)> GetByCodeOrNameAsync(SearchPhongBanRequest request);
 
         /// <summary>
         /// Chức năng: cập nhật PhongBan

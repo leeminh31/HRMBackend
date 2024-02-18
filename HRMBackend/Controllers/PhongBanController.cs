@@ -61,15 +61,15 @@ namespace HRMBackend.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        [HttpPost("search")]
-        [SwaggerOperation(summary: "Lấy danh sách thông tin cảng dựa theo param (== code hoặc == name)")]
-        //[Authorize]
-        //[NonAction]
-        public async Task<IActionResult> GetByCodeOrNameAsync([FromBody] SearchPhongBanRequest request)
-        {
-            var result = await _phongBanService.GetByCodeOrNameAsync(request);
-            return Ok(result);
-        }
+        //[HttpPost("search")]
+        //[SwaggerOperation(summary: "Lấy danh sách thông tin cảng dựa theo param (== code hoặc == name)")]
+        ////[Authorize]
+        ////[NonAction]
+        //public async Task<IActionResult> GetByCodeOrNameAsync([FromBody] SearchPhongBanRequest request)
+        //{
+        //    var result = await _phongBanService.GetByCodeOrNameAsync(request);
+        //    return Ok(result);
+        //}
 
         /// <summary>
         /// Chức năng: lấy dữ liệu cảng bằng mã kí hiệu và tên theo phân trang

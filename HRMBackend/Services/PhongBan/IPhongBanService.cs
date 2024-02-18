@@ -18,7 +18,7 @@ namespace HRMBackend.Services.PhongBan
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<BaseResult<IEnumerable<PhongBanResponse>>> GetByCodeOrNameAsync(SearchPhongBanRequest request);
+        //Task<BaseResult<IEnumerable<PhongBanResponse>>> GetByCodeOrNameAsync(SearchPhongBanRequest request);
 
         /// <summary>
         /// Chức năng: lấy dữ liệu cảng theo mã code và name được phân trang
