@@ -51,6 +51,6 @@ namespace HRMBackend.DataAccess.NhanVien
         /// <returns></returns>
         Task<(bool isSuccess, Models.NhanVien data)> UpdateAsync(Models.NhanVien caLamViec);
 
-        Task<(bool hasValue, IEnumerable<Models.NhanVien> data)> GetAllEmployeeAsync();
+        Task<(bool hasValue, IEnumerable<string> data)> GetAllEmployeeIdByNameAsync(string hoTen);
     }
 }

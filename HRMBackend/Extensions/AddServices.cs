@@ -1,9 +1,11 @@
-﻿using HRMBackend.DataAccess.NhanVien;
+﻿using HRMBackend.DataAccess.HopDong;
+using HRMBackend.DataAccess.NhanVien;
 using HRMBackend.DataAccess.PhongBan;
 using HRMBackend.DataAccess.TaiKhoan;
 using HRMBackend.DataAccess.UnitOfWork;
 using HRMBackend.Mapping.TaiKhoan;
 using HRMBackend.Resources;
+using HRMBackend.Services.HopDong;
 using HRMBackend.Services.NhanVien;
 using HRMBackend.Services.PhongBan;
 using HRMBackend.Services.TaiKhoan;
@@ -44,8 +46,8 @@ namespace HRMBackend.Extensions
             //services.AddScoped<IGiaiTrinhDAO, GiaiTrinhDAO>();
             //services.AddScoped<IGiaiTrinhService, GiaiTrinhService>();
 
-            //services.AddScoped<IHopDongDAO, HopDongDAO>();
-            //services.AddScoped<IHopDongService, HopDongService>();
+            services.AddScoped<IHopDongDAO, HopDongDAO>();
+            services.AddScoped<IHopDongService, HopDongService>();
 
             //services.AddScoped<IChiTietQuyBuDAO, ChiTietQuyBuDAO>();
             //services.AddScoped<IChiTietQuyBuService, ChiTietQuyBuService>();

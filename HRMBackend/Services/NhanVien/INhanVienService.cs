@@ -29,7 +29,7 @@ namespace HRMBackend.Services.NhanVien
 
         Task<BaseResult<IEnumerable<NhanVienResponse>>> GetByParamsAsync(string? maNhanVien, int? maPhongBan, int? idVanTay, string? chucVu, string? hoTen);
 
-        Task<BaseResult<IEnumerable<NhanVienResponse>>> GetAllEmployeeAsync();
+        Task<BaseResult<IEnumerable<string>>> GetAllEmployeeIdByNameAsync(string hoTen);
 
         /// <summary>
         /// Chức năng: lấy dữ liệu cảng theo mã code và name được phân trang

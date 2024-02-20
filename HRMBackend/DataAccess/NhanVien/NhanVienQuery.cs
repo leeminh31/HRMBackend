@@ -9,11 +9,15 @@ namespace HRMBackend.DataAccess.NhanVien
     public partial class NhanVienDAO
     {
         #region Method
-        private static (string sql, DynamicParameters param) GetAllEmployeeQuery()
+        private static (string sql, DynamicParameters param) GetAllEmployeeIdByNameQuery(string hoTen)
         {
             // Param component
             var param = new DynamicParameters();
-            string query = @"SELECT * FROM tbl_NhanVien";
+            param.Add(":hoten", RemoveSignUnicodeString(hoTen, true), dbType: DbType.String, direction: ParameterDirection.Input);
+            string query = @"SELECT manhanvien
+                            FROM TBL_NHANVIEN
+                            WHERE (:hoten IS NULL OR TRANSLATE(UPPER(HOTEN), 'ÁÀẢẠÃĂẮẰẲẶẴÂẤẦẨẬẪĐÉÈẺẸẼÊẾỀỂỆỄÍÌỈỊĨÓÒỎỌÕỐỒỘỖÔỔƠỚỜỞỠỢÚÙỦỤŨƯỨỪỬỰỮÝỲỶỴỸáàảạãăắẵằẳặâấầẩậẫđéèẻẹẽêếềểệễíìỉịĩóòỏọõốồổộỗôơớờởỡợúùủụũưứừửựữýỳỷỵỹ', 'AAAAAAAAAAAAAAAAADEEEEEEEEEEEIIIIIOOOOOOOOOOOOOOOOOUUUUUUUUUUUYYYYYAAAAAAAAAAAAAAAAADEEEEEEEEEEEIIIIIOOOOOOOOOOOOOOOOOUUUUUUUUUUUYYYYY') LIKE '%' || :hoten || '%')
+                            ";
             return (query, param);
         }
         private static (string sql, DynamicParameters param) GetFilterQuery(string searchKey)
