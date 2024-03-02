@@ -50,5 +50,9 @@ namespace HRMBackend.DataAccess.PhongBan
         /// <param name="PhongBan"></param>
         /// <returns></returns>
         Task<(bool isSuccess, Models.PhongBan data)> UpdateAsync(Models.PhongBan caLamViec);
+
+        Task<bool> DeleteAsync(string id);
+
+        Task<(bool hasValue, Models.PhongBan data)> GetByTenPhongBanAsync(string tenPhongBan, int? maPhongBan);
     }
 }

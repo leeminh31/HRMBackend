@@ -34,13 +34,13 @@ namespace HRMBackend.Services.PhongBan
         {
             // Mapping Resource to PhongBan
             var phongban = Mapper.Map<CreatePhongBanRequest, Models.PhongBan>(request);
-            //SearchPhongBanRequest searchRequest = new SearchPhongBanRequest() { Code = request.Code, Name = request.Name };
-            ////Tìm mã code hoặc name đã tồn tại chưa?
-            //var records = await _phongBanDAO.GetByCodeOrNameAsync(searchRequest);
-            //if (records.isSuccess)
-            //{
-            //    return GetBaseResult(CodeMessage._547, data: Mapper.Map<PhongBanResponse>(records.data.First()));
-            //}
+            SearchPhongBanRequest searchRequest = new SearchPhongBanRequest() { TenPhongBan = request.TenPhongBan, ThuKyPhongBan = null, TruongPhongBan = null };
+            //Tìm tên phòng ban đã tồn tại chưa?
+            var records = await _phongBanDAO.GetByParamsAsync(searchRequest);
+            if (records.hasValue)
+            {
+                return GetBaseResult(CodeMessage._551, data: Mapper.Map<PhongBanResponse>(records.data.First()));
+            }
 
             var result = await _phongBanDAO.CreateAsync(phongban);
             await _unitOfWork.SaveChangesAsync();
@@ -93,29 +93,37 @@ namespace HRMBackend.Services.PhongBan
             }
         }
 
-        //public async Task<BaseResult<PhongBanResponse>> UpdateAsync(UpdatePhongBanRequest request)
-        //{
-        //    // Mapping Resource to PhongBan
-        //    var airport = Mapper.Map<UpdatePhongBanRequest, Models.PhongBan>(request);
-        //    SearchPhongBanRequest searchRequest = new SearchPhongBanRequest() { Code = request.Code, Name = request.Name };
-        //    //Tìm mã code hoặc name đã tồn tại chưa?
-        //    var records = await _phongBanDAO.GetByCodeOrNameAsync(searchRequest);
-        //    if (records.isSuccess)
-        //    {
-        //        var anyExist = records.data.Where(x => x.Id != request.Id).ToList();
-        //        if (anyExist.Count > 0)
-        //        {
-        //            return GetBaseResult(CodeMessage._547, data: Mapper.Map<PhongBanResponse>(anyExist.FirstOrDefault()));
-        //        }
-        //    }
+        public async Task<BaseResult<PhongBanResponse>> UpdateAsync(UpdatePhongBanRequest request)
+        {
+            // Mapping Resource to PhongBan
+            var airport = Mapper.Map<UpdatePhongBanRequest, Models.PhongBan>(request);
+            //SearchPhongBanRequest searchRequest = new SearchPhongBanRequest() { TenPhongBan = request.TenPhongBan, ThuKyPhongBan = null, TruongPhongBan = null };
+            //Tìm tên phòng ban đã tồn tại chưa?
+            var records = await _phongBanDAO.GetByTenPhongBanAsync(request.TenPhongBan, request.MaPhongBan);
+            if (records.hasValue)
+            {
+                return GetBaseResult(CodeMessage._551, data: Mapper.Map<PhongBanResponse>(records.data));
+            }
 
-        //    var result = await _phongBanDAO.UpdateAsync(airport);
-        //    await _unitOfWork.SaveChangesAsync();
+            var result = await _phongBanDAO.UpdateAsync(airport);
+            await _unitOfWork.SaveChangesAsync();
 
-        //    if (result.isSuccess)
-        //        return GetBaseResult(CodeMessage._200, data: Mapper.Map<PhongBanResponse>(result.data));
-        //    else
-        //        return GetBaseResult<PhongBanResponse>(CodeMessage._236, status: StatusEnum.Failed);
-        //}
+            if (result.isSuccess)
+                return GetBaseResult(CodeMessage._200, data: Mapper.Map<PhongBanResponse>(result.data));
+            else
+                return GetBaseResult<PhongBanResponse>(CodeMessage._236, status: StatusEnum.Failed);
+        }
+
+        public async Task<BaseResult<bool>> DeleteAsync(string id)
+        {
+            var isUserRoleSuccess = await _phongBanDAO.DeleteAsync(id);
+
+            await _unitOfWork.SaveChangesAsync();
+
+            if (isUserRoleSuccess)
+                return GetBaseResult<bool>(CodeMessage._200);
+            else
+                return GetBaseResult<bool>(CodeMessage._210, status: StatusEnum.Failed);
+        }
     }
 }

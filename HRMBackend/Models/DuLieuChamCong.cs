@@ -9,17 +9,15 @@ namespace HRMBackend.Models
     public partial class DuLieuChamCong
     {
         [Key]
-        [Column("maChamCong")]
+        [Column("machamcong")]
         public int MaChamCong { get; set; }
-        [Column("IDVanTay")]
-        public int MaVanTay { get; set; }
-        [Column("maNhanVien")]
+        [Column("manhanvien")]
         public string MaNhanVien { get; set; }
-        [Column("ngayChamCong")]
-        public DateOnly NgayChamCong { get; set; }
-        [Column("lanChamCong")]
+        [Column("ngaychamcong")]
+        public DateTime NgayChamCong { get; set; }
+        [Column("lanchamcong")]
         public int LanChamCong { get; set; }
-        [Column("gioChamCong")]
-        public TimeOnly GioChamCong { get; set; }
+        [Column("giochamcong")]
+        public TimeSpan GioChamCong { get; set; }
     }
 }

@@ -51,6 +51,10 @@ namespace HRMBackend.DataAccess.NhanVien
         /// <returns></returns>
         Task<(bool isSuccess, Models.NhanVien data)> UpdateAsync(Models.NhanVien caLamViec);
 
-        Task<(bool hasValue, IEnumerable<string> data)> GetAllEmployeeIdByNameAsync(string hoTen);
+        Task<(bool hasValue, IEnumerable<string> data)> GetAllEmployeeIdByNameAsync(string? hoTen);
+
+        Task<(bool hasValue, Models.NhanVien data)> GetByIdVanTayAsync(int? idVanTay, string? maNhanVien);
+
+        Task<(bool isSuccess, IEnumerable<Models.NhanVien> data)> UpdateOrInsertListRecordsAsync(IEnumerable<Models.NhanVien> request, IEnumerable<Models.HopDong> request2);
     }
 }

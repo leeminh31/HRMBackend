@@ -24,12 +24,12 @@ namespace HRMBackend.DataAccess.HopDong
             string query = @"SELECT * FROM TBL_AIRPORT WHERE STATUS = 1 AND (:searchKey IS NULL OR UPPER(NAME) LIKE '%' || :searchKey || '%')";
             return (query, param);
         }
-        private static (string sql, DynamicParameters param) GetByIdQuery(string maHopDong)
+        private static (string sql, DynamicParameters param) GetByIdQuery(string tenHopDong)
         {
             // Param component
             var param = new DynamicParameters();
-            param.Add(":manhanvien", maHopDong, dbType: DbType.String, direction: ParameterDirection.Input);
-            string query = @"SELECT * FROM TBL_NHANVIEN WHERE MANHANVIEN = :manhanvien";
+            param.Add(":tenhopdong", tenHopDong, dbType: DbType.String, direction: ParameterDirection.Input);
+            string query = @"SELECT * FROM TBL_HOPDONG WHERE TENHOPDONG = :tenhopdong";
             return (query, param);
         }
         private static (string sql, DynamicParameters param) CreateQuery(Models.HopDong model)
@@ -43,12 +43,11 @@ namespace HRMBackend.DataAccess.HopDong
             param.Add(":loaihopdong", model.loaiHopDong, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(":tilehuongluong", model.TiLeHuongLuong, dbType: DbType.Double, direction: ParameterDirection.Input);
             param.Add(":giolamviec", model.GioLamViec, dbType: DbType.Double, direction: ParameterDirection.Input);
-            param.Add(":congchuan", model.CongChuan, dbType: DbType.Double, direction: ParameterDirection.Input);
 
             // SQL component
             string query = @"INSERT INTO public.tbl_hopdong(
-	                        tenhopdong, manhanvien, ngaybatdauhopdong, ngayketthuchopdong, loaihopdong, tilehuongluong, giolamviec, congchuan)
-	                        VALUES (:tenhopdong, :manhanvien, :ngaybatdauhopdong, :ngayketthuchopdong, :loaihopdong, :tilehuongluong, :giolamviec, :congchuan);";
+	                        tenhopdong, manhanvien, ngaybatdauhopdong, ngayketthuchopdong, loaihopdong, tilehuongluong, giolamviec)
+	                        VALUES (:tenhopdong, :manhanvien, :ngaybatdauhopdong, :ngayketthuchopdong, :loaihopdong, :tilehuongluong, :giolamviec);";
             return (query, param);
         }
 
@@ -117,15 +116,13 @@ namespace HRMBackend.DataAccess.HopDong
             param.Add(":loaihopdong", model.loaiHopDong, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(":tilehuongluong", model.TiLeHuongLuong, dbType: DbType.Double, direction: ParameterDirection.Input);
             param.Add(":giolamviec", model.GioLamViec, dbType: DbType.Double, direction: ParameterDirection.Input);
-            param.Add(":congchuan", model.CongChuan, dbType: DbType.Double, direction: ParameterDirection.Input);
 
             string query = @"UPDATE public.tbl_hopdong
 	                        SET ngaybatdauhopdong= :ngaybatdauhopdong, 
                                 ngayketthuchopdong= :ngayketthuchopdong, 
                                 loaihopdong= :loaihopdong, 
                                 tilehuongluong= :tilehuongluong, 
-                                giolamviec= :giolamviec, 
-                                congchuan= :congchuan
+                                giolamviec= :giolamviec
 	                        WHERE tenhopdong = :tenhopdong
                             AND manhanvien = :manhanvien;";
             return (query, param);

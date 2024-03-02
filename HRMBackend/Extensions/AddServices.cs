@@ -1,10 +1,14 @@
-﻿using HRMBackend.DataAccess.HopDong;
+﻿using HRMBackend.DataAccess.CaLamViec;
+using HRMBackend.DataAccess.DuLieuChamCong;
+using HRMBackend.DataAccess.HopDong;
 using HRMBackend.DataAccess.NhanVien;
 using HRMBackend.DataAccess.PhongBan;
 using HRMBackend.DataAccess.TaiKhoan;
 using HRMBackend.DataAccess.UnitOfWork;
 using HRMBackend.Mapping.TaiKhoan;
 using HRMBackend.Resources;
+using HRMBackend.Services.CaLamViec;
+using HRMBackend.Services.DuLieuChamCong;
 using HRMBackend.Services.HopDong;
 using HRMBackend.Services.NhanVien;
 using HRMBackend.Services.PhongBan;
@@ -19,8 +23,8 @@ namespace HRMBackend.Extensions
     {
         public static void AddDependencyInjection(this IServiceCollection services, ConfigurationManager configuration)
         {
-            //services.AddScoped<ICaLamViecDAO, CaLamViecDAO>();
-            //services.AddScoped<ICaLamViecService, CaLamViecService>();
+            services.AddScoped<ICaLamViecDAO, CaLamViecDAO>();
+            services.AddScoped<ICaLamViecService, CaLamViecService>();
 
             //services.AddScoped<IDangKyCaDAO, DangKyCaDAO>();
             //services.AddScoped<IDangKyCaService, DangKyCaService>();
@@ -40,8 +44,8 @@ namespace HRMBackend.Extensions
             services.AddScoped<INhanVienDAO, NhanVienDAO>();
             services.AddScoped<INhanVienService, NhanVienService>();
 
-            //services.AddScoped<IDuLieuChamCongDAO, DuLieuChamCongDAO>();
-            //services.AddScoped<IDuLieuChamCongService, DuLieuChamCongService>();
+            services.AddScoped<IDuLieuChamCongDAO, DuLieuChamCongDAO>();
+            services.AddScoped<IDuLieuChamCongService, DuLieuChamCongService>();
 
             //services.AddScoped<IGiaiTrinhDAO, GiaiTrinhDAO>();
             //services.AddScoped<IGiaiTrinhService, GiaiTrinhService>();

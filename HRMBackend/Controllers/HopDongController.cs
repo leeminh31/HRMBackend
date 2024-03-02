@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Annotations;
 using HRMBackend.Services.NhanVien;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace HRMBackend.Controllers
 {
@@ -14,17 +15,15 @@ namespace HRMBackend.Controllers
     {
         #region Property
         private readonly IHopDongService _hopDongService;
-        private readonly INhanVienService _nhanVienService;
+        private readonly IFormFile _formFile;
         #endregion
 
         #region Constructor
         public HopDongController(IHopDongService hopDongService,
-            INhanVienService nhanVienService,
             IMapper mapper,
             IOptionsMonitor<ResponseMessage> responseMessage) : base(mapper, responseMessage)
         {
             this._hopDongService = hopDongService;
-            this._nhanVienService = nhanVienService;
         }
         #endregion
 
@@ -51,7 +50,7 @@ namespace HRMBackend.Controllers
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpGet("{maHopDong}")]
-        [SwaggerOperation(summary: "Lấy thông tin nhân viên theo mã nhân viên")]
+        [SwaggerOperation(summary: "Lấy thông tin hợp đồng theo hợp đồng")]
         //[Authorize]
         public async Task<IActionResult> GetByIDAsync(string maHopDong)
         {
@@ -86,6 +85,44 @@ namespace HRMBackend.Controllers
         {
             var result = await _hopDongService.UpdateAsync(request);
             return Ok(result);
+        }
+
+        [HttpPost("upload")]
+        [SwaggerOperation(summary: "Upload File Excel để Import dữ liệu hợp đồng")]
+        //[Authorize]
+        public async Task<IActionResult> UploadFileAsync(IFormFile formFile)
+        {
+            var result = await _hopDongService.UploadFileAsync(formFile);
+            return Ok(result);
+        }
+
+        //[HttpPost("upload/timekeeping")]
+        //[SwaggerOperation(summary: "Upload File Excel để Import dữ liệu chấm công")]
+        ////[Authorize]
+        //public async Task<IActionResult> UploadFileTimekeepingAsync(IFormFile formFile)
+        //{
+        //    var result = await _hopDongService.UploadFileTimeKeepingAsync(formFile);
+        //    return Ok(result);
+        //}
+
+        [HttpGet("dowload")]
+        [SwaggerOperation(summary: "Dowload Excel Template")]
+        //[Authorize]
+        public async Task<IActionResult> DowloadFileAsync()
+        {
+            try
+            {
+                string pathToFile = $"{Directory.GetCurrentDirectory()}\\Resources\\ExcelTemplate\\MasterFile.xlsx";
+                var fileName = System.IO.Path.GetFileName(pathToFile);
+                var content = await System.IO.File.ReadAllBytesAsync(pathToFile);
+                new FileExtensionContentTypeProvider()
+                    .TryGetContentType(fileName, out string contentType);
+                return File(content, contentType, fileName);
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         #endregion

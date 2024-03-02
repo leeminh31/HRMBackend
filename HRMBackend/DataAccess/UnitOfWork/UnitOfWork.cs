@@ -36,6 +36,9 @@
         public async Task SaveChangesAsync() =>
                 await UnitOfWorkContext.Transaction.CommitAsync();
 
+        public async Task RollBackAsync() => 
+            await UnitOfWorkContext.Transaction.RollbackAsync();
+
         #endregion
     }
 }

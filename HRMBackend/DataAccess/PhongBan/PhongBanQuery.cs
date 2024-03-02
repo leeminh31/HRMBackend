@@ -10,6 +10,32 @@ namespace HRMBackend.DataAccess.PhongBan
     public partial class PhongBanDAO
     {
         #region Method
+        private static (string sql, DynamicParameters param) DeleteQuery(string id)
+        {
+            // Param component
+            var param = new DynamicParameters();
+            //param.Add(":id", id, dbType: DbType.String, direction: ParameterDirection.Input);
+
+            // SQL component
+            string query = @"DELETE FROM tbl_phongban WHERE (MAPHONGBAN IN ("+id+"))";
+
+            return (query, param);
+        }
+
+        private static (string sql, DynamicParameters param) GetByTenPhongBanQuery(string tenPhongBan, int? maPhongBan)
+        {
+            // Param component
+            var param = new DynamicParameters();
+            param.Add(":tenphongban", tenPhongBan, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":maphongban", maPhongBan, dbType: DbType.Int32, direction: ParameterDirection.Input);
+
+            // SQL component
+            string query = @"SELECT *
+                            FROM TBL_PHONGBAN
+                            WHERE (TENPHONGBAN = :tenphongban) AND (:maphongban IS NULL OR MAPHONGBAN != :maphongban)";
+
+            return (query, param);
+        }
         private static (string sql, DynamicParameters param) GetByParamsQuery(SearchPhongBanRequest request)
         {
             // Param component
@@ -45,25 +71,23 @@ namespace HRMBackend.DataAccess.PhongBan
             string query = @"SELECT * FROM TBL_AIRPORT WHERE STATUS = 1 AND ID = :id";
             return (query, param);
         }
-        //private static (string sql, DynamicParameters param) CreateQuery(Models.PhongBan model)
-        //{
-        //    // Param component
-        //    var param = new DynamicParameters();
-        //    param.Add(":code", model.Code, dbType: DbType.String, direction: ParameterDirection.Input);
-        //    param.Add(":name", model.Name, dbType: DbType.String, direction: ParameterDirection.Input);
-        //    param.Add(":url", model.Url, dbType: DbType.String, direction: ParameterDirection.Input);
-        //    param.Add(":status", model.Status, dbType: DbType.Int32, direction: ParameterDirection.Input);
-        //    param.Add(":description", model.Description, dbType: DbType.String, direction: ParameterDirection.Input);
-        //    param.Add(":createDateUtc", model.CreatedDateUtc, dbType: DbType.DateTime, direction: ParameterDirection.Input);
-        //    param.Add(":updateDateUtc", model.UpdatedDateUtc, dbType: DbType.DateTime, direction: ParameterDirection.Input);
-        //    param.Add(":idOutput", dbType: DbType.Int32, direction: ParameterDirection.Output);
+        private static (string sql, DynamicParameters param) CreateQuery(Models.PhongBan model)
+        {
+            // Param component
+            var param = new DynamicParameters();
+            param.Add(":tenphongban", model.TenPhongBan, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":solanchamcong", model.SoLanChamCong, dbType: DbType.Int32, direction: ParameterDirection.Input);
+            param.Add(":truongphongban", model.TruongPhongBan, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":thukyphongban", model.ThuKyPhongBan, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":maphongban", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
-        //    // SQL component
-        //    string query = @"INSERT INTO TBL_AIRPORT(ID, CODE, NAME, URL, STATUS, DESCRIPTION, CREATED_DATE_UTC, UPDATED_DATE_UTC)
-        //        VALUES (TBL_AIRPORT_SEQ.nextval, :code, :name, :url, :status, :description, :createDateUtc, :updateDateUtc)
-        //    RETURNING ID INTO :idOutput";
-        //    return (query, param);
-        //}
+            // SQL component
+            string query = @"INSERT INTO public.tbl_phongban(
+	                        tenphongban, solanchamcong, truongphongban, thukyphongban)
+	                        VALUES (:tenphongban, :solanchamcong, :truongphongban, :thukyphongban)
+                            RETURNING maphongban";
+            return (query, param);
+        }
 
         private static (string sql, DynamicParameters param) PaginationQuery(PaginationPhongBanRequest request)
         {
@@ -119,27 +143,24 @@ namespace HRMBackend.DataAccess.PhongBan
         //    return (query, param);
         //}
 
-        //private static (string sql, DynamicParameters param) UpdateQuery(Models.PhongBan model)
-        //{
-        //    // Param component
-        //    var param = new DynamicParameters();
-        //    param.Add(":id", model.Id, dbType: DbType.Int32, direction: ParameterDirection.Input);
-        //    param.Add(":code", model.Code, dbType: DbType.String, direction: ParameterDirection.Input);
-        //    param.Add(":name", model.Name, dbType: DbType.String, direction: ParameterDirection.Input);
-        //    param.Add(":url", model.Url, dbType: DbType.String, direction: ParameterDirection.Input);
-        //    param.Add(":status", model.Status, dbType: DbType.Int32, direction: ParameterDirection.Input);
-        //    param.Add(":description", model.Description, dbType: DbType.String, direction: ParameterDirection.Input);
-        //    param.Add(":updateDateUtc", model.UpdatedDateUtc, dbType: DbType.DateTime, direction: ParameterDirection.Input);
-        //    string query = @"UPDATE TBL_AIRPORT
-        //                SET CODE = :code,
-        //                    NAME = :name,
-        //                    URL = :url,
-        //                    STATUS = :status,
-        //                    DESCRIPTION = :description,
-        //                    UPDATED_DATE_UTC = :updateDateUtc
-        //                WHERE ID = :id";
-        //    return (query, param);
-        //}
+        private static (string sql, DynamicParameters param) UpdateQuery(Models.PhongBan model)
+        {
+            // Param component
+            var param = new DynamicParameters();
+            param.Add(":tenphongban", model.TenPhongBan, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":solanchamcong", model.SoLanChamCong, dbType: DbType.Int32, direction: ParameterDirection.Input);
+            param.Add(":truongphongban", model.TruongPhongBan, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":thukyphongban", model.ThuKyPhongBan, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":maphongban", model.MaPhongBan, dbType: DbType.Int32, direction: ParameterDirection.Input);
+ 
+            string query = @"UPDATE public.tbl_phongban
+	                        SET tenphongban=:tenphongban, 
+                                solanchamcong=:solanchamcong, 
+                                truongphongban=:truongphongban, 
+                                thukyphongban=:thukyphongban
+	                        WHERE maphongban=:maphongban;";
+            return (query, param);
+        }
         #endregion
 
         public static string RemoveSignUnicodeString(string s, bool toUpper = false)

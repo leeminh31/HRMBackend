@@ -45,6 +45,10 @@ namespace HRMBackend.Services.HopDong
         /// <returns></returns>
         Task<BaseResult<HopDongResponse>> UpdateAsync(UpdateHopDongRequest request);
 
+        Task<BaseResult<bool>> UploadFileAsync(IFormFile file);
+
+        //Task<BaseResult<bool>> UploadFileTimeKeepingAsync(IFormFile file);
+
     }
 
 }

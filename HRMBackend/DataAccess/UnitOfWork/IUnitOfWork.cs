@@ -5,5 +5,7 @@
         IUnitOfWorkContext UnitOfWorkContext { get; init; }
         void SaveChanges();
         Task SaveChangesAsync();
+
+        Task RollBackAsync();
     }
 }

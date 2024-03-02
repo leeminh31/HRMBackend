@@ -50,7 +50,13 @@
       "547": "Bản ghi đã tồn tại.",
       "548": "Rất tiếc, OTP không khả dụng",
       "549": "OTP không chính xác.",
-      "550": "Địa chỉ cảng không chính xác"
+      "550": "Địa chỉ cảng không chính xác",
+      "551": "Phòng ban này đã tồn tại",
+      "552": "Tên hợp đồng này đã tồn tại",
+      "553": "Mã nhân viên này đã tồn tại",
+      "554": "ID vân tay này đã tồn tại",
+      "555": "File upload không đúng định dạng",
+      "556": "Vui lòng kiểm tra lại file"
     }
   }
 }

@@ -9,7 +9,117 @@ namespace HRMBackend.DataAccess.NhanVien
     public partial class NhanVienDAO
     {
         #region Method
-        private static (string sql, DynamicParameters param) GetAllEmployeeIdByNameQuery(string hoTen)
+        private static (string sql, DynamicParameters param) UpdateOrInsertListRecordsQuery(IEnumerable<Models.NhanVien> requests, IEnumerable<Models.HopDong> request2)
+        {
+            // Param component
+            var param = new DynamicParameters();
+
+            StringBuilder contractQuery = new StringBuilder();
+            for (int i = 0; i<request2.Count(); i++)
+            {
+                if(i!= request2.Count()-1)
+                    contractQuery.AppendFormat("('{0}', '{1}', '{2}', '{3}', '{4}', {5}, {6}),"
+                        , request2.ElementAt(i).TenHopDong,
+                        request2.ElementAt(i).MaNhanVien,
+                        request2.ElementAt(i).NgayBatDauHopDong.ToString("yyyy-MM-dd"),
+                        request2.ElementAt(i).NgayKetThucHopDong.ToString("yyyy-MM-dd"),
+                        request2.ElementAt(i).loaiHopDong,
+                        request2.ElementAt(i).TiLeHuongLuong,
+                        request2.ElementAt(i).GioLamViec);
+                else
+                {
+                    contractQuery.AppendFormat("('{0}', '{1}', '{2}', '{3}', '{4}', {5}, {6})"
+                        , request2.ElementAt(i).TenHopDong,
+                        request2.ElementAt(i).MaNhanVien,
+                        request2.ElementAt(i).NgayBatDauHopDong.ToString("yyyy-MM-dd"),
+                        request2.ElementAt(i).NgayKetThucHopDong.ToString("yyyy-MM-dd"),
+                        request2.ElementAt(i).loaiHopDong,
+                        request2.ElementAt(i).TiLeHuongLuong,
+                        request2.ElementAt(i).GioLamViec);
+                }
+            } 
+
+            StringBuilder valueQuery = new StringBuilder();
+            for (int i = 0; i< requests.Count(); i++)
+            {
+                if (i != requests.Count() -1)
+                    valueQuery.AppendFormat("('{0}', {1}, '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', '{13}', '{14}', {15}),"
+                        ,requests.ElementAt(i).MaNhanVien,
+                        requests.ElementAt(i).MaPhongBan,
+                        requests.ElementAt(i).HoTen, 
+                        requests.ElementAt(i).ChucVu, 
+                        requests.ElementAt(i).Mail, 
+                        requests.ElementAt(i).NgaySinh.ToString("yyyy-MM-dd"), 
+                        requests.ElementAt(i).SoDienThoai, 
+                        requests.ElementAt(i).SoCCCD, 
+                        requests.ElementAt(i).NgayCap.ToString("yyyy-MM-dd"), 
+                        requests.ElementAt(i).QueQuan, 
+                        requests.ElementAt(i).NoiOHienTai, 
+                        requests.ElementAt(i).NguoiThanLienHe, 
+                        requests.ElementAt(i).SoDienThoaiNguoiLienHe, 
+                        requests.ElementAt(i).STKNganHang, 
+                        requests.ElementAt(i).NganHang, 
+                        requests.ElementAt(i).IDVanTay);
+                else
+                {
+                    valueQuery.AppendFormat("('{0}', {1}, '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', '{13}', '{14}', {15})"
+                        , requests.ElementAt(i).MaNhanVien,
+                        requests.ElementAt(i).MaPhongBan,
+                        requests.ElementAt(i).HoTen,
+                        requests.ElementAt(i).ChucVu,
+                        requests.ElementAt(i).Mail,
+                        requests.ElementAt(i).NgaySinh.ToString("yyyy-MM-dd"),
+                        requests.ElementAt(i).SoDienThoai,
+                        requests.ElementAt(i).SoCCCD,
+                        requests.ElementAt(i).NgayCap.ToString("yyyy-MM-dd"),
+                        requests.ElementAt(i).QueQuan,
+                        requests.ElementAt(i).NoiOHienTai,
+                        requests.ElementAt(i).NguoiThanLienHe,
+                        requests.ElementAt(i).SoDienThoaiNguoiLienHe,
+                        requests.ElementAt(i).STKNganHang,
+                        requests.ElementAt(i).NganHang,
+                        requests.ElementAt(i).IDVanTay);
+                }
+            }
+
+            string query = @"INSERT INTO public.tbl_nhanvien(
+	                        manhanvien, maphongban, hoten, chucvu, mail, ngaysinh, sodienthoai, socccd, ngaycap, quequan, noiohientai, nguoithanlienhe, sodienthoainguoilienhe, stknganhang, nganhang, idvantay)
+	                        VALUES" + valueQuery +
+                            @"
+	                        ON CONFLICT(manhanvien) 
+	                        DO UPDATE SET
+	                          maphongban = EXCLUDED.maphongban,
+	                          hoten = EXCLUDED.hoten,
+	                          chucvu = EXCLUDED.chucvu,
+	                          mail = EXCLUDED.mail,
+	                          ngaysinh = EXCLUDED.ngaysinh,
+	                          sodienthoai = EXCLUDED.sodienthoai,
+	                          ngaycap = EXCLUDED.ngaycap,
+	                          quequan = EXCLUDED.quequan,
+	                          noiohientai = EXCLUDED.noiohientai,
+	                          nguoithanlienhe = EXCLUDED.nguoithanlienhe,
+	                          sodienthoainguoilienhe = EXCLUDED.sodienthoainguoilienhe,
+	                          stknganhang = EXCLUDED.stknganhang,
+	                          nganhang = EXCLUDED.nganhang,
+	                          idvantay = EXCLUDED.idvantay,
+	                          socccd = EXCLUDED.socccd;
+
+                            INSERT INTO public.tbl_hopdong(
+	                        tenhopdong, manhanvien, ngaybatdauhopdong, ngayketthuchopdong, loaihopdong, tilehuongluong, giolamviec)
+	                        VALUES" + contractQuery+
+	                        @"
+                            ON CONFLICT(tenhopdong) 
+	                        DO UPDATE SET
+	                          manhanvien = EXCLUDED.manhanvien,
+	                          ngayketthuchopdong = EXCLUDED.ngayketthuchopdong,
+	                          loaihopdong = EXCLUDED.loaihopdong,
+	                          tilehuongluong = EXCLUDED.tilehuongluong,
+	                          giolamviec = EXCLUDED.giolamviec,
+	                          ngaybatdauhopdong = EXCLUDED.ngaybatdauhopdong;
+                            ";
+            return (query, param);
+        }
+        private static (string sql, DynamicParameters param) GetAllEmployeeIdByNameQuery(string? hoTen)
         {
             // Param component
             var param = new DynamicParameters();
@@ -34,6 +144,16 @@ namespace HRMBackend.DataAccess.NhanVien
             var param = new DynamicParameters();
             param.Add(":manhanvien", maNhanVien, dbType: DbType.String, direction: ParameterDirection.Input);
             string query = @"SELECT * FROM TBL_NHANVIEN WHERE MANHANVIEN = :manhanvien";
+            return (query, param);
+        }
+
+        private static (string sql, DynamicParameters param) GetByIdVanTayQuery(int? idVanTay, string? maNhanVien)
+        {
+            // Param component
+            var param = new DynamicParameters();
+            param.Add(":idvantay", idVanTay, dbType: DbType.Int32, direction: ParameterDirection.Input);
+            param.Add(":manhanvien", maNhanVien, dbType: DbType.String, direction: ParameterDirection.Input);
+            string query = @"SELECT * FROM TBL_NHANVIEN WHERE (:idvantay IS NULL OR IDVANTAY = :idvantay) AND(:manhanvien IS NULL OR MANHANVIEN != :manhanvien)";
             return (query, param);
         }
         private static (string sql, DynamicParameters param) CreateQuery(Models.NhanVien model)

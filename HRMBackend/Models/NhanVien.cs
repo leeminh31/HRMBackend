@@ -41,5 +41,7 @@ namespace HRMBackend.Models
         public string SoDienThoai { get; set; }
         [Column("idvantay")]
         public int IDVanTay { get; set; }
+        [Column("macalamviec")]
+        public int MaCa { get; set; }
     }
 }

@@ -47,7 +47,7 @@ namespace HRMBackend.Controllers
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost("create")]
-        [SwaggerOperation(summary: "Tạo thông tin cảng")]
+        [SwaggerOperation(summary: "Tạo thông tin phòng ban")]
         //[Authorize]
         public async Task<IActionResult> CreateAsync([FromBody] CreatePhongBanRequest request)
         {
@@ -90,14 +90,29 @@ namespace HRMBackend.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        //[HttpPost("update")]
-        //[SwaggerOperation(summary: "Cập nhật thông tin cảng")]
+        [HttpPost("update")]
+        [SwaggerOperation(summary: "Cập nhật thông tin phòng ban")]
         //[Authorize]
-        //public async Task<IActionResult> UpdateAsync([FromBody] UpdatePhongBanRequest request)
-        //{
-        //    var result = await _phongBanService.UpdateAsync(request);
-        //    return Ok(result);
-        //}
+        public async Task<IActionResult> UpdateAsync([FromBody] UpdatePhongBanRequest request)
+        {
+            var result = await _phongBanService.UpdateAsync(request);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Chức năng: xoá phòng ban dựa theo mã phòng ban
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete()]
+        //[Authorize]
+        //[NonAction]
+        public async Task<IActionResult> DeleteAsync(string id)
+        {
+            var result = await _phongBanService.DeleteAsync(id);
+
+            return Ok(result);
+        }
 
         #endregion
     }

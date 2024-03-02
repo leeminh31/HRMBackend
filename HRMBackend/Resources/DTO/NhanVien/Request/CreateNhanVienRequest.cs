@@ -21,5 +21,6 @@ namespace HRMBackend.Resources.DTO.NhanVien.Request
         public int MaPhongBan { get; set; }
         public string? SoDienThoai { get; set; }
         public int IDVanTay { get; set; }
+        public int? MaCa {  get; set; }
     }
 }

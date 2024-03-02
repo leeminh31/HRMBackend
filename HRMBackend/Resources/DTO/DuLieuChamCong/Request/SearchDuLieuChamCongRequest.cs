@@ -2,7 +2,8 @@
 {
     public class SearchDuLieuChamCongRequest
     {
-        public string Code { get; set; }
-        public string Name { get; set; }
+        public string? MaNhanVien { get; set; }
+        public DateTime? NgayLamViec { get; set; }
+
     }
 }

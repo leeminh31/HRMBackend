@@ -39,7 +39,9 @@ namespace HRMBackend.Services.PhongBan
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        //Task<BaseResult<PhongBanResponse>> UpdateAsync(UpdatePhongBanRequest request);
+        Task<BaseResult<PhongBanResponse>> UpdateAsync(UpdatePhongBanRequest request);
+
+        Task<BaseResult<bool>> DeleteAsync(string id);
 
     }
 }

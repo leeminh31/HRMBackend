@@ -23,7 +23,5 @@ namespace HRMBackend.Models
         public double TiLeHuongLuong { get; set; }
         [Column("giolamviec")]
         public double GioLamViec { get; set; }
-        [Column("congchuan")]
-        public double CongChuan { get; set; }
     }
 }

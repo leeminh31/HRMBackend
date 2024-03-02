@@ -12,6 +12,5 @@ namespace HRMBackend.Resources.DTO.HopDong.Response
         public string loaiHopDong { get; set; }
         public double TiLeHuongLuong { get; set; }
         public double GioLamViec { get; set; }
-        public double CongChuan { get; set; }
     }
 }

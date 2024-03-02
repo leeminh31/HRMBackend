@@ -34,13 +34,19 @@ namespace HRMBackend.Services.NhanVien
         {
             // Mapping Resource to NhanVien
             var airport = Mapper.Map<CreateNhanVienRequest, Models.NhanVien>(request);
-            //SearchNhanVienRequest searchRequest = new SearchNhanVienRequest() { Code = request.Code, Name = request.Name };
-            ////Tìm mã code hoặc name đã tồn tại chưa?
-            //var records = await _nhanVienDAO.GetByCodeOrNameAsync(searchRequest);
-            //if (records.isSuccess)
-            //{
-            //    return GetBaseResult(CodeMessage._547, data: Mapper.Map<NhanVienResponse>(records.data.First()));
-            //}
+            //SearchNhanVienRequest searchRequest = new SearchNhanVienRequest() { IDVanTay = request.IDVanTay, ChucVu = null, HoTen= null, MaNhanVien = null, MaPhongBan = null };
+            //Tìm mã nhân viên đã tồn tại hay chưa?
+            var records = await _nhanVienDAO.GetByIDAsync(request.MaNhanVien);
+            if (records.hasValue)
+            {
+                return GetBaseResult(CodeMessage._553, data: Mapper.Map<NhanVienResponse>(records.data));
+            }
+
+            var records2 = await _nhanVienDAO.GetByParamsAsync(null,null,request.IDVanTay,null, null);
+            if (records2.isSuccess)
+            {
+                return GetBaseResult(CodeMessage._554, data: Mapper.Map<NhanVienResponse>(records2.data.First()));
+            }
 
             var result = await _nhanVienDAO.CreateAsync(airport);
             await _unitOfWork.SaveChangesAsync();
@@ -116,6 +122,12 @@ namespace HRMBackend.Services.NhanVien
         {
             // Mapping Resource to NhanVien
             var airport = Mapper.Map<UpdateNhanVienRequest, Models.NhanVien>(request);
+
+            var records2 = await _nhanVienDAO.GetByIdVanTayAsync(request.IDVanTay, request.MaNhanVien);
+            if (records2.hasValue)
+            {
+                return GetBaseResult(CodeMessage._554, data: Mapper.Map<NhanVienResponse>(records2.data));
+            }
 
             var result = await _nhanVienDAO.UpdateAsync(airport);
             await _unitOfWork.SaveChangesAsync();
