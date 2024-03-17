@@ -1,4 +1,8 @@
 ﻿using HRMBackend.DataAccess.CaLamViec;
+using HRMBackend.DataAccess.DonBu;
+using HRMBackend.DataAccess.DonConNho;
+using HRMBackend.DataAccess.DonPhep;
+using HRMBackend.DataAccess.DonTangCa;
 using HRMBackend.DataAccess.DuLieuChamCong;
 using HRMBackend.DataAccess.HopDong;
 using HRMBackend.DataAccess.NhanVien;
@@ -7,10 +11,13 @@ using HRMBackend.DataAccess.TaiKhoan;
 using HRMBackend.DataAccess.UnitOfWork;
 using HRMBackend.Mapping.TaiKhoan;
 using HRMBackend.Resources;
+using HRMBackend.Services.BaoCaoTheoThang;
 using HRMBackend.Services.CaLamViec;
+using HRMBackend.Services.DanhSachDon;
 using HRMBackend.Services.DuLieuChamCong;
 using HRMBackend.Services.HopDong;
 using HRMBackend.Services.NhanVien;
+using HRMBackend.Services.PhanCaNhanVien;
 using HRMBackend.Services.PhongBan;
 using HRMBackend.Services.TaiKhoan;
 using HRMBackend.Services.TokenManagement;
@@ -29,17 +36,21 @@ namespace HRMBackend.Extensions
             //services.AddScoped<IDangKyCaDAO, DangKyCaDAO>();
             //services.AddScoped<IDangKyCaService, DangKyCaService>();
 
-            //services.AddScoped<IDonBuDAO, DonBuDAO>();
+            services.AddScoped<IDonBuDAO, DonBuDAO>();
             //services.AddScoped<IDonBuService, DonBuService>();
 
-            //services.AddScoped<IDonConNhoDAO, DonConNhoDAO>();
+            services.AddScoped<IDonConNhoDAO, DonConNhoDAO>();
             //services.AddScoped<IDonConNhoService, DonConNhoService>();
 
-            //services.AddScoped<IDonPhepDAO, DonPhepDAO>();
+            services.AddScoped<IDonPhepDAO, DonPhepDAO>();
             //services.AddScoped<IDonPhepService, DonPhepService>();
 
-            //services.AddScoped<IDonTangCaDAO, DonTangCaDAO>();
+            services.AddScoped<IDonTangCaDAO, DonTangCaDAO>();
             //services.AddScoped<IDonTangCaService, DonTangCaService>();
+
+            services.AddScoped<IBaoCaoTheoThangService, BaoCaoTheoThangService>();
+
+            services.AddScoped<IDanhSachDonService, IDanhSachDonService>();
 
             services.AddScoped<INhanVienDAO, NhanVienDAO>();
             services.AddScoped<INhanVienService, NhanVienService>();

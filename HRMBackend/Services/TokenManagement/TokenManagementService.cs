@@ -23,18 +23,19 @@ namespace HRMBackend.Services.TokenManagement
         private readonly ITaiKhoanDAO _taiKhoanDAO;
         //private readonly IRefreshTokenDAO _refreshTokenDAO;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly INhanVienDAO _nhanVienDAO;
         private readonly byte[] _secret;
         #endregion
 
         #region Constructor
         public TokenManagementService(ITaiKhoanDAO taiKhoanDAO,
-            //IRefreshTokenDAO refreshTokenDAO,
             IUnitOfWork unitOfWork,
+            INhanVienDAO nhanVienDAO,
             IMapper mapper,
             IOptionsMonitor<ResponseMessage> responseMessage) : base(mapper, responseMessage)
         {
             this._taiKhoanDAO = taiKhoanDAO;
-            //this._refreshTokenDAO = refreshTokenDAO;
+            this._nhanVienDAO = nhanVienDAO;
             this._unitOfWork = unitOfWork;
             this._secret = Encoding.ASCII.GetBytes(JwtConfig.Secret);
         }
@@ -50,24 +51,26 @@ namespace HRMBackend.Services.TokenManagement
             {
                 return GetBaseResult<AccessTokenResponse>(CodeMessage._531, status: StatusEnum.Success);
             }
+            var employeeData = await _nhanVienDAO.GetByIDAsync(tempUser.data.MaNhanVien);
 
             // Tạo access-token
             var accessToken = GenerateAccessToken(tempUser.data, utcNow);
 
             await _unitOfWork.SaveChangesAsync();
 
-            var dataResult = MappingTokenResoure(tempUser.data, accessToken);
+            var dataResult = MappingTokenResoure(tempUser.data, accessToken, employeeData.data.HoTen);
 
             return GetBaseResult(CodeMessage._200, data: dataResult);
         }
 
         #region Private work
-        private AccessTokenResponse MappingTokenResoure(Models.TaiKhoan user,string accessToken)
+        private AccessTokenResponse MappingTokenResoure(Models.TaiKhoan user,string accessToken, string hoTen)
         {
             var tokenResponse = Mapper.Map<AccessTokenResponse>(user);
             var tokenResult = new TokenResponse();
             tokenResult.AccessToken = accessToken;
-            tokenResult.ExpireTimeUTC = DateTime.UtcNow.AddMinutes(30);
+            tokenResult.ExpireTimeUTC = DateTime.UtcNow.AddMinutes(JwtConfig.AccessTokenExpiration);
+            tokenResult.HoTen = hoTen;
             tokenResponse.TokenResponse = tokenResult;
 
             return tokenResponse;

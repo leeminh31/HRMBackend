@@ -243,6 +243,10 @@ namespace HRMBackend.Services.HopDong
                                 }
                                 
                                 var departmentIdResult = await _phongBanDAO.GetByTenPhongBanAsync(reader.GetValue(4).ToString(), null);
+                                if(departmentIdResult.hasValue == false )
+                                {
+                                    continue;
+                                }
                                 var departmentId = departmentIdResult.data.MaPhongBan;
                                 
                                 if (IsValidEmail(reader.GetValue(12).ToString()))
@@ -273,7 +277,7 @@ namespace HRMBackend.Services.HopDong
                                 //    continue;
                                 //}
 
-                                if(listEmployeeIdFromContract.data.FirstOrDefault(c => c.MaNhanVien == reader.GetValue(1).ToString()) == null && String.IsNullOrEmpty(reader.GetValue(18)?.ToString())) {
+                                if( listEmployeeIdFromContract.data?.FirstOrDefault(c => c.MaNhanVien == reader.GetValue(1).ToString()) == null && String.IsNullOrEmpty(reader.GetValue(18)?.ToString())) {
                                     continue;
                                 }
 

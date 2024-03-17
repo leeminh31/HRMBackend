@@ -11,7 +11,6 @@ namespace HRMBackend.Resources.DTO.Authentication.Response
     { 
         public DateTime ExpireTimeUTC { get; set; }
         public string AccessToken { get; set; }
-
-        //public string Role { get; set; }
+        public string HoTen {  get; set; }
     }
 }

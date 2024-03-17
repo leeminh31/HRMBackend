@@ -222,6 +222,7 @@ namespace HRMBackend.DataAccess.NhanVien
 
         private static (string sql, DynamicParameters param) GetByParamsQuery(string? maNhanVien, int? maPhongBan, int? idVanTay, string? chucVu, string? hoTen)
         {
+            var test = RemoveSignUnicodeString(hoTen, true);
             // Param component
             var param = new DynamicParameters();
             param.Add(":manhanvien", RemoveSignUnicodeString(maNhanVien, true), dbType: DbType.String, direction: ParameterDirection.Input);

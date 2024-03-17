@@ -7,7 +7,7 @@ namespace HRMBackend.Resources.DTO.PhongBan.Request
         public int MaPhongBan { get; set; }
         public string TenPhongBan { get; set; }
         public int SoLanChamCong { get; set; }
-        public string TruongPhongBan { get; set; }
-        public string ThuKyPhongBan { get; set; }
+        public string? TruongPhongBan { get; set; }
+        public string? ThuKyPhongBan { get; set; }
     }
 }

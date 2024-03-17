@@ -1,4 +1,5 @@
-﻿using HRMBackend.Resources.DTO.DuLieuChamCong.Request;
+﻿using HRMBackend.Resources.DTO.BaoCaoTheoThang.Response;
+using HRMBackend.Resources.DTO.DuLieuChamCong.Request;
 using HRMBackend.Resources.DTO.DuLieuChamCong.Response;
 using HRMBackend.Results;
 
@@ -27,7 +28,7 @@ namespace HRMBackend.Services.DuLieuChamCong
         /// <returns></returns>
         //Task<BaseResult<DuLieuChamCongResponse>> GetByIDAsync(string maDuLieuChamCong);
 
-        Task<BaseResult<IEnumerable<DuLieuChamCongResponse>>> GetByParamsAsync(string? maNhanVien, DateTime? ngayLamViec);
+        Task<BaseResult<IEnumerable<DuLieuChamCongResponse>>> GetByParamsAsync(SearchDuLieuChamCongRequest request);
 
         //Task<BaseResult<IEnumerable<DuLieuChamCongResponse>>> GetAllContractAsync();
 
@@ -48,6 +49,8 @@ namespace HRMBackend.Services.DuLieuChamCong
         //Task<BaseResult<bool>> UploadFileAsync(IFormFile file);
 
         Task<BaseResult<bool>> UploadFileTimeKeepingAsync(IFormFile file);
+
+        Task<BaseResult<IEnumerable<BaoCaoTheoThangAllResponse>>> GetByEmployeePerMonthAsync(SearchDuLieuChamCongRequest request);
 
     }
 }

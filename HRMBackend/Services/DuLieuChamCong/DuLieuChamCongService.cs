@@ -13,6 +13,9 @@ using HRMBackend.Results;
 using HRMBackend.Services.DuLieuChamCong;
 using Microsoft.Extensions.Options;
 using System.Net.Mail;
+using HRMBackend.Models;
+using HRMBackend.DataAccess.CaLamViec;
+using HRMBackend.Resources.DTO.BaoCaoTheoThang.Response;
 
 namespace HRMBackend.Services.DuLieuChamCong
 {
@@ -20,6 +23,7 @@ namespace HRMBackend.Services.DuLieuChamCong
     {
         #region Property
         private readonly IDuLieuChamCongDAO _duLieuChamCongDAO;
+        private readonly ICaLamViecDAO _caLamViecDAO;
         private readonly IUnitOfWork _unitOfWork;
         private readonly INhanVienDAO _nhanVienDAO;
         private readonly IPhongBanDAO _phongBanDAO;
@@ -28,12 +32,15 @@ namespace HRMBackend.Services.DuLieuChamCong
         #region Constructor
         public DuLieuChamCongService(IDuLieuChamCongDAO duLieuChamCongDAO,
             INhanVienDAO nhanVienDAO,
+            ICaLamViecDAO caLamViecDAO,
             IPhongBanDAO phongBanDAO,
             IUnitOfWork unitOfWork,
             IMapper mapper,
             IOptionsMonitor<ResponseMessage> responseMessage) : base(mapper, responseMessage)
         {
             this._duLieuChamCongDAO = duLieuChamCongDAO;
+            this._nhanVienDAO = nhanVienDAO;
+            this._caLamViecDAO = caLamViecDAO;
             this._unitOfWork = unitOfWork;
             this._nhanVienDAO = nhanVienDAO;
             this._phongBanDAO = phongBanDAO;
@@ -61,23 +68,150 @@ namespace HRMBackend.Services.DuLieuChamCong
         //        return GetBaseResult<DuLieuChamCongResponse>(CodeMessage._209, status: StatusEnum.Failed);
         //}
 
-        //public async Task<BaseResult<IEnumerable<DuLieuChamCongResponse>>> GetByCodeOrNameAsync(SearchDuLieuChamCongRequest request)
-        //{
-        //    var records = await _duLieuChamCongDAO.GetByCodeOrNameAsync(request);
-        //    if (records.isSuccess)
-        //    {
-        //        return GetBaseResult(CodeMessage._200, data: Mapper.Map<IEnumerable<DuLieuChamCongResponse>>(records.data));
-        //    }
-        //    return GetBaseResult<IEnumerable<DuLieuChamCongResponse>>(CodeMessage._545, status: StatusEnum.Failed);
-        //}
-        public async Task<BaseResult<IEnumerable<DuLieuChamCongResponse>>> GetByParamsAsync(string? maNhanVien, DateTime? ngayLamViec)
+        public async Task<BaseResult<IEnumerable<DuLieuChamCongResponse>>> GetByParamsAsync(SearchDuLieuChamCongRequest request)
         {
-            var records = await _duLieuChamCongDAO.GetByParamsAsync(maNhanVien, ngayLamViec);
-            if (records.isSuccess)
+            
+            var records = await _duLieuChamCongDAO.GetByParamsAsync(request.MaNhanVien, request.NgayBatDau, request.NgayKetThuc);
+            
+            if(!records.isSuccess)
             {
-                return GetBaseResult(CodeMessage._200, data: Mapper.Map<IEnumerable<DuLieuChamCongResponse>>(records.data));
+                return GetBaseResult<IEnumerable<DuLieuChamCongResponse>>(CodeMessage._545, status: StatusEnum.Failed);
+            }
+
+            var employeeData = await _nhanVienDAO.GetByParamsAsync(null, null, request.IDVanTay, null, request.TenNhanVien);
+
+            if( !employeeData.isSuccess )
+            {
+                return GetBaseResult<IEnumerable<DuLieuChamCongResponse>>(CodeMessage._545, status: StatusEnum.Failed);
+            }
+            var filterRecords =  records.data?.Where(c => employeeData.data.Select(i => i.MaNhanVien).Contains(c.MaNhanVien));
+
+            if (filterRecords!.GetEnumerator().MoveNext())
+            {
+                return GetBaseResult(CodeMessage._200, data: Mapper.Map<IEnumerable<DuLieuChamCongResponse>>(filterRecords));
             }
             return GetBaseResult<IEnumerable<DuLieuChamCongResponse>>(CodeMessage._545, status: StatusEnum.Failed);
+        }
+
+        public async Task<BaseResult<IEnumerable<BaoCaoTheoThangAllResponse>>> GetByEmployeePerMonthAsync(SearchDuLieuChamCongRequest request)
+        {
+            var records = await _duLieuChamCongDAO.GetByParamsAsync(null, request.NgayBatDau, request.NgayKetThuc);
+
+            var listEmployee = await _nhanVienDAO.GetByParamsAsync(request.MaNhanVien, null, null, null, request.TenNhanVien);
+
+            if (!listEmployee.isSuccess)
+            {
+                return GetBaseResult<IEnumerable<BaoCaoTheoThangAllResponse>>(CodeMessage._545, status: StatusEnum.Failed);
+            }
+
+            var listEmployeeId = listEmployee.data.Select(e => e.MaNhanVien);
+
+
+            if (request.NgayBatDau == null || request.NgayKetThuc == null) {
+                return GetBaseResult<IEnumerable<BaoCaoTheoThangAllResponse>>(CodeMessage._545, status: StatusEnum.Failed);
+            }
+
+            if (!records.isSuccess)
+            {
+                return GetBaseResult<IEnumerable<BaoCaoTheoThangAllResponse>>(CodeMessage._545, status: StatusEnum.Failed);
+            }
+
+            var daysInMonth = (int) (request.NgayKetThuc! - request.NgayBatDau!)?.TotalDays +1;
+
+            var recordsToList = records.data.ToList();
+
+            var recordsByEmployee = recordsToList.DistinctBy(item => item.MaNhanVien).ToList();
+
+            var baoCaoTheoThangAll = new List<BaoCaoTheoThangAllResponse>();
+
+            foreach (var employee in recordsByEmployee)
+            {
+                if (!listEmployeeId.Contains(employee.MaNhanVien))
+                    continue;
+
+                var employeeByMonth = recordsToList.Where(e => e.MaNhanVien == employee.MaNhanVien);
+
+                var employeeInfo = await _nhanVienDAO.GetByIDAsync(employee.MaNhanVien);
+
+                var shiftId = employeeInfo.data?.MaCa;
+
+                var shiftName = await _caLamViecDAO.GetByShiftIDAsync(shiftId, null);
+
+                var giobatdaulam = shiftName.data.First().GioBatDauCa;
+
+                var gioketthuclam = shiftName.data.First().GioKetThucCa;
+
+                var giobatdaunghi = shiftName.data.First().GioBatDauNghi;
+
+                var gioketthucnghi = shiftName.data.First().GioKetThucNghi;
+
+                var workHourByDay = Math.Round((gioketthuclam - giobatdaulam - gioketthucnghi + giobatdaunghi).TotalMinutes);
+
+                var gionghi = Math.Round((gioketthucnghi - giobatdaunghi).TotalMinutes);
+                var totalWorkByMonth =(double) 0;
+
+                var listDLCCByDay = new List<DuLieuChamCongByDayResponse>();
+                for ( int i = 1; i <= daysInMonth; i++)
+                {
+                    var employeeByDay = employeeByMonth.Where(e => e.NgayChamCong == new DateTime((int)request.NgayKetThuc?.Year, (int)request.NgayKetThuc?.Month, i));
+
+                    if (employeeByDay == null)
+                        continue;
+                    
+                    var lastCheck = employeeByDay.MaxBy(t => t.LanChamCong);
+
+                    var firstCheck = employeeByDay.MinBy(t => t.LanChamCong);
+
+                    if (firstCheck == null)
+                        continue;
+
+                    var firstCheckTime = firstCheck.GioChamCong;
+
+                    var lastCheckTime = lastCheck.GioChamCong;
+
+                    if (firstCheck?.GioChamCong < giobatdaulam)
+                    {
+                        firstCheckTime = giobatdaulam;
+                    }
+
+                    if (lastCheck?.GioChamCong > gioketthuclam)
+                    {
+                        lastCheckTime = gioketthuclam;
+                    }
+
+                    var totalWorkHours = Math.Round((lastCheckTime - firstCheckTime).TotalMinutes);
+
+                    if (lastCheck?.GioChamCong >= gioketthucnghi)
+                        totalWorkHours = totalWorkHours - gionghi;
+
+                    if (lastCheck?.GioChamCong >= giobatdaunghi && lastCheck?.GioChamCong <= gioketthucnghi)
+                    {
+                        totalWorkHours = Math.Round((giobatdaunghi - giobatdaulam).TotalMinutes);
+                    }
+
+                    var totalWork = Math.Round(totalWorkHours / workHourByDay,2);
+
+                    totalWorkByMonth += totalWork;
+
+                    var DLCCByDay = new DuLieuChamCongByDayResponse();
+                    DLCCByDay.NgayLamViec = i;
+                    DLCCByDay.GioLamViec = totalWorkHours;
+                    listDLCCByDay.Add(DLCCByDay);
+                }
+
+                var baoCaoTheoThangNhanVien = new BaoCaoTheoThangAllResponse();
+                baoCaoTheoThangNhanVien.MaNhanVien = employee.MaNhanVien;
+                baoCaoTheoThangNhanVien.TongCong = Math.Round(totalWorkByMonth, 2);
+                baoCaoTheoThangNhanVien.duLieuChamCongResponses = listDLCCByDay;
+
+                baoCaoTheoThangAll.Add(baoCaoTheoThangNhanVien);
+            }
+
+            if( baoCaoTheoThangAll.Count > 0 )
+            {
+                return GetBaseResult(CodeMessage._200, data: baoCaoTheoThangAll.AsEnumerable());
+            } else 
+            return GetBaseResult<IEnumerable<BaoCaoTheoThangAllResponse>>(CodeMessage._545, status: StatusEnum.Failed);
         }
 
         public async Task<BaseResult<IEnumerable<DuLieuChamCongResponse>>> GetAllContractAsync()
@@ -99,264 +233,6 @@ namespace HRMBackend.Services.DuLieuChamCong
             }
             return GetBaseResult<DuLieuChamCongResponse>(CodeMessage._545, status: StatusEnum.Failed);
         }
-
-        //public async Task<PaginationResult<IEnumerable<DuLieuChamCongResponse>>> PaginationGetByCodeAndNameAsync(PaginationDuLieuChamCongRequest request)
-        //{
-        //    var resultDAO = await _duLieuChamCongDAO.PaginationAsync(request);
-
-        //    if (resultDAO.isSuccess)
-        //    {
-        //        // Mapping
-        //        var resource = Mapper.Map<IEnumerable<DuLieuChamCongResponse>>(resultDAO.data);
-
-        //        var result = GetPaginationResult<PaginationResult<IEnumerable<DuLieuChamCongResponse>>, IEnumerable<DuLieuChamCongResponse>>(CodeMessage._200, resource);
-
-        //        // Using extension-method for pagination
-        //        result.CreatePaginationResponse(request, resultDAO.totalRecords);
-
-        //        return result;
-        //    }
-        //    else
-        //    {
-        //        return GetPaginationResult<PaginationResult<IEnumerable<DuLieuChamCongResponse>>, IEnumerable<DuLieuChamCongResponse>>(CodeMessage._545, status: StatusEnum.Failed);
-        //    }
-        //}
-
-        //public async Task<BaseResult<DuLieuChamCongResponse>> UpdateAsync(UpdateDuLieuChamCongRequest request)
-        //{
-        //    // Mapping Resource to DuLieuChamCong
-        //    var airport = Mapper.Map<UpdateDuLieuChamCongRequest, Models.DuLieuChamCong>(request);
-
-        //    var result = await _duLieuChamCongDAO.UpdateAsync(airport);
-        //    await _unitOfWork.SaveChangesAsync();
-
-        //    if (result.isSuccess)
-        //        return GetBaseResult(CodeMessage._200, data: Mapper.Map<DuLieuChamCongResponse>(result.data));
-        //    else
-        //        return GetBaseResult<DuLieuChamCongResponse>(CodeMessage._236, status: StatusEnum.Failed);
-        //}
-
-        //public async Task<BaseResult<b>> DowloadFileAsync()
-        //{
-        //    string pathToFile = $"{Directory.GetCurrentDirectory()}\\Resources\\ExcelTemplate\\MasterFile.xlsx";
-        //    try
-        //    {
-        //        var fileName = System.IO.Path.GetFileName(pathToFile);
-        //        var content = await System.IO.File.ReadAllBytesAsync(pathToFile);
-        //        new FileExtensionContentTypeProvider()
-        //            .TryGetContentType(fileName, out string contentType);
-        //        return GetBaseResult(CodeMessage._200, data: Mapper.Map<DuLieuChamCongResponse>(result.data));
-        //        return File(content, contentType, fileName);
-        //    }
-        //    catch
-        //    {
-        //        return BadRequest();
-        //    }
-        //}
-
-        //public async Task<BaseResult<bool>> UploadFileAsync(IFormFile file)
-        //{
-        //    // Mapping Resource to DuLieuChamCong
-        //    //var airport = Mapper.Map<UpdateDuLieuChamCongRequest, Models.DuLieuChamCong>(request);
-
-        //    var listEmployeeRecords = new List<Models.NhanVien>();
-        //    var listContractRecords = new List<Models.DuLieuChamCong>();
-
-        //    if (file != null && file.Length > 0)
-        //    {
-        //        System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-        //        var extension = Path.GetExtension(file.FileName);
-        //        if (extension != ".xls" && extension != ".xlsx")
-        //            return GetBaseResult<bool>(CodeMessage._555, status: StatusEnum.Failed);
-
-        //        var uploadsFolder = $"{Directory.GetCurrentDirectory()}\\Upload\\";
-
-        //        if (!Directory.Exists(uploadsFolder))
-        //        {
-        //            Directory.CreateDirectory(uploadsFolder);
-        //        }
-
-        //        var filePath = Path.Combine(uploadsFolder, file.FileName);
-
-        //        using (var stream = new FileStream(filePath, FileMode.Create))
-        //        {
-        //            await file.CopyToAsync(stream);
-        //        }
-
-        //        using (var stream = System.IO.File.Open(filePath, FileMode.Open, FileAccess.Read))
-        //        {
-        //            var listEmployeeIdFromContract = await _duLieuChamCongDAO.GetByParamsAsync(null, "Thử việc");
-        //            using (var reader = ExcelReaderFactory.CreateReader(stream))
-        //            {
-        //                do
-        //                {
-        //                    int isHeaderSkipped = 0;
-
-        //                    while (reader.Read())
-        //                    {
-        //                        if (isHeaderSkipped < 2)
-        //                        {
-        //                            isHeaderSkipped++;
-        //                            continue;
-        //                        }
-
-        //                        if (String.IsNullOrEmpty(reader.GetValue(1)?.ToString())
-        //                            || String.IsNullOrEmpty(reader.GetValue(2)?.ToString())
-        //                            || String.IsNullOrEmpty(reader.GetValue(3)?.ToString())
-        //                            || String.IsNullOrEmpty(reader.GetValue(4)?.ToString())
-        //                            || String.IsNullOrEmpty(reader.GetValue(5)?.ToString())
-        //                            || (String.IsNullOrEmpty(reader.GetValue(12)?.ToString())))
-        //                        {
-
-        //                            continue;
-        //                        }
-
-        //                        if (HasSpecialChars(reader.GetValue(1)?.ToString())
-        //                            || HasSpecialChars(reader.GetValue(2)?.ToString())
-        //                            || HasSpecialChars(reader.GetValue(3)?.ToString())
-        //                            || HasSpecialChars(reader.GetValue(5)?.ToString())
-        //                            || HasSpecialChars(reader.GetValue(26)?.ToString())
-        //                            || HasSpecialChars(reader.GetValue(27)?.ToString()))
-        //                        {
-        //                            continue;
-        //                        }
-
-        //                        if (!reader.GetValue(2).ToString().All(char.IsDigit)
-        //                            || (reader.GetValue(7) != null && !reader.GetValue(7).ToString().All(char.IsDigit))
-        //                            || (reader.GetValue(11) != null && !reader.GetValue(11).ToString().All(char.IsDigit))
-        //                            || (reader.GetValue(25) != null && !reader.GetValue(25).ToString().All(char.IsDigit))
-        //                            || (reader.GetValue(28) != null && !reader.GetValue(28).ToString().All(char.IsDigit)))
-        //                        {
-        //                            continue;
-        //                        }
-
-        //                        if (reader.GetValue(28).ToString().Length != 10
-        //                            || reader.GetValue(11).ToString().Length != 10
-        //                            || reader.GetValue(7).ToString().Length != 12)
-        //                        {
-        //                            continue;
-        //                        }
-
-        //                        var departmentIdResult = await _phongBanDAO.GetByTenPhongBanAsync(reader.GetValue(4).ToString(), null);
-        //                        var departmentId = departmentIdResult.data.MaPhongBan;
-
-        //                        if (IsValidEmail(reader.GetValue(12).ToString()))
-        //                        {
-        //                            CreateNhanVienRequest nhanVien = new CreateNhanVienRequest();
-        //                            nhanVien.MaNhanVien = reader.GetValue(1).ToString();
-        //                            nhanVien.IDVanTay = int.Parse(reader.GetValue(2).ToString());
-        //                            nhanVien.HoTen = reader.GetValue(3).ToString();
-        //                            nhanVien.MaPhongBan = departmentId;
-        //                            nhanVien.ChucVu = reader.GetValue(5).ToString();
-        //                            nhanVien.NgaySinh = DateTime.Parse(reader.GetValue(6).ToString());
-        //                            nhanVien.SoCCCD = reader.GetValue(7).ToString();
-        //                            nhanVien.NgayCap = DateTime.Parse(reader.GetValue(8).ToString());
-        //                            nhanVien.QueQuan = reader.GetValue(9).ToString();
-        //                            nhanVien.NoiOHienTai = reader.GetValue(10).ToString();
-        //                            nhanVien.SoDienThoai = reader.GetValue(11).ToString();
-        //                            nhanVien.Mail = reader.GetValue(12).ToString();
-        //                            nhanVien.STKNganHang = reader.GetValue(25).ToString();
-        //                            nhanVien.NganHang = reader.GetValue(26).ToString();
-        //                            nhanVien.NguoiThanLienHe = reader.GetValue(27).ToString();
-        //                            nhanVien.SoDienThoaiNguoiLienHe = reader.GetValue(28).ToString();
-        //                            var nhanVienModel = Mapper.Map<CreateNhanVienRequest, Models.NhanVien>(nhanVien);
-        //                            listEmployeeRecords.Add(nhanVienModel);
-        //                        }
-
-        //                        //if (!listEmployeeId.data.Contains(reader.GetValue(1).ToString()) && String.IsNullOrEmpty(reader.GetValue(18)?.ToString()))
-        //                        //{
-        //                        //    continue;
-        //                        //}
-
-        //                        if (listEmployeeIdFromContract.data.FirstOrDefault(c => c.MaNhanVien == reader.GetValue(1).ToString()) == null && String.IsNullOrEmpty(reader.GetValue(18)?.ToString()))
-        //                        {
-        //                            continue;
-        //                        }
-
-        //                        if (!String.IsNullOrEmpty(reader.GetValue(18)?.ToString())
-        //                            && !String.IsNullOrEmpty(reader.GetValue(16)?.ToString())
-        //                            && !String.IsNullOrEmpty(reader.GetValue(17)?.ToString())
-        //                            && !String.IsNullOrEmpty(reader.GetValue(14)?.ToString())
-        //                            && !String.IsNullOrEmpty(reader.GetValue(13)?.ToString()))
-        //                        {
-        //                            var dateStart = DateTime.Parse(reader.GetValue(16).ToString());
-        //                            var dateEnd = DateTime.Parse(reader.GetValue(17).ToString());
-        //                            if (dateStart.AddDays(90) < dateEnd)
-        //                            {
-        //                                dateEnd = dateStart.AddDays(90);
-        //                            }
-
-        //                            CreateDuLieuChamCongRequest duLieuChamCongThuViec = new CreateDuLieuChamCongRequest();
-        //                            duLieuChamCongThuViec.TenDuLieuChamCong = reader.GetValue(18).ToString();
-        //                            duLieuChamCongThuViec.MaNhanVien = reader.GetValue(1).ToString();
-        //                            duLieuChamCongThuViec.NgayBatDauDuLieuChamCong = dateStart;
-        //                            duLieuChamCongThuViec.NgayKetThucDuLieuChamCong = dateEnd;
-        //                            duLieuChamCongThuViec.loaiDuLieuChamCong = "Thử việc";
-        //                            duLieuChamCongThuViec.TiLeHuongLuong = double.Parse(reader.GetValue(14).ToString());
-        //                            duLieuChamCongThuViec.GioLamViec = double.Parse(reader.GetValue(13).ToString());
-        //                            var duLieuChamCongModel1 = Mapper.Map<CreateDuLieuChamCongRequest, Models.DuLieuChamCong>(duLieuChamCongThuViec);
-        //                            listContractRecords.Add(duLieuChamCongModel1);
-        //                        }
-
-        //                        if (!String.IsNullOrEmpty(reader.GetValue(21)?.ToString())
-        //                            && !String.IsNullOrEmpty(reader.GetValue(19)?.ToString())
-        //                            && !String.IsNullOrEmpty(reader.GetValue(20)?.ToString())
-        //                            && !String.IsNullOrEmpty(reader.GetValue(15)?.ToString())
-        //                            && !String.IsNullOrEmpty(reader.GetValue(13)?.ToString()))
-        //                        {
-        //                            var dateStart = DateTime.Parse(reader.GetValue(19).ToString());
-        //                            var dateEnd = DateTime.Parse(reader.GetValue(20).ToString());
-        //                            if (dateStart.AddDays(365) < dateEnd)
-        //                            {
-        //                                dateEnd = dateStart.AddDays(365);
-        //                            }
-
-        //                            CreateDuLieuChamCongRequest duLieuChamCongLD1 = new CreateDuLieuChamCongRequest();
-        //                            duLieuChamCongLD1.TenDuLieuChamCong = reader.GetValue(21).ToString();
-        //                            duLieuChamCongLD1.MaNhanVien = reader.GetValue(1).ToString();
-        //                            duLieuChamCongLD1.NgayBatDauDuLieuChamCong = dateStart;
-        //                            duLieuChamCongLD1.NgayKetThucDuLieuChamCong = dateEnd;
-        //                            duLieuChamCongLD1.loaiDuLieuChamCong = "Chính thức";
-        //                            duLieuChamCongLD1.TiLeHuongLuong = double.Parse(reader.GetValue(15).ToString());
-        //                            duLieuChamCongLD1.GioLamViec = double.Parse(reader.GetValue(13).ToString());
-        //                            var duLieuChamCongModel2 = Mapper.Map<CreateDuLieuChamCongRequest, Models.DuLieuChamCong>(duLieuChamCongLD1);
-        //                            listContractRecords.Add(duLieuChamCongModel2);
-        //                        }
-
-        //                        if (!String.IsNullOrEmpty(reader.GetValue(24)?.ToString())
-        //                            && !String.IsNullOrEmpty(reader.GetValue(22)?.ToString())
-        //                            && !String.IsNullOrEmpty(reader.GetValue(23)?.ToString())
-        //                            && !String.IsNullOrEmpty(reader.GetValue(15)?.ToString())
-        //                            && !String.IsNullOrEmpty(reader.GetValue(13)?.ToString()))
-        //                        {
-        //                            CreateDuLieuChamCongRequest duLieuChamCongLD2 = new CreateDuLieuChamCongRequest();
-        //                            duLieuChamCongLD2.TenDuLieuChamCong = reader.GetValue(24).ToString();
-        //                            duLieuChamCongLD2.MaNhanVien = reader.GetValue(1).ToString();
-        //                            duLieuChamCongLD2.NgayBatDauDuLieuChamCong = DateTime.Parse(reader.GetValue(22).ToString());
-        //                            duLieuChamCongLD2.NgayKetThucDuLieuChamCong = DateTime.Parse(reader.GetValue(23).ToString());
-        //                            duLieuChamCongLD2.loaiDuLieuChamCong = "Chính thức";
-        //                            duLieuChamCongLD2.TiLeHuongLuong = double.Parse(reader.GetValue(15).ToString());
-        //                            duLieuChamCongLD2.GioLamViec = double.Parse(reader.GetValue(13).ToString());
-        //                            var duLieuChamCongModel3 = Mapper.Map<CreateDuLieuChamCongRequest, Models.DuLieuChamCong>(duLieuChamCongLD2);
-        //                            listContractRecords.Add(duLieuChamCongModel3);
-        //                        }
-        //                    }
-        //                } while (reader.NextResult());
-
-        //            }
-        //        }
-
-        //        System.IO.File.Delete(filePath);
-        //    }
-
-        //    var result = await _nhanVienDAO.UpdateOrInsertListRecordsAsync(listEmployeeRecords.AsEnumerable(), listContractRecords.AsEnumerable());
-        //    await _unitOfWork.SaveChangesAsync();
-
-        //    if (result.isSuccess)
-        //        return GetBaseResult(CodeMessage._200, data: true);
-        //    else
-        //        return GetBaseResult<bool>(CodeMessage._556, status: StatusEnum.Failed);
-        //}
 
         public async Task<BaseResult<bool>> UploadFileTimeKeepingAsync(IFormFile file)
         {
@@ -420,8 +296,8 @@ namespace HRMBackend.Services.DuLieuChamCong
                                 CreateDuLieuChamCongRequest duLieuChamCong = new CreateDuLieuChamCongRequest();
                                 duLieuChamCong.MaNhanVien = listEmployeeId.data.MaNhanVien;
                                 duLieuChamCong.LanChamCong = int.Parse(reader.GetValue(3)?.ToString());
-                                duLieuChamCong.NgayChamCong = DateOnly.FromDateTime(DateTime.Parse(reader.GetValue(2)?.ToString()));
-                                duLieuChamCong.GioChamCong = TimeOnly.FromDateTime(DateTime.Parse(reader.GetValue(4)?.ToString()));
+                                duLieuChamCong.NgayChamCong = DateTime.Parse(reader.GetValue(2)?.ToString());
+                                duLieuChamCong.GioChamCong = DateTime.Parse(reader.GetValue(4)?.ToString()).TimeOfDay;
 
                                 var duLieuChamCongModel = Mapper.Map<CreateDuLieuChamCongRequest, Models.DuLieuChamCong>(duLieuChamCong);
                                 listTimeKeepingRecords.Add(duLieuChamCongModel);

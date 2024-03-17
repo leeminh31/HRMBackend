@@ -9,21 +9,21 @@ namespace HRMBackend.Models
     public partial class DonBu
     {
         [Key]
-        [Column("maDonBu")]
+        [Column("madonbu")]
         public int MaDonBu { get; set; }
-        [Column("ngayTaoDon")]
+        [Column("ngaytaodon")]
         public DateOnly NgayTaoDon { get; set; }
-        [Column("ngayLamViec")]
+        [Column("ngaylamviec")]
         public DateOnly NgayLamViec { get; set; }
-        [Column("soPhutXinBu")]
+        [Column("sophutxinbu")]
         public int SoPhutXinBu { get; set; }
-        [Column("lyDo")]
+        [Column("lydo")]
         public string LyDo { get; set; }
-        [Column("nguoiDuyet")]
+        [Column("nguoiduyet")]
         public string NguoiDuyet { get; set; }
-        [Column("trangThai")]
+        [Column("trangthai")]
         public bool TrangThai { get; set; }
-        [Column("maNhanVien")]
+        [Column("manhanvien")]
         public string MaNhanVien { get; set; }
     }
 }

@@ -9,7 +9,7 @@ namespace HRMBackend.DataAccess.DuLieuChamCong
         /// </summary>
         /// <param name="searchKey"></param>
         /// <returns></returns>
-        Task<(bool hasValue, IEnumerable<Models.DuLieuChamCong> data)> GetFilterAsync(string searchKey);
+        Task<(bool hasValue, IEnumerable<Models.DuLieuChamCong> data)> GetTotalHourkWorkByDayAsync(string? maNhanVien, DateTime? ngayLamViec);
 
         /// <summary>
         /// Chức năng: Lấy thông tin cảng hàng không đang hoạt động theo Id
@@ -21,7 +21,7 @@ namespace HRMBackend.DataAccess.DuLieuChamCong
         /// Chức năng: Lấy thông tin cảng hàng không đang hoạt động theo Id
         /// </summary>
         /// <returns></returns>
-        Task<(bool isSuccess, IEnumerable<Models.DuLieuChamCong> data)> GetByParamsAsync(string? maNhanVien, DateTime? ngayLamViec);
+        Task<(bool isSuccess, IEnumerable<Models.DuLieuChamCong> data)> GetByParamsAsync(string? maNhanVien, DateTime? ngayBatDau, DateTime? ngayKetThuc);
 
         /// <summary>
         /// Chức năng: tạo DuLieuChamCong

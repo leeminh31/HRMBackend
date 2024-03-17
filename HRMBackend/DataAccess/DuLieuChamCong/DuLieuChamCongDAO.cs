@@ -31,10 +31,10 @@ namespace HRMBackend.DataAccess.DuLieuChamCong
             return (false, default);
         }
 
-        public async Task<(bool hasValue, IEnumerable<Models.DuLieuChamCong> data)> GetFilterAsync(string searchKey)
+        public async Task<(bool hasValue, IEnumerable<Models.DuLieuChamCong> data)> GetTotalHourkWorkByDayAsync(string? maNhanVien, DateTime? ngayLamViec)
         {
             // Excute
-            var query = GetFilterQuery(searchKey);
+            var query = GetTotalHourkWorkByDayQuery(maNhanVien,ngayLamViec);
             var queryResult = await Context.QueryAsync<Models.DuLieuChamCong>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
             // Process result
@@ -91,9 +91,9 @@ namespace HRMBackend.DataAccess.DuLieuChamCong
         //    return (false, default);
         //}
 
-        public async Task<(bool isSuccess, IEnumerable<Models.DuLieuChamCong> data)> GetByParamsAsync(string? maNhanVien, DateTime? ngayLamViec)
+        public async Task<(bool isSuccess, IEnumerable<Models.DuLieuChamCong> data)> GetByParamsAsync(string? maNhanVien, DateTime? ngayBatDau, DateTime? ngayKetThuc)
         {
-            var query = GetByParamsQuery(maNhanVien, ngayLamViec);
+            var query = GetByParamsQuery(maNhanVien, ngayBatDau, ngayKetThuc);
             var queryResult = await Context.QueryAsync<Models.DuLieuChamCong>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
             // Process result
@@ -136,7 +136,7 @@ namespace HRMBackend.DataAccess.DuLieuChamCong
                 var res = await Context.ExecuteAsync(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
                 // Process result
-                if (res > 0)
+                if (res >= 0)
                 {
                     return (true, request);
                 }

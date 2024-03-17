@@ -4,6 +4,7 @@ using HRMBackend.Resources.DTO.DuLieuChamCong.Request;
 using HRMBackend.Services.DuLieuChamCong;
 using HRMBackend.Services.HopDong;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -32,7 +33,7 @@ namespace HRMBackend.Controllers
         //[Authorize]
         public async Task<IActionResult> GetByParamsAsync([FromBody] SearchDuLieuChamCongRequest request )
         {
-            var result = await _duLieuChamCongService.GetByParamsAsync(request.MaNhanVien, request.NgayLamViec);
+            var result = await _duLieuChamCongService.GetByParamsAsync(request);
 
             return Ok(result);
 
@@ -45,6 +46,26 @@ namespace HRMBackend.Controllers
         {
             var result = await _duLieuChamCongService.UploadFileTimeKeepingAsync(formFile);
             return Ok(result);
+        }
+
+        [HttpGet("dowload")]
+        [SwaggerOperation(summary: "Dowload Excel Template")]
+        //[Authorize]
+        public async Task<IActionResult> DowloadFileAsync()
+        {
+            try
+            {
+                string pathToFile = $"{Directory.GetCurrentDirectory()}\\Resources\\ExcelTemplate\\DuLieuChamCong.xlsx";
+                var fileName = System.IO.Path.GetFileName(pathToFile);
+                var content = await System.IO.File.ReadAllBytesAsync(pathToFile);
+                new FileExtensionContentTypeProvider()
+                    .TryGetContentType(fileName, out string contentType);
+                return File(content, contentType, fileName);
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
     }
 }

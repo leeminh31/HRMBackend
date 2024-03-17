@@ -22,20 +22,24 @@ namespace HRMBackend.DataAccess.DuLieuChamCong
                         , requests.ElementAt(i).MaNhanVien,
                         requests.ElementAt(i).NgayChamCong.ToString("yyyy-MM-dd"),
                         requests.ElementAt(i).LanChamCong,
-                        requests.ElementAt(i).GioChamCong.ToString("HH:mm:ss"));
+                        requests.ElementAt(i).GioChamCong);
                 else
                 {
                     valueQuery.AppendFormat("('{0}', '{1}', {2}, '{3}')"
                         , requests.ElementAt(i).MaNhanVien,
                         requests.ElementAt(i).NgayChamCong.ToString("yyyy-MM-dd"),
                         requests.ElementAt(i).LanChamCong,
-                        requests.ElementAt(i).GioChamCong.ToString("HH:mm:ss"));
+                        requests.ElementAt(i).GioChamCong);
                 }
             }
 
             string query = @"INSERT INTO public.tbl_dulieuchamcong(
 	                        manhanvien, ngaychamcong, lanchamcong, giochamcong)
-	                        VALUES " +valueQuery +";";
+	                        VALUES " + valueQuery
+                            + @"
+	                        ON CONFLICT(manhanvien,ngaychamcong,lanchamcong) 
+	                        DO UPDATE SET
+	                          giochamcong = EXCLUDED.giochamcong;";
             return (query, param);
         }
         private static (string sql, DynamicParameters param) GetAllContractQuery()
@@ -45,12 +49,15 @@ namespace HRMBackend.DataAccess.DuLieuChamCong
             string query = @"SELECT * FROM tbl_DuLieuChamCong";
             return (query, param);
         }
-        private static (string sql, DynamicParameters param) GetFilterQuery(string searchKey)
+        private static (string sql, DynamicParameters param) GetTotalHourkWorkByDayQuery(string? maNhanVien, DateTime? ngayLamViec)
         {
             // Param component
             var param = new DynamicParameters();
-            param.Add(":searchKey", searchKey, dbType: DbType.String, direction: ParameterDirection.Input);
-            string query = @"SELECT * FROM TBL_AIRPORT WHERE STATUS = 1 AND (:searchKey IS NULL OR UPPER(NAME) LIKE '%' || :searchKey || '%')";
+            param.Add(":manhanvien", maNhanVien, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":ngaylamviec", ngayLamViec, dbType: DbType.Date, direction: ParameterDirection.Input);
+            string query = @"SELECT * FROM TBL_DULIEUCHAMCONG WHERE 
+                            (:manhanvien IS NULL OR MANHANVIEN = :manhanvien) 
+                            AND ( :ngaylamviec IS NULL OR NGAYCHAMCONG = :ngaylamviec)";
             return (query, param);
         }
         private static (string sql, DynamicParameters param) GetByIdQuery(string tenDuLieuChamCong)
@@ -116,19 +123,22 @@ namespace HRMBackend.DataAccess.DuLieuChamCong
             return (query, param);
         }
 
-        private static (string sql, DynamicParameters param) GetByParamsQuery(string? maNhanVien, DateTime? ngayLamViec)
+        private static (string sql, DynamicParameters param) GetByParamsQuery(string? maNhanVien, DateTime? ngayBatDau, DateTime? ngayKetThuc)
         {
             // Param component
             var param = new DynamicParameters();
+
             param.Add(":manhanvien", RemoveSignUnicodeString(maNhanVien, true), dbType: DbType.String, direction: ParameterDirection.Input);
-            param.Add(":ngaylamviec", ngayLamViec, dbType: DbType.Date, direction: ParameterDirection.Input);
+            param.Add(":ngaybatdau", ngayBatDau , dbType: DbType.Date, direction: ParameterDirection.Input);
+            param.Add(":ngayketthuc", ngayKetThuc, dbType: DbType.Date, direction: ParameterDirection.Input);
 
             // SQL component
             string query = @"SELECT *
                             FROM TBL_DULIEUCHAMCONG
                             WHERE (
                                 (:manhanvien IS NULL OR TRANSLATE(UPPER(MANHANVIEN), 'ÁÀẢẠÃĂẮẰẲẶẴÂẤẦẨẬẪĐÉÈẺẸẼÊẾỀỂỆỄÍÌỈỊĨÓÒỎỌÕỐỒỘỖÔỔƠỚỜỞỠỢÚÙỦỤŨƯỨỪỬỰỮÝỲỶỴỸáàảạãăắẵằẳặâấầẩậẫđéèẻẹẽêếềểệễíìỉịĩóòỏọõốồổộỗôơớờởỡợúùủụũưứừửựữýỳỷỵỹ', 'AAAAAAAAAAAAAAAAADEEEEEEEEEEEIIIIIOOOOOOOOOOOOOOOOOUUUUUUUUUUUYYYYYAAAAAAAAAAAAAAAAADEEEEEEEEEEEIIIIIOOOOOOOOOOOOOOOOOUUUUUUUUUUUYYYYY') LIKE '%' || :manhanvien || '%')
-                                AND (:ngaylamviec IS NULL OR ngaychamcong = :ngaylamviec)
+                                AND (:ngaybatdau IS NULL OR ngaychamcong >= :ngaybatdau)
+                                AND (:ngayketthuc IS NULL OR ngaychamcong <= :ngayketthuc)
                             )";
 
             return (query, param);

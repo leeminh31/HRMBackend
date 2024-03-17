@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using HRMBackend.Resources.DTO.BaoCaoTheoThang.Response;
 using HRMBackend.Resources.DTO.DuLieuChamCong.Response;
 using HRMBackend.Resources.DTO.HopDong.Response;
 
@@ -9,6 +10,7 @@ namespace HRMBackend.Mapping.DuLieuChamCong
         public ModelToResourceDuLieuChamCong()
         {
             CreateMap<Models.DuLieuChamCong, DuLieuChamCongResponse>();
+            CreateMap<Models.DuLieuChamCong, BaoCaoTheoThangResponse>();
         }
 
     }
