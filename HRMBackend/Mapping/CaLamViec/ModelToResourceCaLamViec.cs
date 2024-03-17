@@ -10,7 +10,5 @@ namespace HRMBackend.Mapping.CaLamViec
         {
             CreateMap<Models.CaLamViec, CaLamViecResponse>();
         }
-
-
     }
 }

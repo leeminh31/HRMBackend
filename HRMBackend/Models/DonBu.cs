@@ -12,9 +12,9 @@ namespace HRMBackend.Models
         [Column("madonbu")]
         public int MaDonBu { get; set; }
         [Column("ngaytaodon")]
-        public DateOnly NgayTaoDon { get; set; }
+        public DateTime NgayTaoDon { get; set; }
         [Column("ngaylamviec")]
-        public DateOnly NgayLamViec { get; set; }
+        public DateTime NgayLamViec { get; set; }
         [Column("sophutxinbu")]
         public int SoPhutXinBu { get; set; }
         [Column("lydo")]
@@ -22,7 +22,7 @@ namespace HRMBackend.Models
         [Column("nguoiduyet")]
         public string NguoiDuyet { get; set; }
         [Column("trangthai")]
-        public bool TrangThai { get; set; }
+        public string TrangThai { get; set; }
         [Column("manhanvien")]
         public string MaNhanVien { get; set; }
     }

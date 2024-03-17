@@ -23,7 +23,7 @@ namespace HRMBackend.DataAccess.DonTangCa
             var queryResult = await Context.QueryAsync<Models.DonTangCa>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
             // Process result
-            if (queryResult != null)
+            if (queryResult.GetEnumerator().MoveNext())
                 return (true, queryResult);
 
             return (false, default);

@@ -13,17 +13,19 @@ namespace HRMBackend.DataAccess.DonConNho
         {
             // Param component
             var param = new DynamicParameters();
-            param.Add(":ngaylamviec", request.NgayLamViec, dbType: DbType.Date, direction: ParameterDirection.Input);
-            param.Add(":ngaytaodon", request.NgayTao, dbType: DbType.Date, direction: ParameterDirection.Input);
-            param.Add(":trangthai", request.TrangThai, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":ngaylamviecbatdau", request.NgayLamViecBatDau, dbType: DbType.Date, direction: ParameterDirection.Input);
+            param.Add(":ngaylamviecketthuc", request.NgayLamViecKetThuc, dbType: DbType.Date, direction: ParameterDirection.Input);
+            param.Add(":ngaytaodonbatdau", request.NgayTaoBatDau, dbType: DbType.Date, direction: ParameterDirection.Input);
+            param.Add(":ngaytaodonketthuc", request.NgayTaoKetThuc, dbType: DbType.Date, direction: ParameterDirection.Input);
 
             // SQL component
             string query = @"SELECT *
                             FROM TBL_DONCONNHO
                             WHERE 
-                                (:ngaylamviec IS NULL OR (tuNgay <= :ngaylamviec AND denNgay >= :ngaylamviec ))
-                                AND (:ngaytaodon IS NULL OR ngaytaodon = :ngaytaodon)
-                                AND (:trangthai IS NULL OR trangthai = :trangthai)
+                                (:ngaylamviecbatdau IS NULL OR tungay >= :ngaylamviecbatdau)
+                                AND (:ngaylamviecketthuc IS NULL OR denngay <= :ngaylamviecketthuc)
+                                AND (:ngaytaodonbatdau IS NULL OR ngaytaodon >= :ngaytaodonbatdau)
+                                AND (:ngaytaodonketthuc IS NULL OR ngaytaodon <= :ngaytaodonketthuc)
                             ";
 
             return (query, param);

@@ -12,19 +12,19 @@ namespace HRMBackend.Models
         [Column("madontangca")]
         public int MaDonTangCa { get; set; }
         [Column("ngaytaodon")]
-        public DateOnly NgayTaoDon { get; set; }
+        public DateTime NgayTaoDon { get; set; }
         [Column("ngaylamviec")]
-        public DateOnly NgayLamViec { get; set; }
+        public DateTime NgayLamViec { get; set; }
         [Column("tangcatu")]
-        public TimeOnly TangCaTu { get; set; }
+        public TimeSpan TangCaTu { get; set; }
         [Column("tangcaden")]
-        public TimeOnly TangCaDen{ get; set; }
+        public TimeSpan TangCaDen{ get; set; }
         [Column("lydo")]
         public string LyDo { get; set; }
         [Column("nguoiduyet")]
         public string NguoiDuyet { get; set; }
         [Column("trangthai")]
-        public bool TrangThai { get; set; }
+        public string TrangThai { get; set; }
         [Column("manhanvien")]
         public string MaNhanVien {  get; set; }
     }

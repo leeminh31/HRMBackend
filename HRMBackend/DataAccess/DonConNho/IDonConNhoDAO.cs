@@ -5,6 +5,6 @@ namespace HRMBackend.DataAccess.DonConNho
 {
     public interface IDonConNhoDAO
     {
-        Task<(bool isSuccess, IEnumerable<DonConNhoResponse> data)> GetByParamsAsync(SearchDanhSachDonRequest request);
+        Task<(bool isSuccess, IEnumerable<Models.DonConNho> data)> GetByParamsAsync(SearchDanhSachDonRequest request);
     }
 }

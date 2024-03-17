@@ -8,7 +8,7 @@
         public DateTime NgayLamViec { get; set; }
         public string LyDo { get; set; }
         public string NguoiDuyet { get; set; }
-        public bool TrangThai { get; set; }
+        public string TrangThai { get; set; }
         public string MaNhanVien { get; set; }
 
     }

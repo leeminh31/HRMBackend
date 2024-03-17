@@ -23,7 +23,7 @@ namespace HRMBackend.DataAccess.DonPhep
             var queryResult = await Context.QueryAsync<Models.DonPhep>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
             // Process result
-            if (queryResult != null)
+            if (queryResult.GetEnumerator().MoveNext())
                 return (true, queryResult);
 
             return (false, default);

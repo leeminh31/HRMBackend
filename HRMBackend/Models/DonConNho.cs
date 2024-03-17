@@ -12,17 +12,17 @@ namespace HRMBackend.Models
         [Column("madonconnho")]
         public int MaDonConNho { get; set; }
         [Column("ngaytaodon")]
-        public DateOnly NgayTaoDon { get; set; }
+        public DateTime NgayTaoDon { get; set; }
         [Column("tungay")]
-        public DateOnly TuNgay { get; set; }
+        public DateTime TuNgay { get; set; }
         [Column("denngay")]
-        public DateOnly DenNgay { get; set; }
+        public DateTime DenNgay { get; set; }
         [Column("lydo")]
         public string LyDo { get; set; }
         [Column("nguoiduyet")]
         public string NguoiDuyet { get; set; }
         [Column("trangthai")]
-        public bool TrangThai { get; set; }
+        public string TrangThai { get; set; }
         [Column("manhanvien")]
         public string MaNhanVien { get; set; }
     }

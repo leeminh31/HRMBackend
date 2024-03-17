@@ -50,7 +50,7 @@ namespace HRMBackend.Extensions
 
             services.AddScoped<IBaoCaoTheoThangService, BaoCaoTheoThangService>();
 
-            services.AddScoped<IDanhSachDonService, IDanhSachDonService>();
+            services.AddScoped<IDanhSachDonService, DanhSachDonService>();
 
             services.AddScoped<INhanVienDAO, NhanVienDAO>();
             services.AddScoped<INhanVienService, NhanVienService>();

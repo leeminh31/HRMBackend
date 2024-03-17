@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using HRMBackend.DataAccess.DanhSachDon;
 using HRMBackend.DataAccess.UnitOfWork;
 using HRMBackend.Resources.DTO.DanhSachDon.Request;
 using HRMBackend.Resources.DTO.DanhSachDon.Response;
@@ -12,13 +11,16 @@ using HRMBackend.DataAccess.DonBu;
 using HRMBackend.DataAccess.DonConNho;
 using HRMBackend.DataAccess.DonPhep;
 using HRMBackend.DataAccess.DonTangCa;
+using HRMBackend.Resources.DTO.DonBu.Response;
+using HRMBackend.Resources.DTO.DonPhep.Response;
+using HRMBackend.Resources.DTO.DonTangCa.Response;
+using HRMBackend.Resources.DTO.DonConNho.Response;
 
 namespace HRMBackend.Services.DanhSachDon
 {
     public class DanhSachDonService : BaseService, IDanhSachDonService
     {
         #region Property
-        private readonly IDanhSachDonDAO _DanhSachDonDAO;
         private readonly IDonBuDAO _donBuDAO;
         private readonly IDonConNhoDAO _donConNhoDAO;
         private readonly IDonPhepDAO _donPhepDAO;
@@ -27,8 +29,7 @@ namespace HRMBackend.Services.DanhSachDon
         #endregion
 
         #region Constructor
-        public DanhSachDonService(IDanhSachDonDAO DanhSachDonDAO,
-            IDonBuDAO donBuDAO,
+        public DanhSachDonService(IDonBuDAO donBuDAO,
             IDonPhepDAO donPhepDAO,
             IDonTangCaDAO donTangCaDAO,
             IDonConNhoDAO donConNhoDAO,
@@ -36,7 +37,6 @@ namespace HRMBackend.Services.DanhSachDon
             IMapper mapper,
             IOptionsMonitor<ResponseMessage> responseMessage) : base(mapper, responseMessage)
         {
-            this._DanhSachDonDAO = DanhSachDonDAO;
             this._donBuDAO = donBuDAO;
             this._donTangCaDAO = donTangCaDAO;
             this._donPhepDAO = donPhepDAO;
@@ -45,70 +45,44 @@ namespace HRMBackend.Services.DanhSachDon
         }
         #endregion
 
-        public async Task<BaseResult<IEnumerable<DanhSachDonResponse>>> GetByParamsAsync(SearchDanhSachDonRequest request)
+        public async Task<BaseResult<DanhSachDonResponse>> GetByParamsAsync(SearchDanhSachDonRequest request)
         {
-            var listDonBu = 
+            var danhSachDonResponse = new DanhSachDonResponse();
+            danhSachDonResponse.listDonBu = new List<DonBuResponse>();
+            danhSachDonResponse.listDonPhep = new List<DonPhepResponse>();
+            danhSachDonResponse.listDonTangCa = new List<DonTangCaResponse>();
+            danhSachDonResponse.listDonConNho = new List<DonConNhoResponse>();
 
-            //var records = await _DanhSachDonDAO.GetByShiftIDAsync(request);
-            //if (records.isSuccess)
-            //{
-            //    return GetBaseResult(CodeMessage._200, data: Mapper.Map<IEnumerable<DanhSachDonResponse>>(records.data));
-            //}
-            return GetBaseResult<IEnumerable<DanhSachDonResponse>>(CodeMessage._545, status: StatusEnum.Failed);
-        }
-
-        public async Task<BaseResult<DanhSachDonResponse>> CreateAsync(CreateDanhSachDonRequest request)
-        {
-            // Mapping Resource to PhongBan
-            var phongban = Mapper.Map<CreateDanhSachDonRequest, Models.DanhSachDon>(request);
-            //SearchPhongBanRequest searchRequest = new SearchPhongBanRequest() { TenPhongBan = request.TenPhongBan, ThuKyPhongBan = null, TruongPhongBan = null };
-            //Tìm tên ca đã tồn tại chưa?
-            var records = await _DanhSachDonDAO.GetByShiftNameAsync(request.TenCa);
-            if (records.hasValue)
+            var listDonBu = await _donBuDAO.GetByParamsAsync(request);
+            if (listDonBu.isSuccess)
             {
-                return GetBaseResult(CodeMessage._557, data: Mapper.Map<DanhSachDonResponse>(records.data));
+                danhSachDonResponse.listDonBu.AddRange(Mapper.Map<IEnumerable<DonBuResponse>>(listDonBu.data).ToList());
             }
 
-            var result = await _DanhSachDonDAO.CreateAsync(phongban);
-            await _unitOfWork.SaveChangesAsync();
+            var listDonPhep = await _donPhepDAO.GetByParamsAsync(request);
+            if (listDonPhep.isSuccess)
+            {
+                danhSachDonResponse.listDonPhep.AddRange(Mapper.Map<IEnumerable<DonPhepResponse>>(listDonPhep.data).ToList());
+            }
 
-            if (result.isSuccess)
-                return GetBaseResult(CodeMessage._200, data: Mapper.Map<DanhSachDonResponse>(result.data));
-            else
-                return GetBaseResult<DanhSachDonResponse>(CodeMessage._209, status: StatusEnum.Failed);
-        }
+            var listDonConNho = await _donConNhoDAO.GetByParamsAsync(request);
+            if (listDonConNho.isSuccess)
+            {
+                danhSachDonResponse.listDonConNho.AddRange(Mapper.Map<IEnumerable<DonConNhoResponse>>(listDonConNho.data).ToList());
+            }
 
-        public async Task<BaseResult<DanhSachDonResponse>> UpdateAsync(UpdateDanhSachDonRequest request)
-        {
-            // Mapping Resource to PhongBan
-            var airport = Mapper.Map<UpdateDanhSachDonRequest, Models.DanhSachDon>(request);
-            //SearchPhongBanRequest searchRequest = new SearchPhongBanRequest() { TenPhongBan = request.TenPhongBan, ThuKyPhongBan = null, TruongPhongBan = null };
-            //Tìm tên phòng ban đã tồn tại chưa?
-            //var records = await _DanhSachDonDAO.GetByTenPhongBanAsync(request.TenPhongBan, request.MaPhongBan);
-            //if (records.hasValue)
-            //{
-            //    return GetBaseResult(CodeMessage._551, data: Mapper.Map<PhongBanResponse>(records.data));
-            //}
+            var listDonTangCa = await _donTangCaDAO.GetByParamsAsync(request);
+            if(listDonTangCa.isSuccess)
+            {
+                danhSachDonResponse.listDonTangCa.AddRange(Mapper.Map<IEnumerable<DonTangCaResponse>>(listDonTangCa.data).ToList());
+            }
 
-            var result = await _DanhSachDonDAO.UpdateAsync(airport);
-            await _unitOfWork.SaveChangesAsync();
+            if (!listDonBu.isSuccess && !listDonConNho.isSuccess && !listDonPhep.isSuccess && !listDonTangCa.isSuccess) { 
+                return GetBaseResult<DanhSachDonResponse>(CodeMessage._545, status: StatusEnum.Failed);
+            }
+            
+            return GetBaseResult(CodeMessage._200, data: danhSachDonResponse);
 
-            if (result.isSuccess)
-                return GetBaseResult(CodeMessage._200, data: Mapper.Map<DanhSachDonResponse>(result.data));
-            else
-                return GetBaseResult<DanhSachDonResponse>(CodeMessage._236, status: StatusEnum.Failed);
-        }
-
-        public async Task<BaseResult<bool>> DeleteAsync(string id)
-        {
-            var isUserRoleSuccess = await _DanhSachDonDAO.DeleteAsync(id);
-
-            await _unitOfWork.SaveChangesAsync();
-
-            if (isUserRoleSuccess)
-                return GetBaseResult<bool>(CodeMessage._200);
-            else
-                return GetBaseResult<bool>(CodeMessage._210, status: StatusEnum.Failed);
         }
     }
 }

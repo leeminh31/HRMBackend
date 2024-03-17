@@ -6,6 +6,6 @@ namespace HRMBackend.Services.DanhSachDon
 {
     public interface IDanhSachDonService
     {
-        Task<BaseResult<IEnumerable<DanhSachDonResponse>>> GetByParamsAsync(SearchDanhSachDonRequest request);
+        Task<BaseResult<DanhSachDonResponse>> GetByParamsAsync(SearchDanhSachDonRequest request);
     }
 }
