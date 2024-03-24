@@ -4,7 +4,7 @@
     {
         public string? TenNhanVien { get; set; }
         public int? LoaiDon {  get; set; }
-        public int? TrangThai { get; set; }
+        public string? TrangThai { get; set; }
         public DateTime? NgayLamViecBatDau { get; set; }
         public DateTime? NgayLamViecKetThuc { get; set; }
         public DateTime? NgayTaoBatDau {  get; set; }

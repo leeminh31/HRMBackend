@@ -9,6 +9,39 @@ namespace HRMBackend.DataAccess.DonTangCa
 {
     public partial class DonTangCaDAO
     {
+        private static (string sql, DynamicParameters param) CreateQuery(Models.DonTangCa model)
+        {
+            // Param component
+            var param = new DynamicParameters();
+            param.Add(":manhanvien", model.MaNhanVien, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":ngaytaodon", model.NgayTaoDon, dbType: DbType.Date, direction: ParameterDirection.Input);
+            param.Add(":ngaylamviec", model.NgayLamViec, dbType: DbType.Date, direction: ParameterDirection.Input);
+            param.Add(":tangcatu", model.TangCaTu, dbType: DbType.Time, direction: ParameterDirection.Input);
+            param.Add(":tangcaden", model.TangCaDen, dbType: DbType.Time, direction: ParameterDirection.Input);
+            param.Add(":lydo", model.LyDo, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":nguoiduyet", model.NguoiDuyet, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":madontangca", model.MaDonTangCa, dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+            // SQL component
+            string query = @"INSERT INTO public.tbl_dontangca(
+	                        manhanvien, ngaytaodon, ngaylamviec, tangcatu, tangcaden, lydo, nguoiduyet, trangthai)
+	                        VALUES (:manhanvien, :ngaytaodon, :ngaylamviec, :tangcatu, :tangcaden, :lydo, :nguoiduyet, '" + model.TrangThai + @"')
+                            RETURNING madontangca";
+            return (query, param);
+        }
+        private static (string sql, DynamicParameters param) ApproveRequestQuery(string maDonTangCa)
+        {
+            // Param component
+            var param = new DynamicParameters();
+            //param.Add(":trangthai", request.NgayLamViecBatDau, dbType: DbType.Date, direction: ParameterDirection.Input);
+
+            // SQL component
+            string query = @"UPDATE public.tbl_dontangca
+	                        SET trangthai= '1'
+	                        WHERE madontangca IN (" + maDonTangCa + ")";
+
+            return (query, param);
+        }
         private static (string sql, DynamicParameters param) GetByParamsQuery(SearchDanhSachDonRequest request)
         {
             // Param component

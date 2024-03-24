@@ -15,6 +15,14 @@ using HRMBackend.Resources.DTO.DonBu.Response;
 using HRMBackend.Resources.DTO.DonPhep.Response;
 using HRMBackend.Resources.DTO.DonTangCa.Response;
 using HRMBackend.Resources.DTO.DonConNho.Response;
+using Mysqlx.Session;
+using HRMBackend.DataAccess.NhanVien;
+using HRMBackend.Resources.DTO.DonBu.Request;
+using HRMBackend.Resources.DTO.CaLamViec.Request;
+using HRMBackend.Resources.DTO.CaLamViec.Response;
+using HRMBackend.Resources.DTO.DonConNho.Request;
+using HRMBackend.Resources.DTO.DonPhep.Request;
+using HRMBackend.Resources.DTO.DonTangCa.Request;
 
 namespace HRMBackend.Services.DanhSachDon
 {
@@ -25,6 +33,7 @@ namespace HRMBackend.Services.DanhSachDon
         private readonly IDonConNhoDAO _donConNhoDAO;
         private readonly IDonPhepDAO _donPhepDAO;
         private readonly IDonTangCaDAO _donTangCaDAO;
+        private readonly INhanVienDAO _nhanVienDAO;
         private readonly IUnitOfWork _unitOfWork;
         #endregion
 
@@ -33,6 +42,7 @@ namespace HRMBackend.Services.DanhSachDon
             IDonPhepDAO donPhepDAO,
             IDonTangCaDAO donTangCaDAO,
             IDonConNhoDAO donConNhoDAO,
+            INhanVienDAO nhanVienDAO,
             IUnitOfWork unitOfWork,
             IMapper mapper,
             IOptionsMonitor<ResponseMessage> responseMessage) : base(mapper, responseMessage)
@@ -41,10 +51,67 @@ namespace HRMBackend.Services.DanhSachDon
             this._donTangCaDAO = donTangCaDAO;
             this._donPhepDAO = donPhepDAO;
             this._donConNhoDAO = donConNhoDAO;
+            this._nhanVienDAO = nhanVienDAO;
             this._unitOfWork = unitOfWork;
         }
         #endregion
 
+        public async Task<BaseResult<DanhSachDonResponse>> GetByEmployeeIdAsync(string? maNhanVien)
+        {
+            var request = new SearchDanhSachDonRequest() { 
+                LoaiDon = null,
+                NgayLamViecBatDau = null,
+                NgayLamViecKetThuc = null,
+                NgayTaoBatDau = null,
+                NgayTaoKetThuc = null,
+                TenNhanVien = null,
+                TrangThai = null,
+            };
+
+            var danhSachDonResponse = new DanhSachDonResponse();
+            danhSachDonResponse.listDonBu = new List<DonBuResponse>();
+            danhSachDonResponse.listDonPhep = new List<DonPhepResponse>();
+            danhSachDonResponse.listDonTangCa = new List<DonTangCaResponse>();
+            danhSachDonResponse.listDonConNho = new List<DonConNhoResponse>();
+
+            var listDonBu = await _donBuDAO.GetByParamsAsync(request);
+            var listDonPhep = await _donPhepDAO.GetByParamsAsync(request);
+            var listDonConNho = await _donConNhoDAO.GetByParamsAsync(request);
+            var listDonTangCa = await _donTangCaDAO.GetByParamsAsync(request);
+
+            if (listDonBu.isSuccess)
+            {
+                danhSachDonResponse.listDonBu.AddRange(Mapper.Map<IEnumerable<DonBuResponse>>(listDonBu.data).ToList());
+            }
+
+            if (listDonPhep.isSuccess)
+            {
+                danhSachDonResponse.listDonPhep.AddRange(Mapper.Map<IEnumerable<DonPhepResponse>>(listDonPhep.data).ToList());
+            }
+
+            if (listDonConNho.isSuccess)
+            {
+                danhSachDonResponse.listDonConNho.AddRange(Mapper.Map<IEnumerable<DonConNhoResponse>>(listDonConNho.data).ToList());
+            }
+
+            if (listDonTangCa.isSuccess)
+            {
+                danhSachDonResponse.listDonTangCa.AddRange(Mapper.Map<IEnumerable<DonTangCaResponse>>(listDonTangCa.data).ToList());
+            }
+
+            if (!listDonBu.isSuccess && !listDonConNho.isSuccess && !listDonPhep.isSuccess && !listDonTangCa.isSuccess)
+            {
+                return GetBaseResult<DanhSachDonResponse>(CodeMessage._545, status: StatusEnum.Failed);
+            }
+
+            danhSachDonResponse.listDonPhep = danhSachDonResponse.listDonPhep.Where(donPhep => maNhanVien == donPhep.MaNhanVien).ToList();
+            danhSachDonResponse.listDonBu = danhSachDonResponse.listDonBu.Where(donPhep => maNhanVien == donPhep.MaNhanVien).ToList();
+            danhSachDonResponse.listDonConNho = danhSachDonResponse.listDonConNho.Where(donPhep => maNhanVien == donPhep.MaNhanVien).ToList();
+            danhSachDonResponse.listDonTangCa = danhSachDonResponse.listDonTangCa.Where(donPhep => maNhanVien == donPhep.MaNhanVien).ToList();
+
+            return GetBaseResult(CodeMessage._200, data: danhSachDonResponse);
+
+        }
         public async Task<BaseResult<DanhSachDonResponse>> GetByParamsAsync(SearchDanhSachDonRequest request)
         {
             var danhSachDonResponse = new DanhSachDonResponse();
@@ -54,27 +121,91 @@ namespace HRMBackend.Services.DanhSachDon
             danhSachDonResponse.listDonConNho = new List<DonConNhoResponse>();
 
             var listDonBu = await _donBuDAO.GetByParamsAsync(request);
+            var listDonPhep = await _donPhepDAO.GetByParamsAsync(request);
+            var listDonConNho = await _donConNhoDAO.GetByParamsAsync(request);
+            var listDonTangCa = await _donTangCaDAO.GetByParamsAsync(request);
+
             if (listDonBu.isSuccess)
             {
                 danhSachDonResponse.listDonBu.AddRange(Mapper.Map<IEnumerable<DonBuResponse>>(listDonBu.data).ToList());
             }
-
-            var listDonPhep = await _donPhepDAO.GetByParamsAsync(request);
+            
             if (listDonPhep.isSuccess)
             {
                 danhSachDonResponse.listDonPhep.AddRange(Mapper.Map<IEnumerable<DonPhepResponse>>(listDonPhep.data).ToList());
             }
 
-            var listDonConNho = await _donConNhoDAO.GetByParamsAsync(request);
             if (listDonConNho.isSuccess)
             {
                 danhSachDonResponse.listDonConNho.AddRange(Mapper.Map<IEnumerable<DonConNhoResponse>>(listDonConNho.data).ToList());
             }
 
-            var listDonTangCa = await _donTangCaDAO.GetByParamsAsync(request);
             if(listDonTangCa.isSuccess)
             {
                 danhSachDonResponse.listDonTangCa.AddRange(Mapper.Map<IEnumerable<DonTangCaResponse>>(listDonTangCa.data).ToList());
+            }
+
+            if (request.TrangThai != null)
+            {
+                danhSachDonResponse.listDonTangCa = danhSachDonResponse.listDonTangCa.Where(donTangCa => donTangCa.TrangThai == request.TrangThai).ToList();
+                danhSachDonResponse.listDonBu = danhSachDonResponse.listDonBu.Where(donTangCa => donTangCa.TrangThai == request.TrangThai).ToList();
+                danhSachDonResponse.listDonConNho = danhSachDonResponse.listDonConNho.Where(donTangCa => donTangCa.TrangThai == request.TrangThai).ToList();
+                danhSachDonResponse.listDonPhep = danhSachDonResponse.listDonPhep.Where(donTangCa => donTangCa.TrangThai == request.TrangThai).ToList();
+            }
+
+            if (request.TenNhanVien != null)
+            {
+                var listEmployee = await _nhanVienDAO.GetAllEmployeeIdByNameAsync(request.TenNhanVien);
+                if(listEmployee.hasValue)
+                {
+                    var listEmployeeId = listEmployee.data;
+                    danhSachDonResponse.listDonPhep = danhSachDonResponse.listDonPhep.Where(donPhep => listEmployeeId.Contains(donPhep.MaNhanVien)).ToList();
+                    danhSachDonResponse.listDonBu = danhSachDonResponse.listDonBu.Where(donPhep => listEmployeeId.Contains(donPhep.MaNhanVien)).ToList();
+                    danhSachDonResponse.listDonConNho = danhSachDonResponse.listDonConNho.Where(donPhep => listEmployeeId.Contains(donPhep.MaNhanVien)).ToList();
+                    danhSachDonResponse.listDonTangCa = danhSachDonResponse.listDonTangCa.Where(donPhep => listEmployeeId.Contains(donPhep.MaNhanVien)).ToList();
+                } else
+                {
+                    danhSachDonResponse.listDonBu = new List<DonBuResponse>();
+                    danhSachDonResponse.listDonTangCa = new List<DonTangCaResponse>();
+                    danhSachDonResponse.listDonPhep = new List<DonPhepResponse>();
+                    danhSachDonResponse.listDonConNho = new List<DonConNhoResponse>();
+                    return GetBaseResult<DanhSachDonResponse>(CodeMessage._545, status: StatusEnum.Failed);
+                }
+            }
+
+            if (request.LoaiDon != null)
+            {
+                if (request.LoaiDon == 1)
+                {
+                    danhSachDonResponse.listDonConNho = new List<DonConNhoResponse>();
+                    danhSachDonResponse.listDonTangCa = new List<DonTangCaResponse>();
+                    danhSachDonResponse.listDonPhep = new List<DonPhepResponse>();
+                    return GetBaseResult(CodeMessage._200, data: danhSachDonResponse);
+                }
+
+                if (request.LoaiDon == 2)
+                {
+                    danhSachDonResponse.listDonBu = new List<DonBuResponse>();
+                    danhSachDonResponse.listDonTangCa = new List<DonTangCaResponse>();
+                    danhSachDonResponse.listDonPhep = new List<DonPhepResponse>();
+                    return GetBaseResult(CodeMessage._200, data: danhSachDonResponse);
+                }
+
+                if (request.LoaiDon == 3)
+                {
+                    danhSachDonResponse.listDonConNho = new List<DonConNhoResponse>();
+                    danhSachDonResponse.listDonTangCa = new List<DonTangCaResponse>();
+                    danhSachDonResponse.listDonBu = new List<DonBuResponse>();
+                    return GetBaseResult(CodeMessage._200, data: danhSachDonResponse);
+                }
+
+                if (request.LoaiDon == 4)
+                {
+                    danhSachDonResponse.listDonConNho = new List<DonConNhoResponse>();
+                    danhSachDonResponse.listDonBu = new List<DonBuResponse>();
+                    danhSachDonResponse.listDonPhep = new List<DonPhepResponse>();
+                    return GetBaseResult(CodeMessage._200, data: danhSachDonResponse);
+                }
             }
 
             if (!listDonBu.isSuccess && !listDonConNho.isSuccess && !listDonPhep.isSuccess && !listDonTangCa.isSuccess) { 
@@ -83,6 +214,58 @@ namespace HRMBackend.Services.DanhSachDon
             
             return GetBaseResult(CodeMessage._200, data: danhSachDonResponse);
 
+        }
+
+        public async Task<BaseResult<bool>> ApproveAllRequestAsync(ApproveRequestList request)
+        {
+            var result = await _donBuDAO.ApproveAllRequestAsync(request);
+            await _unitOfWork.SaveChangesAsync();
+
+            return GetBaseResult(CodeMessage._200, true);
+        }
+
+        public async Task<BaseResult<bool>> RejectAllRequestAsync(ApproveRequestList request)
+        {
+            var result = await _donBuDAO.RejectAllRequestAsync(request);
+            await _unitOfWork.SaveChangesAsync();
+
+            return GetBaseResult(CodeMessage._200, true);
+        }
+
+        public async Task<BaseResult<DonBuResponse>> CreateDonBuAsync(CreateDonBuRequest request)
+        {
+            var donbu = Mapper.Map<CreateDonBuRequest, Models.DonBu>(request);
+            var result = await _donBuDAO.CreateAsync(donbu);
+            await _unitOfWork.SaveChangesAsync();
+
+            return GetBaseResult(CodeMessage._200, data: Mapper.Map<DonBuResponse>(result.data));
+        }
+
+        public async Task<BaseResult<DonConNhoResponse>> CreateDonConNhoAsync(CreateDonConNhoRequest request)
+        {
+            var donbu = Mapper.Map<CreateDonConNhoRequest, Models.DonConNho>(request);
+            var result = await _donConNhoDAO.CreateAsync(donbu);
+            await _unitOfWork.SaveChangesAsync();
+
+            return GetBaseResult(CodeMessage._200, data: Mapper.Map<DonConNhoResponse>(result.data));
+        }
+
+        public async Task<BaseResult<DonPhepResponse>> CreateDonPhepAsync(CreateDonPhepRequest request)
+        {
+            var donbu = Mapper.Map<CreateDonPhepRequest, Models.DonPhep>(request);
+            var result = await _donPhepDAO.CreateAsync(donbu);
+            await _unitOfWork.SaveChangesAsync();
+
+            return GetBaseResult(CodeMessage._200, data: Mapper.Map<DonPhepResponse>(result.data));
+        }
+
+        public async Task<BaseResult<DonTangCaResponse>> CreateDonTangCaAsync(CreateDonTangCaRequest request)
+        {
+            var donbu = Mapper.Map<CreateDonTangCaRequest, Models.DonTangCa>(request);
+            var result = await _donTangCaDAO.CreateAsync(donbu);
+            await _unitOfWork.SaveChangesAsync();
+
+            return GetBaseResult(CodeMessage._200, data: Mapper.Map<DonTangCaResponse>(result.data));
         }
     }
 }

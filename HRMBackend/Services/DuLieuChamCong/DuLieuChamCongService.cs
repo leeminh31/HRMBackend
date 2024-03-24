@@ -135,6 +135,9 @@ namespace HRMBackend.Services.DuLieuChamCong
 
                 var shiftId = employeeInfo.data?.MaCa;
 
+                if (shiftId == 0)
+                    continue;
+
                 var shiftName = await _caLamViecDAO.GetByShiftIDAsync(shiftId, null);
 
                 var giobatdaulam = shiftName.data.First().GioBatDauCa;

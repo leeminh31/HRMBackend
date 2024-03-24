@@ -17,6 +17,62 @@ namespace HRMBackend.DataAccess.DonBu
             this.Transaction = unitOfWorkContext.Transaction;
         }
         #endregion
+        public async Task<(bool isSuccess, Models.DonBu data)> ApproveAllRequestAsync(ApproveRequestList request)
+        {
+            var query = ApproveAllRequestTypeQuery(request);
+            var result = await Context.ExecuteAsync(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+
+            // Process result
+            if (result > 0)
+                return (true, default);
+
+            return (false, default);
+        }
+
+        public async Task<(bool isSuccess, Models.DonBu data)> RejectAllRequestAsync(ApproveRequestList request)
+        {
+            var query = RejectAllRequestTypeQuery(request);
+            var result = await Context.ExecuteAsync(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+
+            // Process result
+            if (result > 0)
+                return (true, default);
+
+            return (false, default);
+        }
+        public async Task<(bool isSuccess, Models.DonBu data)> ApproveRequestAsync(string maDonBu)
+        {
+            var query = ApproveRequestQuery(maDonBu);
+            var result = await Context.ExecuteAsync(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+
+            // Process result
+            if (result > 0)
+                return (true, default);
+
+            return (false, default);
+        }
+
+        public async Task<(bool isSuccess, Models.DonBu data)> CreateAsync(Models.DonBu airport)
+        {
+            try
+            {
+                var query = CreateQuery(airport);
+                var res = await Context.ExecuteAsync(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+
+                // Process result
+                if (res > 0)
+                {
+                    airport.MaDonBu = query.param.Get<int>("madonbu");
+                    return (true, airport);
+                }
+            }
+            catch (Exception ex)
+            {
+                return (false, airport);
+            }
+
+            return (false, airport);
+        }
         public async Task<(bool isSuccess, IEnumerable<Models.DonBu> data)> GetByParamsAsync(SearchDanhSachDonRequest request)
         {
             var query = GetByParamsQuery(request);
@@ -28,5 +84,7 @@ namespace HRMBackend.DataAccess.DonBu
 
             return (false, default);
         }
+
+
     }
 }

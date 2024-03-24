@@ -9,6 +9,37 @@ namespace HRMBackend.DataAccess.DonPhep
 {
     public partial class DonPhepDAO
     {
+        private static (string sql, DynamicParameters param) CreateQuery(Models.DonPhep model)
+        {
+            // Param component
+            var param = new DynamicParameters();
+            param.Add(":manhanvien", model.MaNhanVien, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":ngaytaodon", model.NgayTaoDon, dbType: DbType.Date, direction: ParameterDirection.Input);
+            param.Add(":ngaylamviec", model.NgayLamViec, dbType: DbType.Date, direction: ParameterDirection.Input);
+            param.Add(":lydo", model.LyDo, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":nguoiduyet", model.NguoiDuyet, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":madonphep", model.MaDonPhep, dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+            // SQL component
+            string query = @"INSERT INTO public.tbl_donphep(
+	                        manhanvien, ngaytaodon, ngaylamviec, lydo, nguoiduyet, trangthai)
+	                        VALUES (:manhanvien, :ngaytaodon, :ngaylamviec, :lydo, :nguoiduyet, '" + model.TrangThai + @"')
+                            RETURNING madonphep";
+            return (query, param);
+        }
+        private static (string sql, DynamicParameters param) ApproveRequestQuery(string maDonPhep)
+        {
+            // Param component
+            var param = new DynamicParameters();
+            //param.Add(":trangthai", request.NgayLamViecBatDau, dbType: DbType.Date, direction: ParameterDirection.Input);
+
+            // SQL component
+            string query = @"UPDATE public.tbl_donphep
+	                        SET trangthai= '1'
+	                        WHERE madonphep IN (" + maDonPhep + ")";
+
+            return (query, param);
+        }
         private static (string sql, DynamicParameters param) GetByParamsQuery(SearchDanhSachDonRequest request)
         {
             // Param component

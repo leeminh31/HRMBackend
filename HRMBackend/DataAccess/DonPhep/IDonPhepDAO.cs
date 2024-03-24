@@ -6,5 +6,7 @@ namespace HRMBackend.DataAccess.DonPhep
     public interface IDonPhepDAO
     {
         Task<(bool isSuccess, IEnumerable<Models.DonPhep> data)> GetByParamsAsync(SearchDanhSachDonRequest request);
+        Task<(bool isSuccess, Models.DonPhep data)> ApproveRequestAsync(string maDonPhep);
+        Task<(bool isSuccess, Models.DonPhep data)> CreateAsync(Models.DonPhep airport);
     }
 }

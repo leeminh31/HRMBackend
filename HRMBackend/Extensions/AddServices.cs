@@ -4,6 +4,7 @@ using HRMBackend.DataAccess.DonConNho;
 using HRMBackend.DataAccess.DonPhep;
 using HRMBackend.DataAccess.DonTangCa;
 using HRMBackend.DataAccess.DuLieuChamCong;
+using HRMBackend.DataAccess.GiaiTrinh;
 using HRMBackend.DataAccess.HopDong;
 using HRMBackend.DataAccess.NhanVien;
 using HRMBackend.DataAccess.PhongBan;
@@ -15,6 +16,7 @@ using HRMBackend.Services.BaoCaoTheoThang;
 using HRMBackend.Services.CaLamViec;
 using HRMBackend.Services.DanhSachDon;
 using HRMBackend.Services.DuLieuChamCong;
+using HRMBackend.Services.GIaiTrinh;
 using HRMBackend.Services.HopDong;
 using HRMBackend.Services.NhanVien;
 using HRMBackend.Services.PhanCaNhanVien;
@@ -58,8 +60,8 @@ namespace HRMBackend.Extensions
             services.AddScoped<IDuLieuChamCongDAO, DuLieuChamCongDAO>();
             services.AddScoped<IDuLieuChamCongService, DuLieuChamCongService>();
 
-            //services.AddScoped<IGiaiTrinhDAO, GiaiTrinhDAO>();
-            //services.AddScoped<IGiaiTrinhService, GiaiTrinhService>();
+            services.AddScoped<IGiaiTrinhDAO, GiaiTrinhDAO>();
+            services.AddScoped<IGiaiTrinhService, GiaiTrinhService>();
 
             services.AddScoped<IHopDongDAO, HopDongDAO>();
             services.AddScoped<IHopDongService, HopDongService>();

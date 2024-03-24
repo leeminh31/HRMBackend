@@ -9,6 +9,38 @@ namespace HRMBackend.DataAccess.DonConNho
 {
     public partial class DonConNhoDAO
     {
+        private static (string sql, DynamicParameters param) CreateQuery(Models.DonConNho model)
+        {
+            // Param component
+            var param = new DynamicParameters();
+            param.Add(":manhanvien", model.MaNhanVien, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":ngaytaodon", model.NgayTaoDon, dbType: DbType.Date, direction: ParameterDirection.Input);
+            param.Add(":tungay", model.TuNgay, dbType: DbType.Date, direction: ParameterDirection.Input);
+            param.Add(":denngay", model.DenNgay, dbType: DbType.Date, direction: ParameterDirection.Input);
+            param.Add(":lydo", model.LyDo, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":nguoiduyet", model.NguoiDuyet, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":madonconnho", model.MaDonConNho, dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+            // SQL component
+            string query = @"INSERT INTO public.tbl_donconnho(
+	                        manhanvien, ngaytaodon, tungay, denngay, lydo, nguoiduyet, trangthai)
+	                        VALUES (:manhanvien, :ngaytaodon, :tungay, :denngay, :lydo, :nguoiduyet, '" + model.TrangThai + @"')
+                            RETURNING madonconnho";
+            return (query, param);
+        }
+        private static (string sql, DynamicParameters param) ApproveRequestQuery(string maDonConNho)
+        {
+            // Param component
+            var param = new DynamicParameters();
+            //param.Add(":trangthai", request.NgayLamViecBatDau, dbType: DbType.Date, direction: ParameterDirection.Input);
+
+            // SQL component
+            string query = @"UPDATE public.tbl_donconnho
+	                        SET trangthai= '1'
+	                        WHERE madonconnho IN (" + maDonConNho + ")";
+
+            return (query, param);
+        }
         private static (string sql, DynamicParameters param) GetByParamsQuery(SearchDanhSachDonRequest request)
         {
             // Param component

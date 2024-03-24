@@ -9,21 +9,21 @@ namespace HRMBackend.Models
     public partial class GiaiTrinh
     {
         [Key]
-        [Column("maGiaiTrinh")]
+        [Column("magiaitrinh")]
         public int MaGiaiTrinh { get; set; }
-        [Column("ngayTaoGiaiTrinh")]
-        public DateOnly NgayTaoGiaiTrinh { get; set; }
-        [Column("ngayLamViec")]
-        public DateOnly NgayLamViec { get; set; }
-        [Column("loaiGiaiTrinh")]
+        [Column("ngaytaogiaitrinh")]
+        public DateTime NgayTaoGiaiTrinh { get; set; }
+        [Column("ngaylamviec")]
+        public DateTime NgayLamViec { get; set; }
+        [Column("loaigiaitrinh")]
         public string LoaiGiaiTrinh { get; set; }
-        [Column("lyDo")]
+        [Column("lydo")]
         public string LyDo { get; set; }
-        [Column("nguoiDuyet")]
+        [Column("nguoiduyet")]
         public string NguoiDuyet { get; set; }
-        [Column("trangThai")]
-        public bool TrangThai { get; set; }
-        [Column("maNhanVien")]
+        [Column("trangthai")]
+        public string TrangThai { get; set; }
+        [Column("manhanvien")]
         public string MaNhanVien { get; set; }
     }
 }
