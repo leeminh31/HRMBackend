@@ -6,5 +6,6 @@
         public string? maDonTangCa { get; set; }
         public string? maDonConNho { get; set; }
         public string? maDonPhep { get; set; }
+        public string? nguoiDuyet { get; set; }
     }
 }

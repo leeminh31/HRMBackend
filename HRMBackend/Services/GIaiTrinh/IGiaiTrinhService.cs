@@ -11,8 +11,10 @@ namespace HRMBackend.Services.GIaiTrinh
 
         Task<BaseResult<IEnumerable<Models.GiaiTrinh>>> GetByParamsAsync(SearchGiaiTrinhRequest request);
 
-        Task<BaseResult<bool>> ApproveAllExplanationAsync(string maGiaiTrinh);
+        Task<BaseResult<bool>> ApproveAllExplanationAsync(string maGiaiTrinh, string nguoiDuyet);
 
-        Task<BaseResult<bool>> RejectAllExplanationAsync(string maGiaiTrinh);
+        Task<BaseResult<bool>> RejectAllExplanationAsync(string maGiaiTrinh, string nguoiDuyet);
+
+        Task<BaseResult<GiaiTrinhResponse>> CreateAsync(CreateGiaiTrinhRequest request);
     }
 }

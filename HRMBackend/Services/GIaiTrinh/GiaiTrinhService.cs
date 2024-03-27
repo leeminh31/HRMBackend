@@ -20,6 +20,7 @@ using HRMBackend.Services.DanhSachDon;
 using HRMBackend.Resources.DTO.GiaiTrinh.Request;
 using HRMBackend.Resources.DTO.GiaiTrinh.Response;
 using System.Collections;
+using HRMBackend.Resources.DTO.DonBu.Request;
 
 namespace HRMBackend.Services.GIaiTrinh
 {
@@ -101,20 +102,33 @@ namespace HRMBackend.Services.GIaiTrinh
             return GetBaseResult<IEnumerable<Models.GiaiTrinh>>(CodeMessage._545, status: StatusEnum.Failed);
         }
 
-        public async Task<BaseResult<bool>> ApproveAllExplanationAsync(string maGiaiTrinh)
+        public async Task<BaseResult<bool>> ApproveAllExplanationAsync(string maGiaiTrinh, string nguoiDuyet)
         {
-            var result = await _giaiTrinhDAO.ApproveAllExplanationAsync(maGiaiTrinh);
+            var result = await _giaiTrinhDAO.ApproveAllExplanationAsync(maGiaiTrinh, nguoiDuyet);
             await _unitOfWork.SaveChangesAsync();
 
             return GetBaseResult(CodeMessage._200, true);
         }
 
-        public async Task<BaseResult<bool>> RejectAllExplanationAsync(string maGiaiTrinh)
+        public async Task<BaseResult<bool>> RejectAllExplanationAsync(string maGiaiTrinh, string nguoiDuyet)
         {
-            var result = await _giaiTrinhDAO.RejectAllExplanationAsync(maGiaiTrinh);
+            var result = await _giaiTrinhDAO.RejectAllExplanationAsync(maGiaiTrinh, nguoiDuyet);
             await _unitOfWork.SaveChangesAsync();
 
             return GetBaseResult(CodeMessage._200, true);
+        }
+
+        public async Task<BaseResult<GiaiTrinhResponse>> CreateAsync(CreateGiaiTrinhRequest request)
+        {
+            var donbu = Mapper.Map<CreateGiaiTrinhRequest, Models.GiaiTrinh>(request);
+            var result = await _giaiTrinhDAO.CreateAsync(donbu);
+            await _unitOfWork.SaveChangesAsync();
+
+            if ( result.isSuccess)
+            {
+                return GetBaseResult(CodeMessage._200, data: Mapper.Map<GiaiTrinhResponse>(result.data));
+            }
+            return GetBaseResult(CodeMessage._209, data: Mapper.Map<GiaiTrinhResponse>(result.data));
         }
     }
 }

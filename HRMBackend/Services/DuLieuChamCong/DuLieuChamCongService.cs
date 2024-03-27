@@ -199,6 +199,7 @@ namespace HRMBackend.Services.DuLieuChamCong
                     var DLCCByDay = new DuLieuChamCongByDayResponse();
                     DLCCByDay.NgayLamViec = i;
                     DLCCByDay.GioLamViec = totalWorkHours;
+                    DLCCByDay.GioLamViecTheoCa = workHourByDay;
                     listDLCCByDay.Add(DLCCByDay);
                 }
 

@@ -4,5 +4,7 @@
     {
         public double GioLamViec { get; set; }
         public int NgayLamViec { get; set; }
+
+        public double GioLamViecTheoCa {  get; set; }
     }
 }

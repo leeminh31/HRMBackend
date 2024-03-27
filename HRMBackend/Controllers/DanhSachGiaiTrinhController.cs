@@ -8,6 +8,7 @@ using Swashbuckle.AspNetCore.Annotations;
 using HRMBackend.Services.GIaiTrinh;
 using HRMBackend.Resources.DTO.GiaiTrinh.Request;
 using HRMBackend.Results;
+using HRMBackend.Resources.DTO.DonTangCa.Request;
 
 namespace HRMBackend.Controllers
 {
@@ -26,6 +27,17 @@ namespace HRMBackend.Controllers
             this._giaiTrinhService = giaiTrinhService;
         }
         #endregion
+        [HttpPost("Create")]
+        [SwaggerOperation(summary: "Tạo giải trình")]
+        //[Authorize]
+        public async Task<IActionResult> CreateAsync(CreateGiaiTrinhRequest request)
+        {
+            var result = await _giaiTrinhService.CreateAsync(request);
+
+            return Ok(result);
+
+        }
+
         [HttpGet()]
         [SwaggerOperation(summary: "Lấy thông tin theo mã nhân viên")]
         public async Task<IActionResult> GetByEmployeeIdAsync(string? maNhanVien)
@@ -48,9 +60,9 @@ namespace HRMBackend.Controllers
         [HttpPost("ApproveExplanation")]
         [SwaggerOperation(summary: "Duyệt giải trình")]
         //[Authorize]
-        public async Task<IActionResult> ApproveExplanationAsync(string maGiaiTrinh)
+        public async Task<IActionResult> ApproveExplanationAsync(string maGiaiTrinh, string nguoiDuyet)
         {
-            var result = await _giaiTrinhService.ApproveAllExplanationAsync(maGiaiTrinh);
+            var result = await _giaiTrinhService.ApproveAllExplanationAsync(maGiaiTrinh, nguoiDuyet);
 
             return Ok(result);
         }
@@ -58,9 +70,9 @@ namespace HRMBackend.Controllers
         [HttpPost("RejectExplanation")]
         [SwaggerOperation(summary: "Hủy giải trình")]
         //[Authorize]
-        public async Task<IActionResult> RejectExplanationAsync(string maGiaiTrinh)
+        public async Task<IActionResult> RejectExplanationAsync(string maGiaiTrinh, string nguoiDuyet)
         {
-            var result = await _giaiTrinhService.RejectAllExplanationAsync(maGiaiTrinh);
+            var result = await _giaiTrinhService.RejectAllExplanationAsync(maGiaiTrinh, nguoiDuyet);
 
             return Ok(result);
 
