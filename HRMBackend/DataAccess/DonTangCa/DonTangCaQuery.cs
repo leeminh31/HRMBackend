@@ -29,6 +29,24 @@ namespace HRMBackend.DataAccess.DonTangCa
                             RETURNING madontangca";
             return (query, param);
         }
+
+        private static (string sql, DynamicParameters param) UpdateQuery(Models.DonTangCa model)
+        {
+            // Param component
+            var param = new DynamicParameters();
+            param.Add(":tangcatu", model.TangCaTu, dbType: DbType.Time, direction: ParameterDirection.Input);
+            param.Add(":tangcaden", model.TangCaDen, dbType: DbType.Time, direction: ParameterDirection.Input);
+            param.Add(":lydo", model.LyDo, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":madontangca", model.MaDonTangCa, dbType: DbType.Int32, direction: ParameterDirection.Input);
+
+            string query = @"UPDATE public.tbl_donconnho
+	                        SET tungay=:tungay, 
+                                denngay=:denngay, 
+                                lydo=:lydo
+	                        WHERE madonconnho = :madonconnho;";
+            return (query, param);
+        }
+
         private static (string sql, DynamicParameters param) ApproveRequestQuery(string maDonTangCa)
         {
             // Param component

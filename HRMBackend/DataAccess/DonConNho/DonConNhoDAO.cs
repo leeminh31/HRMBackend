@@ -38,6 +38,19 @@ namespace HRMBackend.DataAccess.DonConNho
 
             return (false, airport);
         }
+
+        public async Task<(bool isSuccess, Models.DonConNho data)> UpdateAsync(Models.DonConNho airport)
+        {
+            var query = UpdateQuery(airport);
+            var result = await Context.ExecuteAsync(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+
+            // Process result
+            if (result > 0)
+                return (true, airport);
+
+            return (false, airport);
+        }
+
         public async Task<(bool isSuccess, Models.DonConNho data)> ApproveRequestAsync(string maDonConNho)
         {
             var query = ApproveRequestQuery(maDonConNho);

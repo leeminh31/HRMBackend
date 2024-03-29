@@ -9,6 +9,7 @@ namespace HRMBackend.Mapping.DonConNho
         public ResourceToModelDonConNho()
         {
             CreateMap<CreateDonConNhoRequest, Models.DonConNho>();
+            CreateMap<UpdateDonConNhoRequest, Models.DonConNho>();
         }
     }
 }

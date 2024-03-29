@@ -37,6 +37,19 @@ namespace HRMBackend.DataAccess.GiaiTrinh
 
             return (false, airport);
         }
+
+        public async Task<(bool isSuccess, Models.GiaiTrinh data)> UpdateAsync(Models.GiaiTrinh airport)
+        {
+            var query = UpdateQuery(airport);
+            var result = await Context.ExecuteAsync(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+
+            // Process result
+            if (result > 0)
+                return (true, airport);
+
+            return (false, airport);
+        }
+
         public async Task<(bool isSuccess, IEnumerable<Models.GiaiTrinh> data)> GetByParamsAsync(SearchGiaiTrinhRequest request)
         {
             var query = GetByParamsQuery(request);

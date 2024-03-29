@@ -27,6 +27,20 @@ namespace HRMBackend.DataAccess.GiaiTrinh
                             RETURNING magiaitrinh";
             return (query, param);
         }
+
+        private static (string sql, DynamicParameters param) UpdateQuery(Models.GiaiTrinh model)
+        {
+            // Param component
+            var param = new DynamicParameters();
+            param.Add(":lydo", model.LyDo, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":magiaitrinh", model.MaGiaiTrinh, dbType: DbType.Int32, direction: ParameterDirection.Input);
+
+            string query = @"UPDATE public.tbl_giaitrinh
+	                        SET lydo=:lydo
+	                        WHERE magiaitrinh = :magiaitrinh;";
+            return (query, param);
+        }
+
         private static (string sql, DynamicParameters param) GetByEmployeeIdQuery(SearchGiaiTrinhRequest request)
         {
             // Param component

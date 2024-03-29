@@ -130,5 +130,18 @@ namespace HRMBackend.Services.GIaiTrinh
             }
             return GetBaseResult(CodeMessage._209, data: Mapper.Map<GiaiTrinhResponse>(result.data));
         }
+
+        public async Task<BaseResult<GiaiTrinhResponse>> UpdateAsync(UpdateGiaiTrinhRequest request)
+        {
+            var donbu = Mapper.Map<UpdateGiaiTrinhRequest, Models.GiaiTrinh>(request);
+            var result = await _giaiTrinhDAO.UpdateAsync(donbu);
+            await _unitOfWork.SaveChangesAsync();
+
+            if (result.isSuccess)
+            {
+                return GetBaseResult(CodeMessage._200, data: Mapper.Map<GiaiTrinhResponse>(result.data));
+            }
+            return GetBaseResult(CodeMessage._209, data: Mapper.Map<GiaiTrinhResponse>(result.data));
+        }
     }
 }

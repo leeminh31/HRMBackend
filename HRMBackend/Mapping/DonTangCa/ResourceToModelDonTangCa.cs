@@ -9,6 +9,7 @@ namespace HRMBackend.Mapping.DonTangCa
         public ResourceToModelDonTangCa()
         {
             CreateMap<CreateDonTangCaRequest, Models.DonTangCa>();
+            CreateMap<UpdateDonTangCaRequest, Models.DonTangCa>();
         }
     }
 }

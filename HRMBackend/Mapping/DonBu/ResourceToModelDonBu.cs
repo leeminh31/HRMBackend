@@ -9,6 +9,7 @@ namespace HRMBackend.Mapping.DonBu
         public ResourceToModelDonBu()
         {
             CreateMap<CreateDonBuRequest, Models.DonBu>();
+            CreateMap<UpdateDonBuRequest, Models.DonBu>();
         }
     }
 }

@@ -27,6 +27,20 @@ namespace HRMBackend.DataAccess.DonPhep
                             RETURNING madonphep";
             return (query, param);
         }
+
+        private static (string sql, DynamicParameters param) UpdateQuery(Models.DonPhep model)
+        {
+            // Param component
+            var param = new DynamicParameters();
+            param.Add(":lydo", model.LyDo, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":madonphep", model.MaDonPhep, dbType: DbType.Int32, direction: ParameterDirection.Input);
+
+            string query = @"UPDATE public.tbl_donphep
+	                        SET lydo=:lydo
+	                        WHERE madonphep = :madonphep;";
+            return (query, param);
+        }
+
         private static (string sql, DynamicParameters param) ApproveRequestQuery(string maDonPhep)
         {
             // Param component

@@ -16,5 +16,7 @@ namespace HRMBackend.Services.GIaiTrinh
         Task<BaseResult<bool>> RejectAllExplanationAsync(string maGiaiTrinh, string nguoiDuyet);
 
         Task<BaseResult<GiaiTrinhResponse>> CreateAsync(CreateGiaiTrinhRequest request);
+
+        Task<BaseResult<GiaiTrinhResponse>> UpdateAsync(UpdateGiaiTrinhRequest request);
     }
 }

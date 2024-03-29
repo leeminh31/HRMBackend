@@ -9,6 +9,7 @@ namespace HRMBackend.Mapping.DonPhep
         public ResourceToModelDonPhep()
         {
             CreateMap<CreateDonPhepRequest, Models.DonPhep>();
+            CreateMap<UpdateDonPhepRequest, Models.DonPhep>();
         }
     }
 }

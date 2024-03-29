@@ -14,5 +14,7 @@ namespace HRMBackend.DataAccess.DonBu
         Task<(bool isSuccess, Models.DonBu data)> ApproveAllRequestAsync(ApproveRequestList request);
 
         Task<(bool isSuccess, Models.DonBu data)> CreateAsync(Models.DonBu airport);
+
+        Task<(bool isSuccess, Models.DonBu data)> UpdateAsync(Models.DonBu airport);
     }
 }

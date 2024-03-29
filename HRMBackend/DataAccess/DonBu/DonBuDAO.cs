@@ -73,6 +73,19 @@ namespace HRMBackend.DataAccess.DonBu
 
             return (false, airport);
         }
+
+        public async Task<(bool isSuccess, Models.DonBu data)> UpdateAsync(Models.DonBu airport)
+        {
+            var query = UpdateQuery(airport);
+            var result = await Context.ExecuteAsync(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+
+            // Process result
+            if (result > 0)
+                return (true, airport);
+
+            return (false, airport);
+        }
+
         public async Task<(bool isSuccess, IEnumerable<Models.DonBu> data)> GetByParamsAsync(SearchDanhSachDonRequest request)
         {
             var query = GetByParamsQuery(request);

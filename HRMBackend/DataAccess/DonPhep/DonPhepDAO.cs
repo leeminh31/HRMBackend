@@ -38,6 +38,19 @@ namespace HRMBackend.DataAccess.DonPhep
 
             return (false, airport);
         }
+
+        public async Task<(bool isSuccess, Models.DonPhep data)> UpdateAsync(Models.DonPhep airport)
+        {
+            var query = UpdateQuery(airport);
+            var result = await Context.ExecuteAsync(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+
+            // Process result
+            if (result > 0)
+                return (true, airport);
+
+            return (false, airport);
+        }
+
         public async Task<(bool isSuccess, Models.DonPhep data)> ApproveRequestAsync(string maDonPhep)
         {
             var query = ApproveRequestQuery(maDonPhep);

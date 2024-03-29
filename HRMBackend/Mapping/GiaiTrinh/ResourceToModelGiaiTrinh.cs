@@ -9,6 +9,7 @@ namespace HRMBackend.Mapping.GiaiTrinh
         public ResourceToModelGiaiTrinh()
         {
             CreateMap<CreateGiaiTrinhRequest, Models.GiaiTrinh>();
+            CreateMap<UpdateGiaiTrinhRequest, Models.GiaiTrinh>();
         }
     }
 }

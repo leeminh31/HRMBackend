@@ -28,6 +28,24 @@ namespace HRMBackend.DataAccess.DonConNho
                             RETURNING madonconnho";
             return (query, param);
         }
+
+        private static (string sql, DynamicParameters param) UpdateQuery(Models.DonConNho model)
+        {
+            // Param component
+            var param = new DynamicParameters();
+            param.Add(":tungay", model.TuNgay, dbType: DbType.DateTime, direction: ParameterDirection.Input);
+            param.Add(":denngay", model.DenNgay, dbType: DbType.DateTime, direction: ParameterDirection.Input);
+            param.Add(":lydo", model.LyDo, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":madonconnho", model.MaDonConNho, dbType: DbType.Int32, direction: ParameterDirection.Input);
+
+            string query = @"UPDATE public.tbl_donconnho
+	                        SET tungay=:tungay, 
+                                denngay=:denngay, 
+                                lydo=:lydo
+	                        WHERE madonconnho = :madonconnho;";
+            return (query, param);
+        }
+
         private static (string sql, DynamicParameters param) ApproveRequestQuery(string maDonConNho)
         {
             // Param component

@@ -66,6 +66,21 @@ namespace HRMBackend.DataAccess.DonBu
             return (query, param);
         }
 
+        private static (string sql, DynamicParameters param) UpdateQuery(Models.DonBu model)
+        {
+            // Param component
+            var param = new DynamicParameters();
+            param.Add(":sophutxinbu", model.SoPhutXinBu, dbType: DbType.Int32, direction: ParameterDirection.Input);
+            param.Add(":lydo", model.LyDo, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":madonbu", model.MaDonBu, dbType: DbType.Int32, direction: ParameterDirection.Input);
+
+            string query = @"UPDATE public.tbl_donbu
+	                        SET sophutxinbu=:sophutxinbu,
+                                lydo=:lydo
+	                        WHERE madonbu = :madonbu;";
+            return (query, param);
+        }
+
         private static (string sql, DynamicParameters param) ApproveAllRequestTypeQuery(ApproveRequestList request)
         {
             // Param component

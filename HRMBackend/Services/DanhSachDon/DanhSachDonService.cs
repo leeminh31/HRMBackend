@@ -23,6 +23,7 @@ using HRMBackend.Resources.DTO.CaLamViec.Response;
 using HRMBackend.Resources.DTO.DonConNho.Request;
 using HRMBackend.Resources.DTO.DonPhep.Request;
 using HRMBackend.Resources.DTO.DonTangCa.Request;
+using HRMBackend.Resources.DTO.GiaiTrinh.Response;
 
 namespace HRMBackend.Services.DanhSachDon
 {
@@ -238,7 +239,24 @@ namespace HRMBackend.Services.DanhSachDon
             var result = await _donBuDAO.CreateAsync(donbu);
             await _unitOfWork.SaveChangesAsync();
 
-            return GetBaseResult(CodeMessage._200, data: Mapper.Map<DonBuResponse>(result.data));
+            if (result.isSuccess)
+            {
+                return GetBaseResult(CodeMessage._200, data: Mapper.Map<DonBuResponse>(result.data));
+            }
+            return GetBaseResult(CodeMessage._209, data: Mapper.Map<DonBuResponse>(result.data));
+        }
+
+        public async Task<BaseResult<DonBuResponse>> UpdateDonBuAsync(UpdateDonBuRequest request)
+        {
+            var donbu = Mapper.Map<UpdateDonBuRequest, Models.DonBu>(request);
+            var result = await _donBuDAO.UpdateAsync(donbu);
+            await _unitOfWork.SaveChangesAsync();
+
+            if (result.isSuccess)
+            {
+                return GetBaseResult(CodeMessage._200, data: Mapper.Map<DonBuResponse>(result.data));
+            }
+            return GetBaseResult(CodeMessage._209, data: Mapper.Map<DonBuResponse>(result.data));
         }
 
         public async Task<BaseResult<DonConNhoResponse>> CreateDonConNhoAsync(CreateDonConNhoRequest request)
@@ -247,7 +265,24 @@ namespace HRMBackend.Services.DanhSachDon
             var result = await _donConNhoDAO.CreateAsync(donbu);
             await _unitOfWork.SaveChangesAsync();
 
-            return GetBaseResult(CodeMessage._200, data: Mapper.Map<DonConNhoResponse>(result.data));
+            if (result.isSuccess)
+            {
+                return GetBaseResult(CodeMessage._200, data: Mapper.Map<DonConNhoResponse>(result.data));
+            }
+            return GetBaseResult(CodeMessage._209, data: Mapper.Map<DonConNhoResponse>(result.data));
+        }
+
+        public async Task<BaseResult<DonConNhoResponse>> UpdateDonConNhoAsync(UpdateDonConNhoRequest request)
+        {
+            var donbu = Mapper.Map<UpdateDonConNhoRequest, Models.DonConNho>(request);
+            var result = await _donConNhoDAO.UpdateAsync(donbu);
+            await _unitOfWork.SaveChangesAsync();
+
+            if (result.isSuccess)
+            {
+                return GetBaseResult(CodeMessage._200, data: Mapper.Map<DonConNhoResponse>(result.data));
+            }
+            return GetBaseResult(CodeMessage._209, data: Mapper.Map<DonConNhoResponse>(result.data));
         }
 
         public async Task<BaseResult<DonPhepResponse>> CreateDonPhepAsync(CreateDonPhepRequest request)
@@ -256,7 +291,24 @@ namespace HRMBackend.Services.DanhSachDon
             var result = await _donPhepDAO.CreateAsync(donbu);
             await _unitOfWork.SaveChangesAsync();
 
-            return GetBaseResult(CodeMessage._200, data: Mapper.Map<DonPhepResponse>(result.data));
+            if (result.isSuccess)
+            {
+                return GetBaseResult(CodeMessage._200, data: Mapper.Map<DonPhepResponse>(result.data));
+            }
+            return GetBaseResult(CodeMessage._209, data: Mapper.Map<DonPhepResponse>(result.data));
+        }
+
+        public async Task<BaseResult<DonPhepResponse>> UpdateDonPhepAsync(UpdateDonPhepRequest request)
+        {
+            var donbu = Mapper.Map<UpdateDonPhepRequest, Models.DonPhep>(request);
+            var result = await _donPhepDAO.UpdateAsync(donbu);
+            await _unitOfWork.SaveChangesAsync();
+
+            if (result.isSuccess)
+            {
+                return GetBaseResult(CodeMessage._200, data: Mapper.Map<DonPhepResponse>(result.data));
+            }
+            return GetBaseResult(CodeMessage._209, data: Mapper.Map<DonPhepResponse>(result.data));
         }
 
         public async Task<BaseResult<DonTangCaResponse>> CreateDonTangCaAsync(CreateDonTangCaRequest request)
@@ -265,7 +317,24 @@ namespace HRMBackend.Services.DanhSachDon
             var result = await _donTangCaDAO.CreateAsync(donbu);
             await _unitOfWork.SaveChangesAsync();
 
-            return GetBaseResult(CodeMessage._200, data: Mapper.Map<DonTangCaResponse>(result.data));
+            if (result.isSuccess)
+            {
+                return GetBaseResult(CodeMessage._200, data: Mapper.Map<DonTangCaResponse>(result.data));
+            }
+            return GetBaseResult(CodeMessage._209, data: Mapper.Map<DonTangCaResponse>(result.data));
+        }
+
+        public async Task<BaseResult<DonTangCaResponse>> UpdateDonTangCaAsync(UpdateDonTangCaRequest request)
+        {
+            var donbu = Mapper.Map<UpdateDonTangCaRequest, Models.DonTangCa>(request);
+            var result = await _donTangCaDAO.UpdateAsync(donbu);
+            await _unitOfWork.SaveChangesAsync();
+
+            if (result.isSuccess)
+            {
+                return GetBaseResult(CodeMessage._200, data: Mapper.Map<DonTangCaResponse>(result.data));
+            }
+            return GetBaseResult(CodeMessage._209, data: Mapper.Map<DonTangCaResponse>(result.data));
         }
     }
 }
