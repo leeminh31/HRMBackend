@@ -61,6 +61,15 @@ namespace HRMBackend.Controllers
 
             return Ok(result);
         }
+
+        [HttpPost("AssignShifts")]
+        [SwaggerOperation(summary: "Phân ca nhân viên")]
+        //[Authorize]
+        public async Task<IActionResult> AssignShiftsToEmployeeAsync()
+        {
+            var result = await _baoCaoTheoThangService.AssignShiftsToEmployeeAsync();
+            return Ok(result);
+        }
     }
 }
 

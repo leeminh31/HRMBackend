@@ -24,16 +24,22 @@ using HRMBackend.Resources.DTO.DonConNho.Request;
 using HRMBackend.Resources.DTO.DonPhep.Request;
 using HRMBackend.Resources.DTO.DonTangCa.Request;
 using HRMBackend.Resources.DTO.GiaiTrinh.Response;
+using HRMBackend.DataAccess.HopDong;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Net.WebSockets;
+using HRMBackend.DataAccess.CaLamViec;
 
 namespace HRMBackend.Services.DanhSachDon
 {
     public class DanhSachDonService : BaseService, IDanhSachDonService
     {
         #region Property
+        private readonly ICaLamViecDAO _caLamViecDAO;
         private readonly IDonBuDAO _donBuDAO;
         private readonly IDonConNhoDAO _donConNhoDAO;
         private readonly IDonPhepDAO _donPhepDAO;
         private readonly IDonTangCaDAO _donTangCaDAO;
+        private readonly IHopDongDAO _hopDongDAO;
         private readonly INhanVienDAO _nhanVienDAO;
         private readonly IUnitOfWork _unitOfWork;
         #endregion
@@ -44,12 +50,16 @@ namespace HRMBackend.Services.DanhSachDon
             IDonTangCaDAO donTangCaDAO,
             IDonConNhoDAO donConNhoDAO,
             INhanVienDAO nhanVienDAO,
+            IHopDongDAO hopDongDAO,
+            ICaLamViecDAO caLamViecDAO,
             IUnitOfWork unitOfWork,
             IMapper mapper,
             IOptionsMonitor<ResponseMessage> responseMessage) : base(mapper, responseMessage)
         {
             this._donBuDAO = donBuDAO;
             this._donTangCaDAO = donTangCaDAO;
+            this._hopDongDAO = hopDongDAO;
+            this._caLamViecDAO = caLamViecDAO;
             this._donPhepDAO = donPhepDAO;
             this._donConNhoDAO = donConNhoDAO;
             this._nhanVienDAO = nhanVienDAO;
@@ -335,6 +345,67 @@ namespace HRMBackend.Services.DanhSachDon
                 return GetBaseResult(CodeMessage._200, data: Mapper.Map<DonTangCaResponse>(result.data));
             }
             return GetBaseResult(CodeMessage._209, data: Mapper.Map<DonTangCaResponse>(result.data));
+        }
+
+        public async Task<BaseResult<int?>> GetTotalMinutesOTAsync(string maNhanVien, int nam)
+        {
+            var records = await _donTangCaDAO.GetTotalMinutesOTAsync(maNhanVien, nam);
+
+            var donBu = await _donBuDAO.GetTotalMinutesOTAsync(maNhanVien, nam);
+
+            if (records.isSuccess)
+            {
+                if(donBu.isSuccess)
+                {
+                    records.data = records.data - donBu.data;
+                }
+                return GetBaseResult(CodeMessage._200, data: records.data);
+            }
+            return GetBaseResult<int?>(CodeMessage._200, data: 0);
+        }
+
+        public async Task<BaseResult<double>> GetTotalDayOffByYearAsync(string maNhanVien, int nam)
+        {
+            double tongQuyPhep = 0;
+
+            var hopdong = await _hopDongDAO.GetContractByYearAsync(maNhanVien, nam);
+
+            var donPhep = await _donPhepDAO.GetDayOffByYearAndIDAsync(maNhanVien, nam);
+
+            var maCa = await _nhanVienDAO.GetByIDAsync(maNhanVien);
+
+            var caLamViec = await _caLamViecDAO.GetByShiftIDAsync(maCa.data.MaCa, null);
+
+            var giobatdaulam = caLamViec.data.First().GioBatDauCa;
+
+            var gioketthuclam = caLamViec.data.First().GioKetThucCa;
+
+            var giobatdaunghi = caLamViec.data.First().GioBatDauNghi;
+
+            var gioketthucnghi = caLamViec.data.First().GioKetThucNghi;
+
+            var workHourByDay = Math.Round((gioketthuclam - giobatdaulam - gioketthucnghi + giobatdaunghi).TotalMinutes);
+
+            if (hopdong.hasValue)
+            {
+                foreach(Models.HopDong hd in hopdong.data)
+                {
+                    if(hd.NgayBatDauHopDong.Year != hd.NgayKetThucHopDong.Year)
+                    {
+                        tongQuyPhep += 12 - hd.NgayBatDauHopDong.Month; 
+                    } else
+                    {
+                        tongQuyPhep += hd.NgayKetThucHopDong.Month - hd.NgayBatDauHopDong.Month;
+                    }
+                }
+
+                if(donPhep.isSuccess)
+                {
+                    tongQuyPhep -= donPhep.data;
+                }
+                return GetBaseResult<double>(CodeMessage._200, data: tongQuyPhep*workHourByDay);
+            }
+            return GetBaseResult<double>(CodeMessage._200, data: 0);
         }
     }
 }

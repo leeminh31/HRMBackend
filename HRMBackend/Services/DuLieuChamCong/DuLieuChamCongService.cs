@@ -6,16 +6,24 @@ using HRMBackend.DataAccess.PhongBan;
 using HRMBackend.DataAccess.UnitOfWork;
 using HRMBackend.Resources.DTO.DuLieuChamCong.Request;
 using HRMBackend.Resources.DTO.DuLieuChamCong.Response;
-using HRMBackend.Resources.DTO.NhanVien.Request;
 using HRMBackend.Resources.Enums;
 using HRMBackend.Resources;
 using HRMBackend.Results;
-using HRMBackend.Services.DuLieuChamCong;
 using Microsoft.Extensions.Options;
 using System.Net.Mail;
-using HRMBackend.Models;
 using HRMBackend.DataAccess.CaLamViec;
 using HRMBackend.Resources.DTO.BaoCaoTheoThang.Response;
+using HRMBackend.DataAccess.DonPhep;
+using HRMBackend.DataAccess.DonBu;
+using HRMBackend.DataAccess.DonConNho;
+using HRMBackend.DataAccess.DonTangCa;
+using HRMBackend.Resources.DTO.DonPhep.Request;
+using HRMBackend.Resources.DTO.DanhSachDon.Request;
+using HRMBackend.DataAccess.DangKyCa;
+using HRMBackend.Resources.DTO.DonTangCa.Request;
+using HRMBackend.Resources.DTO.DangKyCa.Request;
+using HRMBackend.DataAccess.HopDong;
+using HRMBackend.Models;
 
 namespace HRMBackend.Services.DuLieuChamCong
 {
@@ -26,13 +34,25 @@ namespace HRMBackend.Services.DuLieuChamCong
         private readonly ICaLamViecDAO _caLamViecDAO;
         private readonly IUnitOfWork _unitOfWork;
         private readonly INhanVienDAO _nhanVienDAO;
+        private readonly IDonPhepDAO _donPhepDAO;
+        private readonly IDonBuDAO _donBuDAO;
+        private readonly IDonConNhoDAO _donConNhoDAO;
+        private readonly IDonTangCaDAO _donTangCaDAO;
+        private readonly IDangKyCaDAO _dangKyCaDAO;
         private readonly IPhongBanDAO _phongBanDAO;
+        private readonly IHopDongDAO _hopDongDAO;
         #endregion
 
         #region Constructor
         public DuLieuChamCongService(IDuLieuChamCongDAO duLieuChamCongDAO,
             INhanVienDAO nhanVienDAO,
             ICaLamViecDAO caLamViecDAO,
+            IDonBuDAO donBuDAO,
+            IDangKyCaDAO dangKyCaDAO,
+            IDonConNhoDAO donConNhoDAO,
+            IDonPhepDAO donPhepDAO,
+            IDonTangCaDAO donTangCaDAO,
+            IHopDongDAO hopDongDAO,
             IPhongBanDAO phongBanDAO,
             IUnitOfWork unitOfWork,
             IMapper mapper,
@@ -44,29 +64,14 @@ namespace HRMBackend.Services.DuLieuChamCong
             this._unitOfWork = unitOfWork;
             this._nhanVienDAO = nhanVienDAO;
             this._phongBanDAO = phongBanDAO;
+            this._donBuDAO = donBuDAO;
+            this._dangKyCaDAO = dangKyCaDAO;
+            this._donConNhoDAO = donConNhoDAO;
+            this._hopDongDAO = hopDongDAO;
+            this._donTangCaDAO = donTangCaDAO;
+            this._donPhepDAO = donPhepDAO;
         }
         #endregion
-
-        //public async Task<BaseResult<DuLieuChamCongResponse>> CreateAsync(CreateDuLieuChamCongRequest request)
-        //{
-        //    // Mapping Resource to DuLieuChamCong
-        //    var airport = Mapper.Map<CreateDuLieuChamCongRequest, Models.DuLieuChamCong>(request);
-        //    //SearchDuLieuChamCongRequest searchRequest = new SearchDuLieuChamCongRequest() { Code = request.Code, Name = request.Name };
-        //    //Tìm mã code hoặc name đã tồn tại chưa?
-        //    var records = await _duLieuChamCongDAO.GetByIDAsync(request.TenDuLieuChamCong);
-        //    if (records.hasValue)
-        //    {
-        //        return GetBaseResult(CodeMessage._552, data: Mapper.Map<DuLieuChamCongResponse>(records.data));
-        //    }
-
-        //    var result = await _duLieuChamCongDAO.CreateAsync(airport);
-        //    await _unitOfWork.SaveChangesAsync();
-
-        //    if (result.isSuccess)
-        //        return GetBaseResult(CodeMessage._200, data: Mapper.Map<DuLieuChamCongResponse>(result.data));
-        //    else
-        //        return GetBaseResult<DuLieuChamCongResponse>(CodeMessage._209, status: StatusEnum.Failed);
-        //}
 
         public async Task<BaseResult<IEnumerable<DuLieuChamCongResponse>>> GetByParamsAsync(SearchDuLieuChamCongRequest request)
         {
@@ -96,6 +101,13 @@ namespace HRMBackend.Services.DuLieuChamCong
         public async Task<BaseResult<IEnumerable<BaoCaoTheoThangAllResponse>>> GetByEmployeePerMonthAsync(SearchDuLieuChamCongRequest request)
         {
             var records = await _duLieuChamCongDAO.GetByParamsAsync(null, request.NgayBatDau, request.NgayKetThuc);
+
+            var searchRequest = new SearchDonPhepRequest();
+            searchRequest.MaNhanVien = request?.MaNhanVien;
+            searchRequest.NgayBatDauTaoDon = request?.NgayBatDau;
+            searchRequest.NgayKetThucTaoDon = request?.NgayKetThuc;
+
+            var donPhep = await _donPhepDAO.GetDayOffAsync(searchRequest);
 
             var listEmployee = await _nhanVienDAO.GetByParamsAsync(request.MaNhanVien, null, null, null, request.TenNhanVien);
 
@@ -129,28 +141,31 @@ namespace HRMBackend.Services.DuLieuChamCong
                 if (!listEmployeeId.Contains(employee.MaNhanVien))
                     continue;
 
+                var dangKyCa = await _dangKyCaDAO.GetByEmployeeIDAsync(employee.MaNhanVien, request.NgayBatDau, request.NgayKetThuc);
+
                 var employeeByMonth = recordsToList.Where(e => e.MaNhanVien == employee.MaNhanVien);
 
                 var employeeInfo = await _nhanVienDAO.GetByIDAsync(employee.MaNhanVien);
 
-                var shiftId = employeeInfo.data?.MaCa;
+                //var shiftId = employeeInfo.data?.MaCa;
 
-                if (shiftId == 0)
-                    continue;
+                //if (shiftId == 0)
+                //    continue;
 
-                var shiftName = await _caLamViecDAO.GetByShiftIDAsync(shiftId, null);
+                //var shiftName = await _caLamViecDAO.GetByShiftIDAsync(shiftId, null);
 
-                var giobatdaulam = shiftName.data.First().GioBatDauCa;
+                //var giobatdaulam = shiftName.data.First().GioBatDauCa;
 
-                var gioketthuclam = shiftName.data.First().GioKetThucCa;
+                //var gioketthuclam = shiftName.data.First().GioKetThucCa;
 
-                var giobatdaunghi = shiftName.data.First().GioBatDauNghi;
+                //var giobatdaunghi = shiftName.data.First().GioBatDauNghi;
 
-                var gioketthucnghi = shiftName.data.First().GioKetThucNghi;
+                //var gioketthucnghi = shiftName.data.First().GioKetThucNghi;
 
-                var workHourByDay = Math.Round((gioketthuclam - giobatdaulam - gioketthucnghi + giobatdaunghi).TotalMinutes);
+                //var workHourByDay = Math.Round((gioketthuclam - giobatdaulam - gioketthucnghi + giobatdaunghi).TotalMinutes);
 
-                var gionghi = Math.Round((gioketthucnghi - giobatdaunghi).TotalMinutes);
+                //var gionghi = Math.Round((gioketthucnghi - giobatdaunghi).TotalMinutes);
+
                 var totalWorkByMonth =(double) 0;
 
                 var listDLCCByDay = new List<DuLieuChamCongByDayResponse>();
@@ -158,48 +173,164 @@ namespace HRMBackend.Services.DuLieuChamCong
                 {
                     var employeeByDay = employeeByMonth.Where(e => e.NgayChamCong == new DateTime((int)request.NgayKetThuc?.Year, (int)request.NgayKetThuc?.Month, i));
 
-                    if (employeeByDay == null)
-                        continue;
-                    
-                    var lastCheck = employeeByDay.MaxBy(t => t.LanChamCong);
-
-                    var firstCheck = employeeByDay.MinBy(t => t.LanChamCong);
-
-                    if (firstCheck == null)
-                        continue;
-
-                    var firstCheckTime = firstCheck.GioChamCong;
-
-                    var lastCheckTime = lastCheck.GioChamCong;
-
-                    if (firstCheck?.GioChamCong < giobatdaulam)
-                    {
-                        firstCheckTime = giobatdaulam;
-                    }
-
-                    if (lastCheck?.GioChamCong > gioketthuclam)
-                    {
-                        lastCheckTime = gioketthuclam;
-                    }
-
-                    var totalWorkHours = Math.Round((lastCheckTime - firstCheckTime).TotalMinutes);
-
-                    if (lastCheck?.GioChamCong >= gioketthucnghi)
-                        totalWorkHours = totalWorkHours - gionghi;
-
-                    if (lastCheck?.GioChamCong >= giobatdaunghi && lastCheck?.GioChamCong <= gioketthucnghi)
-                    {
-                        totalWorkHours = Math.Round((giobatdaunghi - giobatdaulam).TotalMinutes);
-                    }
-
-                    var totalWork = Math.Round(totalWorkHours / workHourByDay,2);
-
-                    totalWorkByMonth += totalWork;
-
                     var DLCCByDay = new DuLieuChamCongByDayResponse();
                     DLCCByDay.NgayLamViec = i;
-                    DLCCByDay.GioLamViec = totalWorkHours;
-                    DLCCByDay.GioLamViecTheoCa = workHourByDay;
+                    //DLCCByDay.GioLamViec = totalWorkHours;
+                    //DLCCByDay.GioLamViecTheoCa = workHourByDay;
+
+                    if (employeeByDay != null)
+                    {
+                        var lastCheck = employeeByDay.MaxBy(t => t.LanChamCong);
+
+                        var firstCheck = employeeByDay.MinBy(t => t.LanChamCong);
+
+                        var firstCheckTime = firstCheck.GioChamCong;
+
+                        var lastCheckTime = lastCheck.GioChamCong;
+
+                        //if (firstCheck?.GioChamCong < giobatdaulam)
+                        //{
+                        //    firstCheckTime = giobatdaulam;
+                        //}
+
+                        //if (lastCheck?.GioChamCong > gioketthuclam)
+                        //{
+                        //    lastCheckTime = gioketthuclam;
+                        //}
+
+                        //var totalWorkHours = Math.Round((lastCheckTime - firstCheckTime).TotalMinutes);
+
+                        //if (lastCheck?.GioChamCong >= gioketthucnghi)
+                        //    totalWorkHours = totalWorkHours - gionghi;
+
+                        //if (lastCheck?.GioChamCong >= giobatdaunghi && lastCheck?.GioChamCong <= gioketthucnghi)
+                        //{
+                        //    totalWorkHours = Math.Round((giobatdaunghi - giobatdaulam).TotalMinutes);
+                        //}
+
+                        //var totalWork = Math.Round(totalWorkHours / workHourByDay, 2);
+
+                        bool off = false;
+
+                        if (donPhep.isSuccess)
+                        {
+                            off = donPhep.data.Any(dp => dp.NgayLamViec.Day == i && dp.MaNhanVien == employee.MaNhanVien);
+                        }
+
+                        DLCCByDay.NghiPhep = off;
+
+
+                        //totalWorkByMonth += totalWork;
+
+
+
+                        if (dangKyCa.isSuccess)
+                        {
+                            foreach (var dangKy in dangKyCa.data)
+                            {
+                                var hopDong = await _hopDongDAO.GetContractByTimeRangeAndIDAsync(employee.MaNhanVien, request.NgayBatDau, request.NgayKetThuc);
+                                if (hopDong.hasValue)
+                                {
+                                    foreach (var item in hopDong.data)
+                                    {
+                                        if (dangKy.NgayBatDauCaMoi <= item.NgayKetThucHopDong)
+                                        {
+                                            if (item.NgayBatDauHopDong < request.NgayBatDau && item.NgayKetThucHopDong < request.NgayKetThuc && item.NgayKetThucHopDong >= request.NgayBatDau)
+                                            {
+                                                if (dangKy.NgayBatDauCaMoi <= request.NgayBatDau && i <= item.NgayKetThucHopDong.Day)
+                                                {
+                                                    DLCCByDay.TenCa = dangKy.CaLamViecMoi;
+                                                }
+
+                                                if (dangKy.NgayBatDauCaMoi > request.NgayBatDau && i >= dangKy.NgayBatDauCaMoi.Day && i <= item.NgayKetThucHopDong.Day)
+                                                {
+                                                    DLCCByDay.TenCa = dangKy.CaLamViecMoi;
+                                                }
+                                                else if (i < dangKy.NgayBatDauCaMoi.Day)
+                                                {
+                                                    DLCCByDay.TenCa = dangKy.CaLamViecHienTai;
+                                                }
+                                            }
+
+                                            if (item.NgayBatDauHopDong > request.NgayBatDau && item.NgayKetThucHopDong < request.NgayKetThuc)
+                                            {
+                                                if (dangKy.NgayBatDauCaMoi < item.NgayBatDauHopDong)
+                                                {
+                                                    if (i >= item.NgayBatDauHopDong.Day && i <= item.NgayKetThucHopDong.Day)
+                                                    {
+                                                        DLCCByDay.TenCa = dangKy.CaLamViecMoi;
+                                                    }
+                                                }
+
+                                                if (dangKy.NgayBatDauCaMoi >= item.NgayBatDauHopDong)
+                                                {
+                                                    if (i <= item.NgayKetThucHopDong.Day && i >= dangKy.NgayBatDauCaMoi.Day)
+                                                    {
+                                                        DLCCByDay.TenCa = dangKy.CaLamViecMoi;
+                                                    }
+
+                                                    if (i < dangKy.NgayBatDauCaMoi.Day && i >= item.NgayBatDauHopDong.Day)
+                                                    {
+                                                        DLCCByDay.TenCa = dangKy.CaLamViecHienTai;
+                                                    }
+                                                }
+                                            }
+
+                                            if (item.NgayBatDauHopDong <= request.NgayBatDau && item.NgayKetThucHopDong >= request.NgayKetThuc)
+                                            {
+                                                if (dangKy.NgayBatDauCaMoi <= request.NgayBatDau)
+                                                {
+                                                    DLCCByDay.TenCa = dangKy.CaLamViecMoi;
+                                                }
+                                                else
+                                                {
+                                                    if (i >= dangKy.NgayBatDauCaMoi.Day)
+                                                    {
+                                                        DLCCByDay.TenCa = dangKy.CaLamViecMoi;
+                                                    }
+                                                    else
+                                                    {
+                                                        DLCCByDay.TenCa = dangKy.CaLamViecHienTai;
+                                                    }
+                                                }
+                                            }
+
+                                            if (item.NgayBatDauHopDong <= request.NgayKetThuc && item.NgayBatDauHopDong > request.NgayBatDau && item.NgayKetThucHopDong > request.NgayKetThuc)
+                                            {
+                                                if (dangKy.NgayBatDauCaMoi >= item.NgayBatDauHopDong)
+                                                {
+                                                    if (i >= dangKy.NgayBatDauCaMoi.Day && i <= request.NgayKetThuc.Value.Day)
+                                                    {
+                                                        DLCCByDay.TenCa = dangKy.CaLamViecMoi;
+                                                    }
+
+                                                    if (i >= item.NgayBatDauHopDong.Day && i < dangKy.NgayBatDauCaMoi.Day)
+                                                    {
+                                                        DLCCByDay.TenCa = dangKy.CaLamViecHienTai;
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    if (i >= item.NgayBatDauHopDong.Day && i <= request.NgayKetThuc.Value.Day)
+                                                    {
+                                                        DLCCByDay.TenCa = dangKy.CaLamViecMoi;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    DLCCByDay.TenCa = dangKy.CaLamViecMoi;
+                                }
+                            }
+                        } else
+                        {
+                            DLCCByDay.TenCa = "8A";
+                        }
+                    }
+
                     listDLCCByDay.Add(DLCCByDay);
                 }
 
@@ -322,39 +453,6 @@ namespace HRMBackend.Services.DuLieuChamCong
                 return GetBaseResult(CodeMessage._200, data: true);
             else
                 return GetBaseResult<bool>(CodeMessage._556, status: StatusEnum.Failed);
-        }
-
-        private bool HasSpecialChars(string input)
-        {
-            string specialChar = @"\|!#$%&/()=?»«@£§€{}.-;'<>_,";
-            foreach (var item in specialChar)
-            {
-                if (input.Contains(item)) return true;
-            }
-
-            return false;
-        }
-
-        private bool IsValidEmail(string email)
-        {
-            if (!MailAddress.TryCreate(email, out var mailAddress))
-                return false;
-
-            // And if you want to be more strict:
-            var hostParts = mailAddress.Host.Split('.');
-            if (hostParts.Length == 1)
-                return false; // No dot.
-            if (hostParts.Any(p => p == string.Empty))
-                return false; // Double dot.
-            if (hostParts[^1].Length < 2)
-                return false; // TLD only one letter.
-
-            if (mailAddress.User.Contains(' '))
-                return false;
-            if (mailAddress.User.Split('.').Any(p => p == string.Empty))
-                return false; // Double dot or dot at end of user part.
-
-            return true;
         }
     }
 }

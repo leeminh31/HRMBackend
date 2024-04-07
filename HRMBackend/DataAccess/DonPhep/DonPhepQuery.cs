@@ -76,6 +76,46 @@ namespace HRMBackend.DataAccess.DonPhep
             return (query, param);
         }
 
+        private static (string sql, DynamicParameters param) GetDayOffQuery(SearchDonPhepRequest request)
+        {
+            // Param component
+            var param = new DynamicParameters();
+            param.Add(":manhanvien", request.MaNhanVien, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":ngaybatdautaodon", request.NgayBatDauTaoDon, dbType: DbType.Date, direction: ParameterDirection.Input);
+            param.Add(":ngayketthuctaodon", request.NgayKetThucTaoDon, dbType: DbType.Date, direction: ParameterDirection.Input);
+
+            // SQL component
+            string query = @"SELECT *
+                            FROM TBL_DONPHEP
+                            WHERE 
+                                (:manhanvien IS NULL OR manhanvien = :manhanvien)
+                                AND (:ngaybatdautaodon IS NULL OR ngaylamviec >= :ngaybatdautaodon)
+                                AND (:ngayketthuctaodon IS NULL OR ngaylamviec <= :ngayketthuctaodon)
+                                AND trangthai = '1'
+                            ";
+
+            return (query, param);
+        }
+
+        private static (string sql, DynamicParameters param) GetDayOffByYearAndIDQuery(string maNhanVien, int nam)
+        {
+            // Param component
+            var param = new DynamicParameters();
+            param.Add(":manhanvien", maNhanVien, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":nam", nam, dbType: DbType.Int32, direction: ParameterDirection.Input);
+
+            // SQL component
+            string query = @"SELECT Count(madonphep)
+                            FROM TBL_DONPHEP
+                            WHERE 
+                                manhanvien = :manhanvien
+                                AND EXTRACT(YEAR from ngaylamviec) = :nam
+                                AND trangthai = '1'
+                            ";
+
+            return (query, param);
+        }
+
         public static string RemoveSignUnicodeString(string s, bool toUpper = false)
         {
             if (!string.IsNullOrEmpty(s?.Trim()))

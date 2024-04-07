@@ -39,11 +39,11 @@ namespace HRMBackend.DataAccess.DonTangCa
             param.Add(":lydo", model.LyDo, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(":madontangca", model.MaDonTangCa, dbType: DbType.Int32, direction: ParameterDirection.Input);
 
-            string query = @"UPDATE public.tbl_donconnho
-	                        SET tungay=:tungay, 
-                                denngay=:denngay, 
+            string query = @"UPDATE public.tbl_dontangca
+	                        SET tangcatu=:tangcatu, 
+                                tangcaden=:tangcaden, 
                                 lydo=:lydo
-	                        WHERE madonconnho = :madonconnho;";
+	                        WHERE madontangca = :madontangca;";
             return (query, param);
         }
 
@@ -77,6 +77,25 @@ namespace HRMBackend.DataAccess.DonTangCa
                                 AND (:ngaylamviecketthuc IS NULL OR ngaylamviec <= :ngaylamviecketthuc)
                                 AND (:ngaytaodonbatdau IS NULL OR ngaytaodon >= :ngaytaodonbatdau)
                                 AND (:ngaytaodonketthuc IS NULL OR ngaytaodon <= :ngaytaodonketthuc)
+                            ";
+
+            return (query, param);
+        }
+
+        private static (string sql, DynamicParameters param) GetTotalMinutesOTQuery(string maNhanVien, int nam)
+        {
+            // Param component
+            var param = new DynamicParameters();
+            param.Add(":manhanvien", maNhanVien, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":nam", nam, dbType: DbType.Int32, direction: ParameterDirection.Input);
+
+            // SQL component
+            string query = @"SELECT SUM(FLOOR((EXTRACT(EPOCH from tangcaden) - EXTRACT(EPOCH from tangcatu)) /60)) as quynghibuhienco
+                            FROM TBL_DONTANGCA
+                            WHERE 
+                                (manhanvien = :manhanvien)
+                                AND (trangthai = '1')
+                                AND EXTRACT(YEAR from ngaylamviec) = :nam
                             ";
 
             return (query, param);

@@ -56,5 +56,7 @@ namespace HRMBackend.DataAccess.NhanVien
         Task<(bool hasValue, Models.NhanVien data)> GetByIdVanTayAsync(int? idVanTay, string? maNhanVien);
 
         Task<(bool isSuccess, IEnumerable<Models.NhanVien> data)> UpdateOrInsertListRecordsAsync(IEnumerable<Models.NhanVien> request, IEnumerable<Models.HopDong> request2);
+
+        Task<(bool isSuccess, IEnumerable<Models.NhanVien> data)> UpdateShiftIDAsync(IEnumerable<Models.NhanVien> airport, string? maNhanVien);
     }
 }

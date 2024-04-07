@@ -2,7 +2,9 @@
 {
     public class SearchQuyPhepRequest
     {
-        public string Code { get; set; }
-        public string Name { get; set; }
+        public string? TenNhanVien { get; set; }
+        public string? MaNhanVien { get; set; }
+        public int? MaPhongBan { get; set; }
+        public int Nam {  get; set; }
     }
 }

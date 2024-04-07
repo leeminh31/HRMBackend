@@ -163,6 +163,18 @@ namespace HRMBackend.DataAccess.NhanVien
 
             return (false, airport);
         }
+
+        public async Task<(bool isSuccess, IEnumerable<Models.NhanVien> data)> UpdateShiftIDAsync(IEnumerable<Models.NhanVien> airport, string? maNhanVien)
+        {
+            var query = UpdateShiftIDQuery(airport, maNhanVien);
+            var result = await Context.ExecuteAsync(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+
+            // Process result
+            if (result > 0)
+                return (true, airport);
+
+            return (false, airport);
+        }
         #endregion
     }
 }

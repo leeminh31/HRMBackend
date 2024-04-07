@@ -10,5 +10,6 @@ namespace HRMBackend.Services.PhanCaNhanVien
         Task<BaseResult<IEnumerable<DuLieuChamCongResponse>>> GetByParamsAsync(SearchBaoCaoTheoThangRequest request);
 
         Task<BaseResult<List<BaoCaoTheoThangResponse>>> GetTotalHourkWorkByDayAsync(string? maNhanVien, DateTime? ngayLamViec);
+        Task<BaseResult<IEnumerable<Models.NhanVien>>> AssignShiftsToEmployeeAsync();
     }
 }

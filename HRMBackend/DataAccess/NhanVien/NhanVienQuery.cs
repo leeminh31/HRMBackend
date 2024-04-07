@@ -3,6 +3,7 @@ using System.Data;
 using System.Text.RegularExpressions;
 using System.Text;
 using HRMBackend.Resources.DTO.NhanVien.Request;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace HRMBackend.DataAccess.NhanVien
 {
@@ -179,8 +180,8 @@ namespace HRMBackend.DataAccess.NhanVien
 
             // SQL component
             string query = @"INSERT INTO public.tbl_nhanvien(
-	        manhanvien, maphongban, hoten, chucvu, mail, ngaysinh, sodienthoai, socccd, ngaycap, quequan, noiohientai, nguoithanlienhe, sodienthoainguoilienhe, stknganhang, nganhang, idvantay)
-	        VALUES (:manhanvien, :maphongban, :hoten, :chucvu, :mail, :ngaysinh, :sodienthoai, :socccd, :ngaycap, :quequan, :noiohientai, :nguoithanlienhe, :sodienthoainguoilienhe, :stknganhang, :nganhang, :idvantay);";
+	        manhanvien, maphongban, hoten, chucvu, mail, ngaysinh, sodienthoai, socccd, ngaycap, quequan, noiohientai, nguoithanlienhe, sodienthoainguoilienhe, stknganhang, nganhang, idvantay, macalamviec)
+	        VALUES (:manhanvien, :maphongban, :hoten, :chucvu, :mail, :ngaysinh, :sodienthoai, :socccd, :ngaycap, :quequan, :noiohientai, :nguoithanlienhe, :sodienthoainguoilienhe, :stknganhang, :nganhang, :idvantay, 1);";
             return (query, param);
         }
 
@@ -285,6 +286,30 @@ namespace HRMBackend.DataAccess.NhanVien
                         WHERE manhanvien = :manhanvien";
             return (query, param);
         }
+
+        private static (string sql, DynamicParameters param) UpdateShiftIDQuery(IEnumerable<Models.NhanVien> model, string? employeeId)
+        {
+            // Param component
+            var param = new DynamicParameters();
+
+            StringBuilder valueQuery = new StringBuilder();
+            for (int i = 0; i < model.Count(); i++)
+            {
+                valueQuery.AppendFormat("WHEN MANHANVIEN = '{0}' THEN {1}\n"
+                    , model.ElementAt(i).MaNhanVien,
+                    model.ElementAt(i).MaCa);
+                
+            }
+
+            string query = @"UPDATE tbl_nhanvien
+                            SET macalamviec = CASE 
+                            " + valueQuery + @"
+                                ELSE macalamviec
+                            END
+                            WHERE manhanvien IN (" + employeeId+ @");";
+            return (query, param);
+        }
+
         #endregion
 
         public static string RemoveSignUnicodeString(string s, bool toUpper = false)

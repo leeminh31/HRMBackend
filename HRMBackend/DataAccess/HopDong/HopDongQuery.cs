@@ -105,6 +105,46 @@ namespace HRMBackend.DataAccess.HopDong
             return (query, param);
         }
 
+        private static (string sql, DynamicParameters param) GetContractByYearQuery(string? maNhanVien, int? nam)
+        {
+            // Param component
+            var param = new DynamicParameters();
+            param.Add(":manhanvien", maNhanVien, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":nam", nam, dbType: DbType.Int32, direction: ParameterDirection.Input);
+
+            // SQL component
+            string query = @"SELECT *
+                            FROM TBL_HOPDONG
+                            WHERE (
+                                ( :manhanvien IS NULL OR manhanvien = :manhanvien)
+                                AND (:nam IS NULL OR EXTRACT(YEAR from ngaybatdauhopdong) = :nam OR EXTRACT(YEAR from ngayketthuchopdong) = :nam OR (EXTRACT(YEAR from ngaybatdauhopdong) < :nam AND EXTRACT(YEAR from ngayketthuchopdong) > :nam))
+                            )
+                            ORDER BY ngaybatdauhopdong ASC";
+
+            return (query, param);
+        }
+
+        private static (string sql, DynamicParameters param) GetContractByTimeRangeAndIDQuery(string maNhanVien, DateTime? ngayKetThuc, DateTime? ngayBatDau)
+        {
+            // Param component
+            var param = new DynamicParameters();
+            param.Add(":manhanvien", maNhanVien, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":ngayketthuc", ngayKetThuc, dbType: DbType.Date, direction: ParameterDirection.Input);
+            param.Add(":ngaybatdau", ngayBatDau, dbType: DbType.Date, direction: ParameterDirection.Input);
+
+            // SQL component
+            string query = @"SELECT *
+                            FROM TBL_HOPDONG
+                            WHERE (
+                                manhanvien = :manhanvien
+                                AND ngaybatdauhopdong <= :ngayketthuc
+                                AND ngayketthuchopdong >=:ngayBatDau
+                            )
+                            ORDER BY ngaybatdauhopdong ASC";
+
+            return (query, param);
+        }
+
         private static (string sql, DynamicParameters param) UpdateQuery(Models.HopDong model)
         {
             // Param component

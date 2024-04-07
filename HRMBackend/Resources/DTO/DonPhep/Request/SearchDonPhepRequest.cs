@@ -2,7 +2,8 @@
 {
     public class SearchDonPhepRequest
     {
-        public string Code { get; set; }
-        public string Name { get; set; }
+        public DateTime? NgayBatDauTaoDon { get; set; }
+        public DateTime? NgayKetThucTaoDon { get; set; }
+        public string? MaNhanVien { get; set; }
     }
 }

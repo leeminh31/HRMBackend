@@ -17,6 +17,17 @@ namespace HRMBackend.DataAccess.DonBu
             this.Transaction = unitOfWorkContext.Transaction;
         }
         #endregion
+        public async Task<(bool isSuccess, int? data)> GetTotalMinutesOTAsync(string maNhanVien, int nam)
+        {
+            var query = GetTotalMinutesOTQuery(maNhanVien, nam);
+            var queryResult = await Context.QuerySingleOrDefaultAsync<int?>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+
+            // Process result
+            if (queryResult != null)
+                return (true, queryResult);
+
+            return (false, default);
+        }
         public async Task<(bool isSuccess, Models.DonBu data)> ApproveAllRequestAsync(ApproveRequestList request)
         {
             var query = ApproveAllRequestTypeQuery(request);

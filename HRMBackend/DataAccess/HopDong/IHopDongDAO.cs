@@ -50,5 +50,9 @@
         Task<(bool isSuccess, Models.HopDong data)> UpdateAsync(Models.HopDong caLamViec);
 
         Task<(bool hasValue, IEnumerable<Models.HopDong> data)> GetAllContractAsync();
+
+        Task<(bool hasValue, IEnumerable<Models.HopDong> data)> GetContractByYearAsync(string? maNhanVien, int? nam);
+
+        Task<(bool hasValue, IEnumerable<Models.HopDong> data)> GetContractByTimeRangeAndIDAsync(string maNhanVien, DateTime? ngayBatDau, DateTime? ngayKetThuc);
     }
 }

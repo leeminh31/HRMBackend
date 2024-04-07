@@ -73,5 +73,29 @@ namespace HRMBackend.DataAccess.DonPhep
 
             return (false, default);
         }
+
+        public async Task<(bool isSuccess, IEnumerable<Models.DonPhep> data)> GetDayOffAsync(SearchDonPhepRequest request)
+        {
+            var query = GetDayOffQuery(request);
+            var queryResult = await Context.QueryAsync<Models.DonPhep>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+
+            // Process result
+            if (queryResult.GetEnumerator().MoveNext())
+                return (true, queryResult);
+
+            return (false, default);
+        }
+
+        public async Task<(bool isSuccess, int data)> GetDayOffByYearAndIDAsync(string maNhanVien, int nam)
+        {
+            var query = GetDayOffByYearAndIDQuery(maNhanVien, nam);
+            var queryResult = await Context.QuerySingleOrDefaultAsync<int>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+
+            // Process result
+            if (queryResult > 0)
+                return (true, queryResult);
+
+            return (false, default);
+        }
     }
 }

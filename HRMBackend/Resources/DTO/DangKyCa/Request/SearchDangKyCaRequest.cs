@@ -2,7 +2,10 @@
 {
     public class SearchDangKyCaRequest
     {
-        public string Code { get; set; }
-        public string Name { get; set; }
+        public string? TenNhanVien { get; set; }
+        public string? MaNhanVien { get; set; }
+        public DateTime? NgayTao { get; set; }
+        public string? CaLamViecMoi { get; set; }
+        public string? TrangThai { get; set; }
     }
 }

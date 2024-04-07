@@ -114,5 +114,64 @@ namespace HRMBackend.Controllers
             return Ok(result);
 
         }
+
+        [HttpPost("UpdateDonTangCa")]
+        [SwaggerOperation(summary: "Sửa đơn tăng ca")]
+        //[Authorize]
+        public async Task<IActionResult> UpdateDonTangCaAsync(UpdateDonTangCaRequest request)
+        {
+            var result = await _danhSachDonService.UpdateDonTangCaAsync(request);
+
+            return Ok(result);
+        }
+
+        [HttpPost("UpdateDonBu")]
+        [SwaggerOperation(summary: "Sửa đơn bù")]
+        //[Authorize]
+        public async Task<IActionResult> UpdateDonBuAsync(UpdateDonBuRequest request)
+        {
+            var result = await _danhSachDonService.UpdateDonBuAsync(request);
+
+            return Ok(result);
+        }
+
+        [HttpPost("UpdateDonPhep")]
+        [SwaggerOperation(summary: "Sửa đơn phép")]
+        //[Authorize]
+        public async Task<IActionResult> UpdateDonPhepAsync(UpdateDonPhepRequest request)
+        {
+            var result = await _danhSachDonService.UpdateDonPhepAsync(request);
+
+            return Ok(result);
+        }
+
+        [HttpPost("UpdateDonConNho")]
+        [SwaggerOperation(summary: "Sửa đơn con nhỏ")]
+        //[Authorize]
+        public async Task<IActionResult> UpdateDonConNhoAsync(UpdateDonConNhoRequest request)
+        {
+            var result = await _danhSachDonService.UpdateDonConNhoAsync(request);
+
+            return Ok(result);
+        }
+
+        [HttpGet("GetTotalOTMinutes")]
+        [SwaggerOperation(summary: "Quỹ bù hiện có")]
+        //[Authorize]
+        public async Task<IActionResult> GetTotalMinutesOTAsync(string maNhanVien, int nam)
+        {
+            var result = await _danhSachDonService.GetTotalMinutesOTAsync(maNhanVien, nam);
+
+            return Ok(result);
+        }
+
+        [HttpGet("GetTotalDayOffByYear")]
+        [SwaggerOperation(summary: "Quỹ phép hiện có")]
+        public async Task<IActionResult> GetTotalDayOffByYearAsync(string maNhanVien, int nam)
+        {
+            var result = await _danhSachDonService.GetTotalDayOffByYearAsync(maNhanVien, nam);
+
+            return Ok(result);
+        }
     }
 }

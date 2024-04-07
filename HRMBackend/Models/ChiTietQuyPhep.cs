@@ -9,15 +9,15 @@ namespace HRMBackend.Models
     public partial class ChiTietQuyPhep
     {
         [Key]
-        [Column("maChiTietQuyPhep")]
+        [Column("machitietquyphep")]
         public int MaChiTietQuyPhep { get; set; }
-        [Column("maQuyPhep")]
+        [Column("maquyphep")]
         public int MaQuyPhep { get; set; }
         [Column("nam")]
-        public int nam { get; set; }
+        public int Nam { get; set; }
         [Column("thang")]
         public int Thang { get; set; }
-        [Column("suDung")]
+        [Column("sudung")]
         public int SuDung { get; set; }
     }
 }

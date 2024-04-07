@@ -9,9 +9,9 @@ namespace HRMBackend.Models
     public partial class QuyBu
     {
         [Key]
-        [Column("maQuyBu")]
+        [Column("maquybu")]
         public int MaQuyBu { get; set; }
-        [Column("maNhanVien")]
+        [Column("manhanvien")]
         public string MaNhanVien { get; set; }
     }
 }

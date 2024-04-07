@@ -16,5 +16,7 @@ namespace HRMBackend.DataAccess.DonBu
         Task<(bool isSuccess, Models.DonBu data)> CreateAsync(Models.DonBu airport);
 
         Task<(bool isSuccess, Models.DonBu data)> UpdateAsync(Models.DonBu airport);
+        
+        Task<(bool isSuccess, int? data)> GetTotalMinutesOTAsync(string maNhanVien, int nam);
     }
 }

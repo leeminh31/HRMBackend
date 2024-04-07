@@ -38,6 +38,17 @@ namespace HRMBackend.Controllers
 
         }
 
+        [HttpPost("Update")]
+        [SwaggerOperation(summary: "Sửa giải trình")]
+        //[Authorize]
+        public async Task<IActionResult> UpdateAsync(UpdateGiaiTrinhRequest request)
+        {
+            var result = await _giaiTrinhService.UpdateAsync(request);
+
+            return Ok(result);
+
+        }
+
         [HttpGet()]
         [SwaggerOperation(summary: "Lấy thông tin theo mã nhân viên")]
         public async Task<IActionResult> GetByEmployeeIdAsync(string? maNhanVien)

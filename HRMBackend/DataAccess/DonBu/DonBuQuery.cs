@@ -183,6 +183,24 @@ namespace HRMBackend.DataAccess.DonBu
             return (query.ToString(), param);
         }
 
+        private static (string sql, DynamicParameters param) GetTotalMinutesOTQuery(string maNhanVien, int nam)
+        {
+            // Param component
+            var param = new DynamicParameters();
+            param.Add(":manhanvien", maNhanVien, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":nam", nam, dbType: DbType.Int32, direction: ParameterDirection.Input);
+
+            // SQL component
+            string query = @"SELECT SUM(sophutxinbu) as tongsophut
+                            FROM TBL_DONBU
+                            WHERE 
+                                (manhanvien = :manhanvien)
+                                AND (trangthai = '1')
+                                AND EXTRACT(YEAR from ngaylamviec) = :nam
+                            ";
+            return (query, param);
+        }
+
         public static string RemoveSignUnicodeString(string s, bool toUpper = false)
         {
             if (!string.IsNullOrEmpty(s?.Trim()))

@@ -9,21 +9,21 @@ namespace HRMBackend.Models
     public partial class DangKyCa
     {
         [Key]
-        [Column("maDangKyCa")]
+        [Column("madangkyca")]
         public int MaDangKyCa { get; set; }
-        [Column("ngayTao")]
-        public DateOnly NgayTao { get; set; }
-        [Column("caLamViecHienTai")]
+        [Column("ngaytao")]
+        public DateTime NgayTao { get; set; }
+        [Column("calamviechientai")]
         public string CaLamViecHienTai { get; set; }
-        [Column("caLamViecMoi")]
+        [Column("calamviecmoi")]
         public string CaLamViecMoi { get; set; }
-        [Column("ngayBatDauCaMoi")]
-        public DateOnly NgayBatDauCaMoi { get; set; }
-        [Column("nguoiDuyet")]
+        [Column("ngaybatdaucamoi")]
+        public DateTime NgayBatDauCaMoi { get; set; }
+        [Column("nguoiduyet")]
         public string NguoiDuyet { get; set; }
-        [Column("trangThai")]
-        public bool TrangThai { get; set; }
-        [Column("maNhanVien")]
+        [Column("trangthai")]
+        public string TrangThai { get; set; }
+        [Column("manhanvien")]
         public string MaNhanVien { get; set; }
     }
 }
