@@ -81,22 +81,23 @@ namespace HRMBackend.Services.QuyBu
                     quyBuResponse.HoTen = nhanVien.HoTen;
                     quyBuResponse.Nam = request.Nam;
 
-                    var hopDong = await _hopDongDAO.GetContractByYearAsync(nhanVien.MaNhanVien, request.Nam);
-
                     var phatSinh = 0;
                     var suDung = 0;
                     var conLai = 0;
-
+                    var listQuyBuThang = new List<QuyBuThang>();
                     var maQuyBus = await _quyBuDAO.GetByEmployeeIDAsync(nhanVien.MaNhanVien);
+
                     if (maQuyBus.isSuccess)
                     {
                         for (int thang = 1; thang <= 12; thang++)
                         {
-                            quyBuResponse.QuyBuThangs[thang-1].Thang = thang;
-                            quyBuResponse.QuyBuThangs[thang-1].PhatSinh = quyBuNam.data.FirstOrDefault(qb => qb.Thang == thang && maQuyBus.data.Any(mqb => mqb.MaQuyBu == qb.MaQuyBu))?.PhatSinh ?? 0;
-                            quyBuResponse.QuyBuThangs[thang-1].SuDung = quyBuNam.data.FirstOrDefault(qb => qb.Thang == thang && maQuyBus.data.Any(mqb => mqb.MaQuyBu == qb.MaQuyBu))?.SuDung ?? 0;
-                            phatSinh += quyBuResponse.QuyBuThangs[thang - 1].PhatSinh;
-                            suDung += quyBuResponse.QuyBuThangs[thang - 1].SuDung;
+                            var quyBuThang = new QuyBuThang();
+                            quyBuThang.Thang = thang;
+                            quyBuThang.PhatSinh = quyBuNam.data.FirstOrDefault(qb => qb.Thang == thang && maQuyBus.data.Any(mqb => mqb.MaQuyBu == qb.MaQuyBu))?.PhatSinh ?? 0;
+                            quyBuThang.SuDung = quyBuNam.data.FirstOrDefault(qb => qb.Thang == thang && maQuyBus.data.Any(mqb => mqb.MaQuyBu == qb.MaQuyBu))?.SuDung ?? 0;
+                            listQuyBuThang.Add(quyBuThang);
+                            phatSinh += quyBuThang.PhatSinh;
+                            suDung += quyBuThang.SuDung;
                         }
                         conLai = phatSinh - suDung;
                     }
@@ -108,6 +109,7 @@ namespace HRMBackend.Services.QuyBu
                     quyBuResponse.SuDung = suDung;
                     quyBuResponse.ConLai = conLai;
                     quyBuResponse.PhatSinh = phatSinh;
+                    quyBuResponse.QuyBuThangs = listQuyBuThang.AsEnumerable();
                     listQuyBuResponse.Add(quyBuResponse);
                 }
                 return GetBaseResult(CodeMessage._200, data: listQuyBuResponse.AsEnumerable());

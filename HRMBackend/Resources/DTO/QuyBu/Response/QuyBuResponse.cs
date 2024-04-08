@@ -8,7 +8,7 @@ namespace HRMBackend.Resources.DTO.QuyBu.Response
         public string HoTen { get; set; }
         public string PhongBan { get; set; }
         public int Nam {  get; set; }
-        public QuyBuThang[] QuyBuThangs { get; set; }
+        public IEnumerable<QuyBuThang> QuyBuThangs { get; set; }
         public int PhatSinh { get; set; }
         public int SuDung { get; set;}
         public int ConLai { get; set; }

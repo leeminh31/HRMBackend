@@ -85,21 +85,28 @@ namespace HRMBackend.Services.QuyPhep
                     var conLai = 0;
                     if (hopDong.hasValue)
                     {
+                        var thanghd = 0;
+                        var trung = 0;
                         foreach(var hd in  hopDong.data)
                         {
+                            if (thanghd == hd.NgayBatDauHopDong.Month) {
+                                trung++;
+                            }
                             if(hd.NgayBatDauHopDong <= ngayDauTienNam && hd.NgayKetThucHopDong >= ngayDauTienNam && hd.NgayKetThucHopDong <= ngayCuoiCungNam)
                             {
-                                tongQuyNam = hd.NgayKetThucHopDong.Month;
+                                thanghd = hd.NgayKetThucHopDong.Month;
+                                tongQuyNam += hd.NgayKetThucHopDong.Month;
                             }  
                             
                             if (hd.NgayBatDauHopDong >= ngayDauTienNam && hd.NgayKetThucHopDong <= ngayCuoiCungNam )
                             {
-                                tongQuyNam = hd.NgayKetThucHopDong.Month - hd.NgayBatDauHopDong.Month + 1;
+                                thanghd = hd.NgayKetThucHopDong.Month;
+                                tongQuyNam += hd.NgayKetThucHopDong.Month - hd.NgayBatDauHopDong.Month + 1;
                             }
 
                             if (hd.NgayBatDauHopDong >= ngayDauTienNam && hd.NgayKetThucHopDong > ngayCuoiCungNam)
                             {
-                                tongQuyNam = 13 - hd.NgayBatDauHopDong.Month ;
+                                tongQuyNam += 13 - hd.NgayBatDauHopDong.Month ;
                             }
 
                             if (hd.NgayBatDauHopDong < ngayDauTienNam && hd.NgayKetThucHopDong > ngayCuoiCungNam)
@@ -109,7 +116,7 @@ namespace HRMBackend.Services.QuyPhep
 
 
                             var maQuyPheps = await _quyPhepDAO.GetByEmployeeIDAsync(nhanVien.MaNhanVien);
-                            if (maQuyPheps.isSuccess)
+                            if (maQuyPheps.isSuccess && quyPhepNam.isSuccess)
                             {
                                 quyPhepResponse.Thang1 = quyPhepNam.data.FirstOrDefault(qp => qp.Thang == 1 && maQuyPheps.data.Any(mqp => mqp.MaQuyPhep == qp.MaQuyPhep))?.SuDung ?? 0;
                                 quyPhepResponse.Thang2 = quyPhepNam.data.FirstOrDefault(qp => qp.Thang == 2 && maQuyPheps.data.Any(mqp => mqp.MaQuyPhep == qp.MaQuyPhep))?.SuDung ?? 0;
@@ -132,13 +139,10 @@ namespace HRMBackend.Services.QuyPhep
 
                                     suDung += suDungTrongThang;
                                 }
-
-                                conLai = tongQuyNam - suDung;
-                            } else
-                            {
-                                conLai = tongQuyNam;
                             }
                         }
+                        tongQuyNam = tongQuyNam - trung;
+                        conLai = tongQuyNam - suDung;   
                     }
 
                     quyPhepResponse.DaDung = suDung;
