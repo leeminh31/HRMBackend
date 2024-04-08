@@ -5,7 +5,6 @@ using HRMBackend.Resources.DTO.DanhSachDon.Response;
 using HRMBackend.Resources.Enums;
 using HRMBackend.Resources;
 using HRMBackend.Results;
-using HRMBackend.Services.DanhSachDon;
 using Microsoft.Extensions.Options;
 using HRMBackend.DataAccess.DonBu;
 using HRMBackend.DataAccess.DonConNho;
@@ -15,18 +14,12 @@ using HRMBackend.Resources.DTO.DonBu.Response;
 using HRMBackend.Resources.DTO.DonPhep.Response;
 using HRMBackend.Resources.DTO.DonTangCa.Response;
 using HRMBackend.Resources.DTO.DonConNho.Response;
-using Mysqlx.Session;
 using HRMBackend.DataAccess.NhanVien;
 using HRMBackend.Resources.DTO.DonBu.Request;
-using HRMBackend.Resources.DTO.CaLamViec.Request;
-using HRMBackend.Resources.DTO.CaLamViec.Response;
 using HRMBackend.Resources.DTO.DonConNho.Request;
 using HRMBackend.Resources.DTO.DonPhep.Request;
 using HRMBackend.Resources.DTO.DonTangCa.Request;
-using HRMBackend.Resources.DTO.GiaiTrinh.Response;
 using HRMBackend.DataAccess.HopDong;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Net.WebSockets;
 using HRMBackend.DataAccess.CaLamViec;
 
 namespace HRMBackend.Services.DanhSachDon

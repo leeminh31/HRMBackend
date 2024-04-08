@@ -56,24 +56,30 @@ namespace HRMBackend.Services.QuyPhep
 
             var quyPhepNam = await _chiTietQuyPhepDAO.GetByYearAsync(request.Nam);
 
-            var phongBan = await _phongBanDAO.GetByParamsAsync(new SearchPhongBanRequest());
+            var phongBanSearchRequest = new SearchPhongBanRequest();
+            phongBanSearchRequest.TenPhongBan = request.TenPhongBan;
+
+            var phongBan = await _phongBanDAO.GetByParamsAsync(phongBanSearchRequest);
 
             var nhanVienTheoTen = await _nhanVienDAO.GetByParamsAsync(request.MaNhanVien,null, null,null,request.TenNhanVien);
 
 
             var listQuyPhepResponse = new List<QuyPhepResponse>();
 
-            if (nhanVienTheoTen.isSuccess)
+            if (nhanVienTheoTen.isSuccess && phongBan.hasValue)
             {
                 foreach (var nhanVien in nhanVienTheoTen.data)
                 {
-                    var hopDong = await _hopDongDAO.GetContractByYearAsync(nhanVien.MaNhanVien, request.Nam);
                     var quyPhepResponse = new QuyPhepResponse();
+                    quyPhepResponse.PhongBan = phongBan.data.FirstOrDefault(pb => pb.MaPhongBan == nhanVien.MaPhongBan)?.TenPhongBan;
+                    if (quyPhepResponse.PhongBan == null) {
+                        continue;
+                    }
                     quyPhepResponse.MaNhanVien = nhanVien.MaNhanVien;
-                    quyPhepResponse.HoTen = nhanVien.HoTen;
                     quyPhepResponse.Nam = request.Nam;
-                    quyPhepResponse.PhongBan = phongBan.data.First(pb => pb.MaPhongBan == nhanVien.MaPhongBan).TenPhongBan;
+                    quyPhepResponse.HoTen = nhanVien.HoTen;
 
+                    var hopDong = await _hopDongDAO.GetContractByYearAsync(nhanVien.MaNhanVien, request.Nam);
                     var tongQuyNam = 0;
                     var suDung = 0;
                     var conLai = 0;

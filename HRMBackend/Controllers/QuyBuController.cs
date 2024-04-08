@@ -1,36 +1,37 @@
 ﻿using AutoMapper;
-using HRMBackend.Resources;
 using HRMBackend.Resources.DTO.QuyPhep.Request;
-using HRMBackend.Services.CaLamViec;
+using HRMBackend.Resources;
 using HRMBackend.Services.QuyPhep;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Annotations;
+using HRMBackend.Services.QuyBu;
+using HRMBackend.Resources.DTO.QuyBu.Request;
 
 namespace HRMBackend.Controllers
 {
-    [Route("api/v1/QuyPhep")]
-    public class QuyPhepController : ParentController
+    [Route("api/v1/QuyBu")]
+    public class QuyBuController : ParentController
     {
         #region Property
-        private readonly IQuyPhepService _quyPhepService;
+        private readonly IQuyBuService _quyBuService;
         #endregion
 
         #region Constructor
-        public QuyPhepController(IQuyPhepService quyPhepService,
+        public QuyBuController(IQuyBuService quyBuService,
             IMapper mapper,
             IOptionsMonitor<ResponseMessage> responseMessage) : base(mapper, responseMessage)
         {
-            this._quyPhepService = quyPhepService;
+            this._quyBuService = quyBuService;
         }
         #endregion
 
         [HttpPost()]
         [SwaggerOperation(summary: "Lấy thông tin theo điều kiện tìm kiếm")]
         //[Authorize]
-        public async Task<IActionResult> GetByParamsAsync(SearchQuyPhepRequest request)
+        public async Task<IActionResult> GetByParamsAsync(SearchQuyBuRequest request)
         {
-            var result = await _quyPhepService.GetByYearAsync(request);
+            var result = await _quyBuService.GetByYearAsync(request);
 
             return Ok(result);
 
