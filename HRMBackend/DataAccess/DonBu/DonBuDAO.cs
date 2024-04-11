@@ -109,6 +109,16 @@ namespace HRMBackend.DataAccess.DonBu
             return (false, default);
         }
 
+        public async Task<(bool isSuccess, IEnumerable<Models.DonBu> data)> GetDonBuByDayAsync(SearchDonByDayRequest request)
+        {
+            var query = GetDonBuByDayQuery(request);
+            var queryResult = await Context.QueryAsync<Models.DonBu>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
+            // Process result
+            if (queryResult.GetEnumerator().MoveNext())
+                return (true, queryResult);
+
+            return (false, default);
+        }
     }
 }

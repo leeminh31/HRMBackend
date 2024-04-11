@@ -53,6 +53,6 @@
 
         Task<(bool hasValue, IEnumerable<Models.HopDong> data)> GetContractByYearAsync(string? maNhanVien, int? nam);
 
-        Task<(bool hasValue, IEnumerable<Models.HopDong> data)> GetContractByTimeRangeAndIDAsync(string maNhanVien, DateTime? ngayBatDau, DateTime? ngayKetThuc);
+        Task<(bool hasValue, IEnumerable<Models.HopDong> data)> GetContractByTimeRangeAndIDAsync(DateTime? ngayBatDau, DateTime? ngayKetThuc);
     }
 }

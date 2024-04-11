@@ -85,5 +85,17 @@ namespace HRMBackend.DataAccess.DonTangCa
 
             return (false, default);
         }
+
+        public async Task<(bool isSuccess, IEnumerable<Models.DonTangCa> data)> GetDonTangCaByDayAsync(SearchDonByDayRequest request)
+        {
+            var query = GetDonTangCaByDayQuery(request);
+            var queryResult = await Context.QueryAsync<Models.DonTangCa>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+
+            // Process result
+            if (queryResult.GetEnumerator().MoveNext())
+                return (true, queryResult);
+
+            return (false, default);
+        }
     }
 }

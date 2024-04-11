@@ -81,6 +81,43 @@ namespace HRMBackend.DataAccess.DonConNho
             return (query, param);
         }
 
+        private static (string sql, DynamicParameters param) GetDonConNhoByDayQuery(SearchDonByDayRequest request)
+        {
+            // Param component
+            var param = new DynamicParameters();
+            param.Add(":manhanvien", request.MaNhanVien, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":ngaylamviec", request.NgayLamViec, dbType: DbType.Date, direction: ParameterDirection.Input);
+
+            // SQL component
+            string query = @"SELECT *
+                            FROM TBL_DONCONNHO
+                            WHERE 
+                                (:manhanvien IS NULL OR manhanvien = :manhanvien)
+                                AND (:ngaylamviec IS NULL OR tungay <= :ngaylamviec)
+                                AND (:ngaylamviec IS NULL OR denngay >= :ngaylamviec)
+                            ";
+
+            return (query, param);
+        }
+
+        private static (string sql, DynamicParameters param) GetDonConNhoByMonthQuery(SearchDanhSachDonRequest request)
+        {
+            // Param component
+            var param = new DynamicParameters();
+            param.Add(":ngaybatdau", request.NgayLamViecBatDau, dbType: DbType.Date, direction: ParameterDirection.Input);
+            param.Add(":ngayketthuc", request.NgayLamViecKetThuc, dbType: DbType.Date, direction: ParameterDirection.Input);
+
+            // SQL component
+            string query = @"SELECT *
+                            FROM TBL_DONCONNHO
+                            WHERE 
+                                (:ngaybatdau IS NULL OR ngaylamviec >= :ngaybatdau)
+                                AND (:ngayketthuc IS NULL OR ngaylamviec <= :ngayketthuc)
+                            ";
+
+            return (query, param);
+        }
+
         public static string RemoveSignUnicodeString(string s, bool toUpper = false)
         {
             if (!string.IsNullOrEmpty(s?.Trim()))

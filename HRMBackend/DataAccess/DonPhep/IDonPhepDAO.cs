@@ -12,5 +12,6 @@ namespace HRMBackend.DataAccess.DonPhep
         Task<(bool isSuccess, Models.DonPhep data)> UpdateAsync(Models.DonPhep airport);
         Task<(bool isSuccess, IEnumerable<Models.DonPhep> data)> GetDayOffAsync(SearchDonPhepRequest request);
         Task<(bool isSuccess, int data)> GetDayOffByYearAndIDAsync(string maNhanVien, int nam);
+        Task<(bool isSuccess, IEnumerable<Models.DonPhep> data)> GetDonPhepByDayAsync(SearchDonByDayRequest request);
     }
 }

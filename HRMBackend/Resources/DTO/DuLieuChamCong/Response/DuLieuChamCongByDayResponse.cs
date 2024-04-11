@@ -7,5 +7,6 @@
         public double GioLamViecTheoCa { get; set; }
         public bool NghiPhep { get; set; }
         public string TenCa { get; set; }
+        public bool ConNho { get; set; }
     }
 }

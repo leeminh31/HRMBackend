@@ -124,11 +124,10 @@ namespace HRMBackend.DataAccess.HopDong
             return (query, param);
         }
 
-        private static (string sql, DynamicParameters param) GetContractByTimeRangeAndIDQuery(string maNhanVien, DateTime? ngayKetThuc, DateTime? ngayBatDau)
+        private static (string sql, DynamicParameters param) GetContractByTimeRangeAndIDQuery(DateTime? ngayKetThuc, DateTime? ngayBatDau)
         {
             // Param component
             var param = new DynamicParameters();
-            param.Add(":manhanvien", maNhanVien, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(":ngayketthuc", ngayKetThuc, dbType: DbType.Date, direction: ParameterDirection.Input);
             param.Add(":ngaybatdau", ngayBatDau, dbType: DbType.Date, direction: ParameterDirection.Input);
 
@@ -136,8 +135,7 @@ namespace HRMBackend.DataAccess.HopDong
             string query = @"SELECT *
                             FROM TBL_HOPDONG
                             WHERE (
-                                manhanvien = :manhanvien
-                                AND ngaybatdauhopdong <= :ngayketthuc
+                                ngaybatdauhopdong <= :ngayketthuc
                                 AND ngayketthuchopdong >=:ngayBatDau
                             )
                             ORDER BY ngaybatdauhopdong ASC";

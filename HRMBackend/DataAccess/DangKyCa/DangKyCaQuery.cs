@@ -38,9 +38,7 @@ namespace HRMBackend.DataAccess.DangKyCa
             // SQL component
             string query = @"SELECT *
                             FROM TBL_DANGKYCA
-                            WHERE 
-                                (MANHANVIEN = :manhanvien)
-                                AND (NGAYBATDAUCAMOI <= :ngayketthuc)
+                            WHERE (NGAYBATDAUCAMOI <= :ngayketthuc)
                             ORDER BY NGAYBATDAUCAMOI ASC
                             ";
             return (query, param);

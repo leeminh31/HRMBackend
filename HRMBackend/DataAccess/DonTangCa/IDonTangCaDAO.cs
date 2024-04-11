@@ -10,5 +10,6 @@ namespace HRMBackend.DataAccess.DonTangCa
         Task<(bool isSuccess, Models.DonTangCa data)> CreateAsync(Models.DonTangCa airport);
         Task<(bool isSuccess, Models.DonTangCa data)> UpdateAsync(Models.DonTangCa airport);
         Task<(bool isSuccess, int? data)> GetTotalMinutesOTAsync(string maNhanVien, int nam);
+        Task<(bool isSuccess, IEnumerable<Models.DonTangCa> data)> GetDonTangCaByDayAsync(SearchDonByDayRequest request);
     }
 }

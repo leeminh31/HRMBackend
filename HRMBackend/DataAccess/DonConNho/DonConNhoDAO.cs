@@ -73,5 +73,29 @@ namespace HRMBackend.DataAccess.DonConNho
 
             return (false, default);
         }
+
+        public async Task<(bool isSuccess, IEnumerable<Models.DonConNho> data)> GetDonConNhoByDayAsync(SearchDonByDayRequest request)
+        {
+            var query = GetDonConNhoByDayQuery(request);
+            var queryResult = await Context.QueryAsync<Models.DonConNho>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+
+            // Process result
+            if (queryResult.GetEnumerator().MoveNext())
+                return (true, queryResult);
+
+            return (false, default);
+        }
+
+        public async Task<(bool isSuccess, IEnumerable<Models.DonConNho> data)> GetDonConNhoByMonthAsync(SearchDanhSachDonRequest request)
+        {
+            var query = GetDonConNhoByMonthQuery(request);
+            var queryResult = await Context.QueryAsync<Models.DonConNho>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+
+            // Process result
+            if (queryResult.GetEnumerator().MoveNext())
+                return (true, queryResult);
+
+            return (false, default);
+        }
     }
 }

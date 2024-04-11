@@ -24,6 +24,8 @@ using HRMBackend.Resources.DTO.DonTangCa.Request;
 using HRMBackend.Resources.DTO.DangKyCa.Request;
 using HRMBackend.DataAccess.HopDong;
 using HRMBackend.Models;
+using System.Net.WebSockets;
+using HRMBackend.Resources.DTO.PhongBan.Request;
 
 namespace HRMBackend.Services.DuLieuChamCong
 {
@@ -100,52 +102,108 @@ namespace HRMBackend.Services.DuLieuChamCong
 
         public async Task<BaseResult<IEnumerable<BaoCaoTheoThangAllResponse>>> GetByEmployeePerMonthAsync(SearchDuLieuChamCongRequest request)
         {
+            // Danh sách dữ liệu chấm theo tháng
             var records = await _duLieuChamCongDAO.GetByParamsAsync(null, request.NgayBatDau, request.NgayKetThuc);
 
+            // Danh sách đơn phép theo tháng
             var searchRequest = new SearchDonPhepRequest();
             searchRequest.MaNhanVien = request?.MaNhanVien;
             searchRequest.NgayBatDauTaoDon = request?.NgayBatDau;
             searchRequest.NgayKetThucTaoDon = request?.NgayKetThuc;
-
             var donPhep = await _donPhepDAO.GetDayOffAsync(searchRequest);
 
+            // Danh sách đơn con nhỏ theo tháng
+            var searchDonConNhoRequest = new SearchDanhSachDonRequest();
+            searchDonConNhoRequest.NgayLamViecBatDau = request?.NgayBatDau;
+            searchDonConNhoRequest.NgayLamViecKetThuc = request?.NgayKetThuc;
+            var donConNho = await _donConNhoDAO.GetDonConNhoByMonthAsync(searchDonConNhoRequest);
+
+            //Danh sách đăng ký ca ảnh hưởng trong thời gian
+            var dangKyCa = await _dangKyCaDAO.GetByEmployeeIDAsync(null, request.NgayBatDau, request.NgayKetThuc);
+
+            // Danh sách tất cả phòng ban
+            var listPhongBan = await _phongBanDAO.GetByParamsAsync(new SearchPhongBanRequest());
+
+            // Danh sách nhân viên theo thông tin tìm kiếm tên nhân viên và mã nhân viên
             var listEmployee = await _nhanVienDAO.GetByParamsAsync(request.MaNhanVien, null, null, null, request.TenNhanVien);
 
+            // Không có nhân viên phù hợp trả về rỗng 
             if (!listEmployee.isSuccess)
-            {
                 return GetBaseResult<IEnumerable<BaoCaoTheoThangAllResponse>>(CodeMessage._545, status: StatusEnum.Failed);
-            }
 
+            // Danh sách mã phòng ban theo thông tin nhân viên 
+            var phongBanEmployee = listEmployee.data.Select(e => e.MaCa);
+
+            // Danh sách thông tin phòng ban 
+            var phongBanFilter = listPhongBan.data.Where(pb => phongBanEmployee.Any(pbe => pbe == pb.MaPhongBan));
+
+            // Danh sách mã nhân viên
             var listEmployeeId = listEmployee.data.Select(e => e.MaNhanVien);
 
+            // Lấy ra danh sách hợp đồng theo tháng của toàn bộ nhân viên
+            var hopDongMonth = await _hopDongDAO.GetContractByTimeRangeAndIDAsync(request.NgayBatDau, request.NgayKetThuc);
 
-            if (request.NgayBatDau == null || request.NgayKetThuc == null) {
-                return GetBaseResult<IEnumerable<BaoCaoTheoThangAllResponse>>(CodeMessage._545, status: StatusEnum.Failed);
-            }
+            var daysInMonth = (int) (request.NgayKetThuc - request.NgayBatDau).TotalDays +1;
 
-            if (!records.isSuccess)
-            {
-                return GetBaseResult<IEnumerable<BaoCaoTheoThangAllResponse>>(CodeMessage._545, status: StatusEnum.Failed);
-            }
+            //var recordsToList = records.data.ToList();
+            //var recordsByEmployee = recordsToList.DistinctBy(item => item.MaNhanVien).ToList();
 
-            var daysInMonth = (int) (request.NgayKetThuc! - request.NgayBatDau!)?.TotalDays +1;
-
-            var recordsToList = records.data.ToList();
-
-            var recordsByEmployee = recordsToList.DistinctBy(item => item.MaNhanVien).ToList();
+            /*
+                Check dữ liệu chấm công theo tháng của nhân viên 
+                Không có dữ liệu chấm công cả tháng => Check hợp đồng
+                + Có hợp đồng: hiện ca theo ngày
+                + Không có hợp đồng: bỏ qua
+                Có dữ liệu chấm công => Check hợp đồng
+                + Có hợp đồng: check logic 4 loại đơn và trả về theo các điều kiện tương ứng
+                + Không có hợp đồng: check dữ liệu chấm công theo từng ngày
+                    + Có dữ liệu chấm công => Hiển thị ô màu vàng không trả về ca làm việc (Không áp dụng logic đơn cho các ngày này)
+                    + Không có dữ liệu chấm công => Bỏ qua
+            */
 
             var baoCaoTheoThangAll = new List<BaoCaoTheoThangAllResponse>();
 
-            foreach (var employee in recordsByEmployee)
+            if (!records.isSuccess)
             {
-                if (!listEmployeeId.Contains(employee.MaNhanVien))
-                    continue;
+                foreach (var employee in listEmployee.data)
+                {
+                    var totalWorkByMonth = (double) 0;
+                    var baoCaoTheoThangNhanVien = new BaoCaoTheoThangAllResponse();
+                    baoCaoTheoThangNhanVien.MaNhanVien = employee.MaNhanVien;
+                    baoCaoTheoThangNhanVien.IdVanTay = employee.IDVanTay;
+                    baoCaoTheoThangNhanVien.HoTen = employee.HoTen;
+                    baoCaoTheoThangNhanVien.Phong = phongBanFilter.Where(phong => phong.MaPhongBan == employee.MaPhongBan).FirstOrDefault().TenPhongBan;
+                    baoCaoTheoThangNhanVien.TongCong = 0;
 
-                var dangKyCa = await _dangKyCaDAO.GetByEmployeeIDAsync(employee.MaNhanVien, request.NgayBatDau, request.NgayKetThuc);
+                    baoCaoTheoThangAll.Add(baoCaoTheoThangNhanVien);
+                }
 
-                var employeeByMonth = recordsToList.Where(e => e.MaNhanVien == employee.MaNhanVien);
+                return GetBaseResult(CodeMessage._200, data: baoCaoTheoThangAll.AsEnumerable());
+            }
 
-                var employeeInfo = await _nhanVienDAO.GetByIDAsync(employee.MaNhanVien);
+
+            foreach (var employee in listEmployee.data)
+            {
+
+                var totalWorkByMonth = (double)0;
+
+                var baoCaoTheoThangNhanVien = new BaoCaoTheoThangAllResponse();
+                baoCaoTheoThangNhanVien.MaNhanVien = employee.MaNhanVien;
+                baoCaoTheoThangNhanVien.IdVanTay = employee.IDVanTay;
+                baoCaoTheoThangNhanVien.HoTen = employee.HoTen;
+                baoCaoTheoThangNhanVien.Phong = phongBanFilter.Where(phong => phong.MaPhongBan == employee.MaPhongBan).FirstOrDefault().TenPhongBan;
+
+                if(hopDongMonth.hasValue)
+                {
+                    var hopDongNhanVien = hopDongMonth.data.FirstOrDefault(c => c.MaNhanVien == employee.MaNhanVien);
+
+                }
+
+                var employeeByMonth = records.data.Where(e => e.MaNhanVien == employee.MaNhanVien);
+
+                if (employeeByMonth == null)
+                {
+                    
+                }
 
                 //var shiftId = employeeInfo.data?.MaCa;
 
@@ -166,9 +224,10 @@ namespace HRMBackend.Services.DuLieuChamCong
 
                 //var gionghi = Math.Round((gioketthucnghi - giobatdaunghi).TotalMinutes);
 
-                var totalWorkByMonth =(double) 0;
 
                 var listDLCCByDay = new List<DuLieuChamCongByDayResponse>();
+
+                // Khởi tạo dữ liệu chấm công, ca theo từng ngày
                 for ( int i = 1; i <= daysInMonth; i++)
                 {
                     var employeeByDay = employeeByMonth.Where(e => e.NgayChamCong == new DateTime((int)request.NgayKetThuc?.Year, (int)request.NgayKetThuc?.Month, i));
@@ -334,9 +393,8 @@ namespace HRMBackend.Services.DuLieuChamCong
                     listDLCCByDay.Add(DLCCByDay);
                 }
 
-                var baoCaoTheoThangNhanVien = new BaoCaoTheoThangAllResponse();
-                baoCaoTheoThangNhanVien.MaNhanVien = employee.MaNhanVien;
                 baoCaoTheoThangNhanVien.TongCong = Math.Round(totalWorkByMonth, 2);
+
                 baoCaoTheoThangNhanVien.duLieuChamCongResponses = listDLCCByDay;
 
                 baoCaoTheoThangAll.Add(baoCaoTheoThangNhanVien);

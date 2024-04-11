@@ -56,10 +56,10 @@ namespace HRMBackend.DataAccess.HopDong
             return (false, default);
         }
 
-        public async Task<(bool hasValue, IEnumerable<Models.HopDong> data)> GetContractByTimeRangeAndIDAsync(string maNhanVien, DateTime? ngayBatDau, DateTime? ngayKetThuc)
+        public async Task<(bool hasValue, IEnumerable<Models.HopDong> data)> GetContractByTimeRangeAndIDAsync(DateTime? ngayBatDau, DateTime? ngayKetThuc)
         {
             // Excute
-            var query = GetContractByTimeRangeAndIDQuery(maNhanVien, ngayKetThuc, ngayBatDau);
+            var query = GetContractByTimeRangeAndIDQuery(ngayKetThuc, ngayBatDau);
             var queryResult = await Context.QueryAsync<Models.HopDong>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
             // Process result
