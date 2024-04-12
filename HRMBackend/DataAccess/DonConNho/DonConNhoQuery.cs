@@ -111,8 +111,10 @@ namespace HRMBackend.DataAccess.DonConNho
             string query = @"SELECT *
                             FROM TBL_DONCONNHO
                             WHERE 
-                                (:ngaybatdau IS NULL OR ngaylamviec >= :ngaybatdau)
-                                AND (:ngayketthuc IS NULL OR ngaylamviec <= :ngayketthuc)
+                                (tungay >= :ngaybatdau AND tungay <= :ngayketthuc )
+                                OR (denngay >= :ngaybatdau AND denngay <= :ngayketthuc )
+                                OR (tungay <= :ngaybatdau AND denngay >= :ngayketthuc)
+                            ORDER BY TUNGAY ASC
                             ";
 
             return (query, param);

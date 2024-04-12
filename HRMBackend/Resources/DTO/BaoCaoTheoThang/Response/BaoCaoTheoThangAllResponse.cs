@@ -9,6 +9,6 @@ namespace HRMBackend.Resources.DTO.BaoCaoTheoThang.Response
         public string HoTen { get; set; }
         public string Phong { get; set; }
         public int IdVanTay {  get; set; }
-        public List<DuLieuChamCongByDayResponse> duLieuChamCongResponses { get; set; }
+        public List<DuLieuChamCongByDayResponse> DuLieuChamCongResponses { get; set; }
     }
 }

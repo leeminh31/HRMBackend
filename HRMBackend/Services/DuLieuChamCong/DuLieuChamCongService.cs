@@ -10,7 +10,6 @@ using HRMBackend.Resources.Enums;
 using HRMBackend.Resources;
 using HRMBackend.Results;
 using Microsoft.Extensions.Options;
-using System.Net.Mail;
 using HRMBackend.DataAccess.CaLamViec;
 using HRMBackend.Resources.DTO.BaoCaoTheoThang.Response;
 using HRMBackend.DataAccess.DonPhep;
@@ -102,6 +101,13 @@ namespace HRMBackend.Services.DuLieuChamCong
 
         public async Task<BaseResult<IEnumerable<BaoCaoTheoThangAllResponse>>> GetByEmployeePerMonthAsync(SearchDuLieuChamCongRequest request)
         {
+            // Lấy ngày đầu tiên của tháng
+            DateTime firstDayOfMonth = new DateTime(request.NgayBatDau.Year, request.NgayBatDau.Month, 1);
+            request.NgayBatDau = firstDayOfMonth;
+
+            // Lấy ngày cuối cùng của tháng
+            DateTime lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+            request.NgayKetThuc = lastDayOfMonth;
             // Danh sách dữ liệu chấm theo tháng
             var records = await _duLieuChamCongDAO.GetByParamsAsync(null, request.NgayBatDau, request.NgayKetThuc);
 
@@ -132,7 +138,7 @@ namespace HRMBackend.Services.DuLieuChamCong
                 return GetBaseResult<IEnumerable<BaoCaoTheoThangAllResponse>>(CodeMessage._545, status: StatusEnum.Failed);
 
             // Danh sách mã phòng ban theo thông tin nhân viên 
-            var phongBanEmployee = listEmployee.data.Select(e => e.MaCa);
+            var phongBanEmployee = listEmployee.data.DistinctBy(e => e.MaPhongBan).Select(c=>c.MaPhongBan);
 
             // Danh sách thông tin phòng ban 
             var phongBanFilter = listPhongBan.data.Where(pb => phongBanEmployee.Any(pbe => pbe == pb.MaPhongBan));
@@ -143,268 +149,227 @@ namespace HRMBackend.Services.DuLieuChamCong
             // Lấy ra danh sách hợp đồng theo tháng của toàn bộ nhân viên
             var hopDongMonth = await _hopDongDAO.GetContractByTimeRangeAndIDAsync(request.NgayBatDau, request.NgayKetThuc);
 
-            var daysInMonth = (int) (request.NgayKetThuc - request.NgayBatDau).TotalDays +1;
+            // Lấy ra danh sách ca làm việc của hệ thống
+            var caLamviec = await _caLamViecDAO.GetByShiftIDAsync(null, null);
+
+            var daysInMonth = (int)(request.NgayKetThuc - request.NgayBatDau).TotalDays + 1;
 
             //var recordsToList = records.data.ToList();
             //var recordsByEmployee = recordsToList.DistinctBy(item => item.MaNhanVien).ToList();
 
-            /*
-                Check dữ liệu chấm công theo tháng của nhân viên 
-                Không có dữ liệu chấm công cả tháng => Check hợp đồng
-                + Có hợp đồng: hiện ca theo ngày
-                + Không có hợp đồng: bỏ qua
-                Có dữ liệu chấm công => Check hợp đồng
-                + Có hợp đồng: check logic 4 loại đơn và trả về theo các điều kiện tương ứng
-                + Không có hợp đồng: check dữ liệu chấm công theo từng ngày
-                    + Có dữ liệu chấm công => Hiển thị ô màu vàng không trả về ca làm việc (Không áp dụng logic đơn cho các ngày này)
-                    + Không có dữ liệu chấm công => Bỏ qua
-            */
-
             var baoCaoTheoThangAll = new List<BaoCaoTheoThangAllResponse>();
 
-            if (!records.isSuccess)
-            {
-                foreach (var employee in listEmployee.data)
-                {
-                    var totalWorkByMonth = (double) 0;
-                    var baoCaoTheoThangNhanVien = new BaoCaoTheoThangAllResponse();
-                    baoCaoTheoThangNhanVien.MaNhanVien = employee.MaNhanVien;
-                    baoCaoTheoThangNhanVien.IdVanTay = employee.IDVanTay;
-                    baoCaoTheoThangNhanVien.HoTen = employee.HoTen;
-                    baoCaoTheoThangNhanVien.Phong = phongBanFilter.Where(phong => phong.MaPhongBan == employee.MaPhongBan).FirstOrDefault().TenPhongBan;
-                    baoCaoTheoThangNhanVien.TongCong = 0;
-
-                    baoCaoTheoThangAll.Add(baoCaoTheoThangNhanVien);
-                }
-
-                return GetBaseResult(CodeMessage._200, data: baoCaoTheoThangAll.AsEnumerable());
-            }
-
-
+            //Trả về dữ liệu chung cho từng nhân viên trong tháng
             foreach (var employee in listEmployee.data)
             {
-
-                var totalWorkByMonth = (double)0;
-
+                double totalWorkMonth = 0;
                 var baoCaoTheoThangNhanVien = new BaoCaoTheoThangAllResponse();
                 baoCaoTheoThangNhanVien.MaNhanVien = employee.MaNhanVien;
                 baoCaoTheoThangNhanVien.IdVanTay = employee.IDVanTay;
                 baoCaoTheoThangNhanVien.HoTen = employee.HoTen;
-                baoCaoTheoThangNhanVien.Phong = phongBanFilter.Where(phong => phong.MaPhongBan == employee.MaPhongBan).FirstOrDefault().TenPhongBan;
+                baoCaoTheoThangNhanVien.Phong = phongBanFilter.FirstOrDefault(phong => phong.MaPhongBan == employee.MaPhongBan).TenPhongBan;
+                baoCaoTheoThangNhanVien.DuLieuChamCongResponses = new List<DuLieuChamCongByDayResponse>();
 
-                if(hopDongMonth.hasValue)
+                if (!hopDongMonth.hasValue || !hopDongMonth.data.Any(hd => hd.MaNhanVien == employee.MaNhanVien))
                 {
-                    var hopDongNhanVien = hopDongMonth.data.FirstOrDefault(c => c.MaNhanVien == employee.MaNhanVien);
-
-                }
-
-                var employeeByMonth = records.data.Where(e => e.MaNhanVien == employee.MaNhanVien);
-
-                if (employeeByMonth == null)
-                {
-                    
-                }
-
-                //var shiftId = employeeInfo.data?.MaCa;
-
-                //if (shiftId == 0)
-                //    continue;
-
-                //var shiftName = await _caLamViecDAO.GetByShiftIDAsync(shiftId, null);
-
-                //var giobatdaulam = shiftName.data.First().GioBatDauCa;
-
-                //var gioketthuclam = shiftName.data.First().GioKetThucCa;
-
-                //var giobatdaunghi = shiftName.data.First().GioBatDauNghi;
-
-                //var gioketthucnghi = shiftName.data.First().GioKetThucNghi;
-
-                //var workHourByDay = Math.Round((gioketthuclam - giobatdaulam - gioketthucnghi + giobatdaunghi).TotalMinutes);
-
-                //var gionghi = Math.Round((gioketthucnghi - giobatdaunghi).TotalMinutes);
-
-
-                var listDLCCByDay = new List<DuLieuChamCongByDayResponse>();
-
-                // Khởi tạo dữ liệu chấm công, ca theo từng ngày
-                for ( int i = 1; i <= daysInMonth; i++)
-                {
-                    var employeeByDay = employeeByMonth.Where(e => e.NgayChamCong == new DateTime((int)request.NgayKetThuc?.Year, (int)request.NgayKetThuc?.Month, i));
-
-                    var DLCCByDay = new DuLieuChamCongByDayResponse();
-                    DLCCByDay.NgayLamViec = i;
-                    //DLCCByDay.GioLamViec = totalWorkHours;
-                    //DLCCByDay.GioLamViecTheoCa = workHourByDay;
-
-                    if (employeeByDay != null)
+                    baoCaoTheoThangNhanVien.TongCong = 0;
+                    for (int i = 1; i <= daysInMonth; i++)
                     {
-                        var lastCheck = employeeByDay.MaxBy(t => t.LanChamCong);
+                        var duLieuResponseDay = new DuLieuChamCongByDayResponse();
+                        duLieuResponseDay.NgayLamViec = i;
+                        duLieuResponseDay.IsYellow = false;
 
-                        var firstCheck = employeeByDay.MinBy(t => t.LanChamCong);
-
-                        var firstCheckTime = firstCheck.GioChamCong;
-
-                        var lastCheckTime = lastCheck.GioChamCong;
-
-                        //if (firstCheck?.GioChamCong < giobatdaulam)
-                        //{
-                        //    firstCheckTime = giobatdaulam;
-                        //}
-
-                        //if (lastCheck?.GioChamCong > gioketthuclam)
-                        //{
-                        //    lastCheckTime = gioketthuclam;
-                        //}
-
-                        //var totalWorkHours = Math.Round((lastCheckTime - firstCheckTime).TotalMinutes);
-
-                        //if (lastCheck?.GioChamCong >= gioketthucnghi)
-                        //    totalWorkHours = totalWorkHours - gionghi;
-
-                        //if (lastCheck?.GioChamCong >= giobatdaunghi && lastCheck?.GioChamCong <= gioketthucnghi)
-                        //{
-                        //    totalWorkHours = Math.Round((giobatdaunghi - giobatdaulam).TotalMinutes);
-                        //}
-
-                        //var totalWork = Math.Round(totalWorkHours / workHourByDay, 2);
-
-                        bool off = false;
-
-                        if (donPhep.isSuccess)
+                        if (records.isSuccess)
                         {
-                            off = donPhep.data.Any(dp => dp.NgayLamViec.Day == i && dp.MaNhanVien == employee.MaNhanVien);
-                        }
-
-                        DLCCByDay.NghiPhep = off;
-
-
-                        //totalWorkByMonth += totalWork;
-
-
-
-                        if (dangKyCa.isSuccess)
-                        {
-                            foreach (var dangKy in dangKyCa.data)
+                            var duLieuChamCongDay = records.data.Where(e => e.NgayChamCong == new DateTime((int)request.NgayKetThuc.Year, (int)request.NgayKetThuc.Month, i) && e.MaNhanVien == employee.MaNhanVien);
+                            if (duLieuChamCongDay.GetEnumerator().MoveNext())
                             {
-                                var hopDong = await _hopDongDAO.GetContractByTimeRangeAndIDAsync(employee.MaNhanVien, request.NgayBatDau, request.NgayKetThuc);
-                                if (hopDong.hasValue)
+                                duLieuResponseDay.IsYellow = true;
+                            }
+                        }
+                        baoCaoTheoThangNhanVien.DuLieuChamCongResponses.Add(duLieuResponseDay);
+                    }
+                }
+
+                if (hopDongMonth.hasValue && hopDongMonth.data.Any(hd => hd.MaNhanVien == employee.MaNhanVien))
+                {
+                    var hopDongNhanVien = hopDongMonth.data.Where(hdm => hdm.MaNhanVien == employee.MaNhanVien);
+                    foreach (var hopDong in hopDongNhanVien)
+                    {
+                        for (int i = 1; i <= daysInMonth; i++)
+                        {
+                            var ngayLamViec = new DateTime((int)request.NgayKetThuc.Year, (int)request.NgayKetThuc.Month, i);
+                            var duLieuResponseDay = new DuLieuChamCongByDayResponse();
+                            duLieuResponseDay.NgayLamViec = i;
+                            duLieuResponseDay.IsYellow = false;
+                            duLieuResponseDay.ConNho = false;
+                            duLieuResponseDay.NghiPhep = false;
+                            duLieuResponseDay.GioLamViec = 0;
+
+                            // Logic đơn đăng ký ca của nhân viên
+                            if (dangKyCa.isSuccess && dangKyCa.data.Any(dkc => dkc.MaNhanVien == employee.MaNhanVien))
+                            {
+                                var dangKyCaNhanVien = dangKyCa.data.Where(dkc => dkc.MaNhanVien == employee.MaNhanVien);
+                                var ngayBatDauCaMoiGanNhat = DateTime.MinValue;
+                                foreach (var dangKy in dangKyCaNhanVien)
                                 {
-                                    foreach (var item in hopDong.data)
+                                    if ( ngayLamViec < ngayBatDauCaMoiGanNhat)
                                     {
-                                        if (dangKy.NgayBatDauCaMoi <= item.NgayKetThucHopDong)
+                                        continue;
+                                    }
+                                    if (hopDong.NgayBatDauHopDong < request.NgayBatDau && hopDong.NgayKetThucHopDong < request.NgayKetThuc && hopDong.NgayKetThucHopDong >= request.NgayBatDau)
+                                    {
+                                        if (dangKy.NgayBatDauCaMoi <= request.NgayBatDau && ngayLamViec <= hopDong.NgayKetThucHopDong)
                                         {
-                                            if (item.NgayBatDauHopDong < request.NgayBatDau && item.NgayKetThucHopDong < request.NgayKetThuc && item.NgayKetThucHopDong >= request.NgayBatDau)
-                                            {
-                                                if (dangKy.NgayBatDauCaMoi <= request.NgayBatDau && i <= item.NgayKetThucHopDong.Day)
-                                                {
-                                                    DLCCByDay.TenCa = dangKy.CaLamViecMoi;
-                                                }
+                                            duLieuResponseDay.TenCa = dangKy.CaLamViecMoi;
+                                        }
 
-                                                if (dangKy.NgayBatDauCaMoi > request.NgayBatDau && i >= dangKy.NgayBatDauCaMoi.Day && i <= item.NgayKetThucHopDong.Day)
-                                                {
-                                                    DLCCByDay.TenCa = dangKy.CaLamViecMoi;
-                                                }
-                                                else if (i < dangKy.NgayBatDauCaMoi.Day)
-                                                {
-                                                    DLCCByDay.TenCa = dangKy.CaLamViecHienTai;
-                                                }
+                                        if (dangKy.NgayBatDauCaMoi > request.NgayBatDau && ngayLamViec >= dangKy.NgayBatDauCaMoi && ngayLamViec <= hopDong.NgayKetThucHopDong)
+                                        {
+                                            duLieuResponseDay.TenCa = dangKy.CaLamViecMoi;
+                                        }
+                                        else if (ngayLamViec < dangKy.NgayBatDauCaMoi && ngayLamViec > ngayBatDauCaMoiGanNhat)
+                                        {
+                                            duLieuResponseDay.TenCa = dangKy.CaLamViecHienTai;
+                                        }
+                                    }
+
+                                    if (hopDong.NgayBatDauHopDong > request.NgayBatDau && hopDong.NgayKetThucHopDong < request.NgayKetThuc)
+                                    {
+                                        if (dangKy.NgayBatDauCaMoi < hopDong.NgayBatDauHopDong)
+                                        {
+                                            if (ngayLamViec >= hopDong.NgayBatDauHopDong && ngayLamViec <= hopDong.NgayKetThucHopDong)
+                                            {
+                                                duLieuResponseDay.TenCa = dangKy.CaLamViecMoi;
+                                            }
+                                        }
+
+                                        if (dangKy.NgayBatDauCaMoi >= hopDong.NgayBatDauHopDong)
+                                        {
+                                            if (ngayLamViec <= hopDong.NgayKetThucHopDong && ngayLamViec >= dangKy.NgayBatDauCaMoi)
+                                            {
+                                                duLieuResponseDay.TenCa = dangKy.CaLamViecMoi;
                                             }
 
-                                            if (item.NgayBatDauHopDong > request.NgayBatDau && item.NgayKetThucHopDong < request.NgayKetThuc)
+                                            if (ngayLamViec < dangKy.NgayBatDauCaMoi && ngayLamViec >= hopDong.NgayBatDauHopDong && ngayLamViec > ngayBatDauCaMoiGanNhat)
                                             {
-                                                if (dangKy.NgayBatDauCaMoi < item.NgayBatDauHopDong)
-                                                {
-                                                    if (i >= item.NgayBatDauHopDong.Day && i <= item.NgayKetThucHopDong.Day)
-                                                    {
-                                                        DLCCByDay.TenCa = dangKy.CaLamViecMoi;
-                                                    }
-                                                }
-
-                                                if (dangKy.NgayBatDauCaMoi >= item.NgayBatDauHopDong)
-                                                {
-                                                    if (i <= item.NgayKetThucHopDong.Day && i >= dangKy.NgayBatDauCaMoi.Day)
-                                                    {
-                                                        DLCCByDay.TenCa = dangKy.CaLamViecMoi;
-                                                    }
-
-                                                    if (i < dangKy.NgayBatDauCaMoi.Day && i >= item.NgayBatDauHopDong.Day)
-                                                    {
-                                                        DLCCByDay.TenCa = dangKy.CaLamViecHienTai;
-                                                    }
-                                                }
-                                            }
-
-                                            if (item.NgayBatDauHopDong <= request.NgayBatDau && item.NgayKetThucHopDong >= request.NgayKetThuc)
-                                            {
-                                                if (dangKy.NgayBatDauCaMoi <= request.NgayBatDau)
-                                                {
-                                                    DLCCByDay.TenCa = dangKy.CaLamViecMoi;
-                                                }
-                                                else
-                                                {
-                                                    if (i >= dangKy.NgayBatDauCaMoi.Day)
-                                                    {
-                                                        DLCCByDay.TenCa = dangKy.CaLamViecMoi;
-                                                    }
-                                                    else
-                                                    {
-                                                        DLCCByDay.TenCa = dangKy.CaLamViecHienTai;
-                                                    }
-                                                }
-                                            }
-
-                                            if (item.NgayBatDauHopDong <= request.NgayKetThuc && item.NgayBatDauHopDong > request.NgayBatDau && item.NgayKetThucHopDong > request.NgayKetThuc)
-                                            {
-                                                if (dangKy.NgayBatDauCaMoi >= item.NgayBatDauHopDong)
-                                                {
-                                                    if (i >= dangKy.NgayBatDauCaMoi.Day && i <= request.NgayKetThuc.Value.Day)
-                                                    {
-                                                        DLCCByDay.TenCa = dangKy.CaLamViecMoi;
-                                                    }
-
-                                                    if (i >= item.NgayBatDauHopDong.Day && i < dangKy.NgayBatDauCaMoi.Day)
-                                                    {
-                                                        DLCCByDay.TenCa = dangKy.CaLamViecHienTai;
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    if (i >= item.NgayBatDauHopDong.Day && i <= request.NgayKetThuc.Value.Day)
-                                                    {
-                                                        DLCCByDay.TenCa = dangKy.CaLamViecMoi;
-                                                    }
-                                                }
+                                                duLieuResponseDay.TenCa = dangKy.CaLamViecHienTai;
                                             }
                                         }
                                     }
-                                }
-                                else
-                                {
-                                    DLCCByDay.TenCa = dangKy.CaLamViecMoi;
+
+                                    if (hopDong.NgayBatDauHopDong <= request.NgayBatDau && hopDong.NgayKetThucHopDong >= request.NgayKetThuc)
+                                    {
+                                        if (dangKy.NgayBatDauCaMoi <= request.NgayBatDau)
+                                        {
+                                            duLieuResponseDay.TenCa = dangKy.CaLamViecMoi;
+                                        }
+                                        else
+                                        {
+                                            if (ngayLamViec >= dangKy.NgayBatDauCaMoi)
+                                            {
+                                                duLieuResponseDay.TenCa = dangKy.CaLamViecMoi;
+                                            }
+                                            else if (ngayLamViec > ngayBatDauCaMoiGanNhat)
+                                            {
+                                                duLieuResponseDay.TenCa = dangKy.CaLamViecHienTai;
+                                            }
+                                        }
+                                    }
+
+                                    if (hopDong.NgayBatDauHopDong <= request.NgayKetThuc && hopDong.NgayBatDauHopDong > request.NgayBatDau && hopDong.NgayKetThucHopDong > request.NgayKetThuc)
+                                    {
+                                        if (dangKy.NgayBatDauCaMoi >= hopDong.NgayBatDauHopDong)
+                                        {
+                                            if (ngayLamViec >= dangKy.NgayBatDauCaMoi && ngayLamViec <= request.NgayKetThuc)
+                                            {
+                                                duLieuResponseDay.TenCa = dangKy.CaLamViecMoi;
+                                            }
+
+                                            if (ngayLamViec >= hopDong.NgayBatDauHopDong && ngayLamViec < dangKy.NgayBatDauCaMoi && ngayLamViec > ngayBatDauCaMoiGanNhat)
+                                            {
+                                                duLieuResponseDay.TenCa = dangKy.CaLamViecHienTai;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (ngayLamViec >= hopDong.NgayBatDauHopDong && ngayLamViec <= request.NgayKetThuc)
+                                            {
+                                                duLieuResponseDay.TenCa = dangKy.CaLamViecMoi;
+                                            }
+                                        }
+                                    }
+                                    ngayBatDauCaMoiGanNhat = dangKy.NgayBatDauCaMoi;
                                 }
                             }
-                        } else
-                        {
-                            DLCCByDay.TenCa = "8A";
+                            else
+                            {
+                                duLieuResponseDay.TenCa = "8A";
+                            }
+
+                            var thongTinCaNhanVien = caLamviec.data.FirstOrDefault(c => c.TenCa == duLieuResponseDay.TenCa);
+                            var gioLamViecTheoCa = (double)Math.Round((thongTinCaNhanVien.GioKetThucCa - thongTinCaNhanVien.GioBatDauCa + thongTinCaNhanVien.GioBatDauNghi - thongTinCaNhanVien.GioKetThucNghi).TotalMinutes);
+                            duLieuResponseDay.GioLamViecTheoCa = gioLamViecTheoCa;
+
+                            // Logic đơn phép của nhân viên
+                            if (donPhep.isSuccess)
+                            {
+                                var donPhepNhanVien = donPhep.data.FirstOrDefault(dp => dp.MaNhanVien == employee.MaNhanVien && dp.NgayLamViec == ngayLamViec);
+                                if (donPhepNhanVien != null)
+                                {
+                                    duLieuResponseDay.NghiPhep = true;
+                                }
+                            }
+
+                            // Giờ làm việc của nhân viên 
+                            if (records.isSuccess)
+                            {
+                                var employeeByDay = records.data.Where(dlcc => dlcc.MaNhanVien == employee.MaNhanVien && dlcc.NgayChamCong == ngayLamViec);
+                                if (employeeByDay.GetEnumerator().MoveNext())
+                                {
+                                    var lastCheck = employeeByDay.MaxBy(t => t.LanChamCong);
+
+                                    var firstCheck = employeeByDay.MinBy(t => t.LanChamCong);
+
+                                    var firstCheckTime = firstCheck.GioChamCong;
+
+                                    var lastCheckTime = lastCheck.GioChamCong;
+
+                                    if (firstCheckTime < thongTinCaNhanVien.GioBatDauCa)
+                                    {
+                                        firstCheckTime = thongTinCaNhanVien.GioBatDauCa;
+                                    }
+
+                                    if (lastCheck?.GioChamCong > thongTinCaNhanVien.GioKetThucCa)
+                                    {
+                                        lastCheckTime = thongTinCaNhanVien.GioKetThucCa;
+                                    }
+
+                                    var totalWorkHours = Math.Round((lastCheckTime - firstCheckTime).TotalMinutes);
+                                    var gioNghi = (int)(thongTinCaNhanVien.GioKetThucNghi - thongTinCaNhanVien.GioBatDauNghi).TotalMinutes;
+
+                                    if (lastCheck?.GioChamCong >= thongTinCaNhanVien.GioKetThucNghi)
+                                        totalWorkHours = totalWorkHours - gioNghi;
+
+                                    if (lastCheck?.GioChamCong >= thongTinCaNhanVien.GioBatDauNghi && lastCheck?.GioChamCong <= thongTinCaNhanVien.GioKetThucNghi)
+                                    {
+                                        totalWorkHours = Math.Round((thongTinCaNhanVien.GioBatDauNghi - thongTinCaNhanVien.GioBatDauCa).TotalMinutes);
+                                    }
+                                    duLieuResponseDay.GioLamViec = totalWorkHours;
+                                    var totalWork = Math.Round(totalWorkHours / duLieuResponseDay.GioLamViecTheoCa, 2);
+                                    totalWorkMonth += totalWork;
+                                }
+                            }
+                            baoCaoTheoThangNhanVien.DuLieuChamCongResponses.Add(duLieuResponseDay);
                         }
                     }
 
-                    listDLCCByDay.Add(DLCCByDay);
+                    baoCaoTheoThangNhanVien.TongCong = totalWorkMonth;
+
                 }
-
-                baoCaoTheoThangNhanVien.TongCong = Math.Round(totalWorkByMonth, 2);
-
-                baoCaoTheoThangNhanVien.duLieuChamCongResponses = listDLCCByDay;
-
                 baoCaoTheoThangAll.Add(baoCaoTheoThangNhanVien);
             }
-
-            if( baoCaoTheoThangAll.Count > 0 )
-            {
-                return GetBaseResult(CodeMessage._200, data: baoCaoTheoThangAll.AsEnumerable());
-            } else 
-            return GetBaseResult<IEnumerable<BaoCaoTheoThangAllResponse>>(CodeMessage._545, status: StatusEnum.Failed);
+            return GetBaseResult(CodeMessage._200, data: baoCaoTheoThangAll.AsEnumerable());
         }
 
         public async Task<BaseResult<IEnumerable<DuLieuChamCongResponse>>> GetAllContractAsync()
