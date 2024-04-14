@@ -46,7 +46,7 @@ namespace HRMBackend.Controllers
         //[Authorize]
         public async Task<IActionResult> GetByParamsAsync(SearchBaoCaoTheoThangByDay request)
         {
-            var result = await _baoCaoTheoThangService.GetTotalHourkWorkByDayAsync(request.MaNhanVien, request.NgayLamViec);
+            var result = await _baoCaoTheoThangService.GetTotalHourkWorkByDayAsync(request);
 
             return Ok(result);
 
@@ -55,7 +55,7 @@ namespace HRMBackend.Controllers
         [HttpPost("GetAll")]
         [SwaggerOperation(summary: "Lấy thông tin theo điều kiện tìm kiếm")]
         //[Authorize]
-        public async Task<IActionResult> GetByEmployeePerMonthAsync(SearchDuLieuChamCongRequest request)
+        public async Task<IActionResult> GetByEmployeePerMonthAsync(SearchDuLieuChamCongByMonthRequest request)
         {
             var result = await _duLieuChamCongService.GetByEmployeePerMonthAsync(request);
 

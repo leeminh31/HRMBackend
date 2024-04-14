@@ -1,5 +1,6 @@
 ﻿using HRMBackend.Resources.DTO.NhanVien.Request;
 using HRMBackend.Resources.DTO.NhanVien.Response;
+using HRMBackend.Resources.DTO.TaiKhoan.Response;
 using HRMBackend.Results;
 
 namespace HRMBackend.Services.NhanVien
@@ -45,5 +46,6 @@ namespace HRMBackend.Services.NhanVien
         /// <returns></returns>
         Task<BaseResult<NhanVienResponse>> UpdateAsync(UpdateNhanVienRequest request);
 
+        Task<BaseResult<TaiKhoanResponse>> CreateListAsync(string id);
     }
 }

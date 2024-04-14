@@ -1,24 +1,17 @@
 ﻿using AutoMapper;
-using ExcelDataReader;
 using HRMBackend.DataAccess.DuLieuChamCong;
 using HRMBackend.DataAccess.NhanVien;
-using HRMBackend.DataAccess.PhongBan;
 using HRMBackend.DataAccess.UnitOfWork;
-using HRMBackend.Resources.DTO.DuLieuChamCong.Request;
 using HRMBackend.Resources.DTO.DuLieuChamCong.Response;
 using HRMBackend.Resources.Enums;
 using HRMBackend.Resources;
 using HRMBackend.Results;
-using HRMBackend.Services.DuLieuChamCong;
 using Microsoft.Extensions.Options;
-using System.Net.Mail;
 using HRMBackend.Services.PhanCaNhanVien;
 using HRMBackend.Resources.DTO.BaoCaoTheoThang.Response;
 using HRMBackend.Resources.DTO.BaoCaoTheoThang.Request;
 using HRMBackend.DataAccess.CaLamViec;
-using Org.BouncyCastle.Asn1.Ocsp;
 using HRMBackend.DataAccess.DangKyCa;
-using System.Collections.Generic;
 
 namespace HRMBackend.Services.BaoCaoTheoThang
 {
@@ -62,16 +55,12 @@ namespace HRMBackend.Services.BaoCaoTheoThang
             return GetBaseResult<IEnumerable<DuLieuChamCongResponse>>(CodeMessage._545, status: StatusEnum.Success);
         }
 
-        public async Task<BaseResult<List<BaoCaoTheoThangResponse>>> GetTotalHourkWorkByDayAsync(string? maNhanVien, DateTime? ngayLamViec)
+        public async Task<BaseResult<List<BaoCaoTheoThangResponse>>> GetTotalHourkWorkByDayAsync(SearchBaoCaoTheoThangByDay searchByDay)
         {
-            var workHour = await _duLieuChamCongDAO.GetTotalHourkWorkByDayAsync(maNhanVien, ngayLamViec);
+            var workHour = await _duLieuChamCongDAO.GetTotalHourkWorkByDayAsync(searchByDay);
 
             if( workHour.data == null)
                 return GetBaseResult<List<BaoCaoTheoThangResponse>>(CodeMessage._545, status: StatusEnum.Success);
-
-            var nhanVien = await _nhanVienDAO.GetByParamsAsync(maNhanVien, null, null, null, null);
-
-            var shiftId = nhanVien.data.First().MaCa;
 
             var listWork = workHour.data.ToList();
 
@@ -83,17 +72,21 @@ namespace HRMBackend.Services.BaoCaoTheoThang
 
             var lastCheckTime = lastCheck.GioChamCong;
 
-            if (shiftId != 0)
-            {
-                var calamviec = await _caLamViecDAO.GetByShiftIDAsync(shiftId, null);
+            double totalWorkHours = 0;
+            
+           if (searchByDay.TenCa != null)
+           {
+                var thongTinCaNhanVien = await _caLamViecDAO.GetByShiftNameAsync(searchByDay.TenCa);
 
-                var giobatdaulam = calamviec.data.First().GioBatDauCa;
+                var shiftId = thongTinCaNhanVien.data.MaCa;
 
-                var gioketthuclam = calamviec.data.First().GioKetThucCa;
+                var giobatdaulam = thongTinCaNhanVien.data.GioBatDauCa;
 
-                var giobatdaunghi = calamviec.data.First().GioBatDauNghi;
+                var gioketthuclam = thongTinCaNhanVien.data.GioKetThucCa;
 
-                var gioketthucnghi = calamviec.data.First().GioKetThucNghi;
+                var giobatdaunghi = thongTinCaNhanVien.data.GioBatDauNghi;
+
+                var gioketthucnghi = thongTinCaNhanVien.data.GioKetThucNghi;
 
                 if (firstCheck?.GioChamCong < giobatdaulam)
                 {
@@ -106,7 +99,7 @@ namespace HRMBackend.Services.BaoCaoTheoThang
                 }
                 var gioNghi = Math.Round((gioketthucnghi - giobatdaunghi).TotalMinutes);
 
-                var totalWorkHours = Math.Round((lastCheckTime - firstCheckTime).TotalMinutes);
+                totalWorkHours = Math.Round((lastCheckTime - firstCheckTime).TotalMinutes);
 
                 if (lastCheck?.GioChamCong >= gioketthucnghi)
                     totalWorkHours = totalWorkHours - gioNghi;
@@ -115,24 +108,25 @@ namespace HRMBackend.Services.BaoCaoTheoThang
                 {
                     totalWorkHours = Math.Round((giobatdaunghi - giobatdaulam).TotalMinutes);
                 }
+           }
 
-                var listBaoCao = new List<BaoCaoTheoThangResponse>();
+            var listBaoCao = new List<BaoCaoTheoThangResponse>();
 
-                if (listWork != null)
+            if (listWork != null)
+            {
+                foreach (var item in listWork)
                 {
-                    foreach (var item in listWork)
-                    {
-                        var baoCao = Mapper.Map<BaoCaoTheoThangResponse>(item);
-                        baoCao.ThoiGianLamViecThucTe = totalWorkHours;
-                        listBaoCao.Add(baoCao);
-                    }
+                    var baoCao = Mapper.Map<BaoCaoTheoThangResponse>(item);
+                    baoCao.ThoiGianLamViecThucTe = totalWorkHours;
+                    baoCao.TinhCong = totalWorkHours;
+                    listBaoCao.Add(baoCao);
                 }
+            }
 
-                if (workHour.hasValue)
-                {
-                    return GetBaseResult(CodeMessage._200, data: listBaoCao);
-                }
-            }     
+            if (workHour.hasValue)
+            {
+                return GetBaseResult(CodeMessage._200, data: listBaoCao);
+            }   
             
             return GetBaseResult<List<BaoCaoTheoThangResponse>>(CodeMessage._545, status: StatusEnum.Success);
         }

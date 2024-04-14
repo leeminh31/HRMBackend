@@ -52,5 +52,7 @@ namespace HRMBackend.DataAccess.TaiKhoan
         Task<(bool isValid, Models.TaiKhoan data)> ValidateCredentialsAsync(LoginRequest loginRequest);
 
         Task<(bool hasValue, IEnumerable<string> data)> GetEmployeeIdAsync();
+
+        Task<(bool isSuccess, IEnumerable<Models.TaiKhoan> data)> CreateListQueryAsync(IEnumerable<Models.TaiKhoan> request);
     }
 }

@@ -7,7 +7,7 @@ namespace HRMBackend.Services.GIaiTrinh
 {
     public interface IGiaiTrinhService
     {
-        Task<BaseResult<IEnumerable<GiaiTrinhResponse>>> GetByEmployeeIdAsync(string? maNhanVien);
+        Task<BaseResult<IEnumerable<GiaiTrinhResponse>>> GetByEmployeeIdAsync(string maNhanVien, DateTime ngayLamViec);
 
         Task<BaseResult<IEnumerable<Models.GiaiTrinh>>> GetByParamsAsync(SearchGiaiTrinhRequest request);
 

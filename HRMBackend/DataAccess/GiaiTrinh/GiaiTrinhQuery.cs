@@ -113,5 +113,23 @@ namespace HRMBackend.DataAccess.GiaiTrinh
 
             return (query.ToString(), param);
         }
+
+        private static (string sql, DynamicParameters param) GetGiaiTrinhByDayQuery(SearchDonByDayRequest request)
+        {
+            // Param component
+            var param = new DynamicParameters();
+            param.Add(":manhanvien", request.MaNhanVien, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":ngaylamviec", request.NgayLamViec, dbType: DbType.Date, direction: ParameterDirection.Input);
+
+            // SQL component
+            string query = @"SELECT *
+                            FROM TBL_GIAITRINH
+                            WHERE 
+                                (:manhanvien IS NULL OR manhanvien = :manhanvien)
+                                AND (:ngaylamviec IS NULL OR ngaylamviec = :ngaylamviec)
+                            ";
+
+            return (query, param);
+        }
     }
 }

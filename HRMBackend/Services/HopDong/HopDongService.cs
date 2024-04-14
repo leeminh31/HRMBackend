@@ -67,15 +67,6 @@ namespace HRMBackend.Services.HopDong
                 return GetBaseResult<HopDongResponse>(CodeMessage._209, status: StatusEnum.Failed);
         }
 
-        //public async Task<BaseResult<IEnumerable<HopDongResponse>>> GetByCodeOrNameAsync(SearchHopDongRequest request)
-        //{
-        //    var records = await _hopDongDAO.GetByCodeOrNameAsync(request);
-        //    if (records.isSuccess)
-        //    {
-        //        return GetBaseResult(CodeMessage._200, data: Mapper.Map<IEnumerable<HopDongResponse>>(records.data));
-        //    }
-        //    return GetBaseResult<IEnumerable<HopDongResponse>>(CodeMessage._545, status: StatusEnum.Failed);
-        //}
         public async Task<BaseResult<IEnumerable<HopDongResponse>>> GetByParamsAsync(string? tenHopDong, string? loaiHopDong)
         {
             var records = await _hopDongDAO.GetByParamsAsync(tenHopDong, loaiHopDong);
@@ -106,28 +97,6 @@ namespace HRMBackend.Services.HopDong
             return GetBaseResult<HopDongResponse>(CodeMessage._545, status: StatusEnum.Failed);
         }
 
-        //public async Task<PaginationResult<IEnumerable<HopDongResponse>>> PaginationGetByCodeAndNameAsync(PaginationHopDongRequest request)
-        //{
-        //    var resultDAO = await _hopDongDAO.PaginationAsync(request);
-
-        //    if (resultDAO.isSuccess)
-        //    {
-        //        // Mapping
-        //        var resource = Mapper.Map<IEnumerable<HopDongResponse>>(resultDAO.data);
-
-        //        var result = GetPaginationResult<PaginationResult<IEnumerable<HopDongResponse>>, IEnumerable<HopDongResponse>>(CodeMessage._200, resource);
-
-        //        // Using extension-method for pagination
-        //        result.CreatePaginationResponse(request, resultDAO.totalRecords);
-
-        //        return result;
-        //    }
-        //    else
-        //    {
-        //        return GetPaginationResult<PaginationResult<IEnumerable<HopDongResponse>>, IEnumerable<HopDongResponse>>(CodeMessage._545, status: StatusEnum.Failed);
-        //    }
-        //}
-
         public async Task<BaseResult<HopDongResponse>> UpdateAsync(UpdateHopDongRequest request)
         {
             // Mapping Resource to HopDong
@@ -141,24 +110,6 @@ namespace HRMBackend.Services.HopDong
             else
                 return GetBaseResult<HopDongResponse>(CodeMessage._236, status: StatusEnum.Failed);
         }
-
-        //public async Task<BaseResult<b>> DowloadFileAsync()
-        //{
-        //    string pathToFile = $"{Directory.GetCurrentDirectory()}\\Resources\\ExcelTemplate\\MasterFile.xlsx";
-        //    try
-        //    {
-        //        var fileName = System.IO.Path.GetFileName(pathToFile);
-        //        var content = await System.IO.File.ReadAllBytesAsync(pathToFile);
-        //        new FileExtensionContentTypeProvider()
-        //            .TryGetContentType(fileName, out string contentType);
-        //        return GetBaseResult(CodeMessage._200, data: Mapper.Map<HopDongResponse>(result.data));
-        //        return File(content, contentType, fileName);
-        //    }
-        //    catch
-        //    {
-        //        return BadRequest();
-        //    }
-        //}
 
         public async Task<BaseResult<bool>> UploadFileAsync(IFormFile file)
         {
@@ -365,79 +316,6 @@ namespace HRMBackend.Services.HopDong
             else
                 return GetBaseResult<bool>(CodeMessage._556, status: StatusEnum.Failed);
         }
-
-        //public async Task<BaseResult<bool>> UploadFileTimeKeepingAsync(IFormFile file)
-        //{
-        //    var listTimeKeepingRecords = new List<Models.DuLieuChamCong>();
-
-        //    if (file != null && file.Length > 0)
-        //    {
-        //        System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-        //        var extension = Path.GetExtension(file.FileName);
-        //        if (extension != ".xls" && extension != ".xlsx")
-        //            return GetBaseResult<bool>(CodeMessage._555, status: StatusEnum.Failed);
-
-        //        var uploadsFolder = $"{Directory.GetCurrentDirectory()}\\Upload\\";
-
-        //        if (!Directory.Exists(uploadsFolder))
-        //        {
-        //            Directory.CreateDirectory(uploadsFolder);
-        //        }
-
-        //        var filePath = Path.Combine(uploadsFolder, file.FileName);
-
-        //        using (var stream = new FileStream(filePath, FileMode.Create))
-        //        {
-        //            await file.CopyToAsync(stream);
-        //        }
-
-        //        using (var stream = System.IO.File.Open(filePath, FileMode.Open, FileAccess.Read))
-        //        {
-        //            var listEmployeeId = await _nhanVienDAO.GetAllEmployeeIdByNameAsync(null);
-        //            using (var reader = ExcelReaderFactory.CreateReader(stream))
-        //            {
-        //                do
-        //                {
-        //                    int isHeaderSkipped = 0;
-
-        //                    while (reader.Read())
-        //                    {
-        //                        if (isHeaderSkipped < 1)
-        //                        {
-        //                            isHeaderSkipped++;
-        //                            continue;
-        //                        }
-
-        //                        if (String.IsNullOrEmpty(reader.GetValue(1)?.ToString())
-        //                            || String.IsNullOrEmpty(reader.GetValue(2)?.ToString())
-        //                            || String.IsNullOrEmpty(reader.GetValue(3)?.ToString())
-        //                            || String.IsNullOrEmpty(reader.GetValue(4)?.ToString()))
-        //                        {
-        //                            continue;
-        //                        } else
-        //                        {
-        //                            CreateDuLieuChamCongRequest duLieuChamCong = new CreateDuLieuChamCongRequest();
-        //                            duLieuChamCong.MaNhanVien = 
-        //                            var nhanVienModel = Mapper.Map<CreateNhanVienRequest, Models.NhanVien>(nhanVien);
-        //                            listEmployeeRecords.Add(nhanVienModel);
-        //                        }
-        //                    }
-        //                } while (reader.NextResult());
-
-        //            }
-        //        }
-
-        //        System.IO.File.Delete(filePath);
-        //    }
-
-        //    var result = await _nhanVienDAO.UpdateOrInsertListRecordsAsync(listEmployeeRecords.AsEnumerable(), listContractRecords.AsEnumerable());
-        //    await _unitOfWork.SaveChangesAsync();
-
-        //    if (result.isSuccess)
-        //        return GetBaseResult(CodeMessage._200, data: true);
-        //    else
-        //        return GetBaseResult<bool>(CodeMessage._556, status: StatusEnum.Failed);
-        //}
 
         private bool HasSpecialChars(string input)
         {

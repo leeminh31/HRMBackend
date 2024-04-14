@@ -6,5 +6,6 @@ namespace HRMBackend.Resources.DTO.BaoCaoTheoThang.Response
     {
         public double? TongCong { get; set; }
         public double? ThoiGianLamViecThucTe { get; set; }
+        public double? TinhCong { get; set; }
     }
 }

@@ -1,4 +1,6 @@
-﻿using HRMBackend.Resources.DTO.DuLieuChamCong.Request;
+﻿using HRMBackend.Resources.DTO.BaoCaoTheoThang.Request;
+using HRMBackend.Resources.DTO.DanhSachDon.Request;
+using HRMBackend.Resources.DTO.DuLieuChamCong.Request;
 
 namespace HRMBackend.DataAccess.DuLieuChamCong
 {
@@ -9,7 +11,7 @@ namespace HRMBackend.DataAccess.DuLieuChamCong
         /// </summary>
         /// <param name="searchKey"></param>
         /// <returns></returns>
-        Task<(bool hasValue, IEnumerable<Models.DuLieuChamCong> data)> GetTotalHourkWorkByDayAsync(string? maNhanVien, DateTime? ngayLamViec);
+        Task<(bool hasValue, IEnumerable<Models.DuLieuChamCong> data)> GetTotalHourkWorkByDayAsync(SearchBaoCaoTheoThangByDay request);
 
         /// <summary>
         /// Chức năng: Lấy thông tin cảng hàng không đang hoạt động theo Id

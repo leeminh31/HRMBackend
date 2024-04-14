@@ -44,7 +44,7 @@ namespace HRMBackend.DataAccess.NhanVien
             for (int i = 0; i< requests.Count(); i++)
             {
                 if (i != requests.Count() -1)
-                    valueQuery.AppendFormat("('{0}', {1}, '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', '{13}', '{14}', {15}),"
+                    valueQuery.AppendFormat("('{0}', {1}, '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', '{13}', '{14}', {15}, 1),"
                         ,requests.ElementAt(i).MaNhanVien,
                         requests.ElementAt(i).MaPhongBan,
                         requests.ElementAt(i).HoTen, 
@@ -63,7 +63,7 @@ namespace HRMBackend.DataAccess.NhanVien
                         requests.ElementAt(i).IDVanTay);
                 else
                 {
-                    valueQuery.AppendFormat("('{0}', {1}, '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', '{13}', '{14}', {15})"
+                    valueQuery.AppendFormat("('{0}', {1}, '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', '{13}', '{14}', {15}, 1)"
                         , requests.ElementAt(i).MaNhanVien,
                         requests.ElementAt(i).MaPhongBan,
                         requests.ElementAt(i).HoTen,
@@ -84,7 +84,7 @@ namespace HRMBackend.DataAccess.NhanVien
             }
 
             string query = @"INSERT INTO public.tbl_nhanvien(
-	                        manhanvien, maphongban, hoten, chucvu, mail, ngaysinh, sodienthoai, socccd, ngaycap, quequan, noiohientai, nguoithanlienhe, sodienthoainguoilienhe, stknganhang, nganhang, idvantay)
+	                        manhanvien, maphongban, hoten, chucvu, mail, ngaysinh, sodienthoai, socccd, ngaycap, quequan, noiohientai, nguoithanlienhe, sodienthoainguoilienhe, stknganhang, nganhang, idvantay, macalamviec)
 	                        VALUES" + valueQuery +
                             @"
 	                        ON CONFLICT(manhanvien) 

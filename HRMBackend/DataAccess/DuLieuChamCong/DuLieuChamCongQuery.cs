@@ -3,6 +3,7 @@ using HRMBackend.Resources.DTO.DuLieuChamCong.Request;
 using System.Data;
 using System.Text.RegularExpressions;
 using System.Text;
+using HRMBackend.Resources.DTO.BaoCaoTheoThang.Request;
 
 namespace HRMBackend.DataAccess.DuLieuChamCong
 {
@@ -49,12 +50,12 @@ namespace HRMBackend.DataAccess.DuLieuChamCong
             string query = @"SELECT * FROM tbl_DuLieuChamCong";
             return (query, param);
         }
-        private static (string sql, DynamicParameters param) GetTotalHourkWorkByDayQuery(string? maNhanVien, DateTime? ngayLamViec)
+        private static (string sql, DynamicParameters param) GetTotalHourkWorkByDayQuery(SearchBaoCaoTheoThangByDay request)
         {
             // Param component
             var param = new DynamicParameters();
-            param.Add(":manhanvien", maNhanVien, dbType: DbType.String, direction: ParameterDirection.Input);
-            param.Add(":ngaylamviec", ngayLamViec, dbType: DbType.Date, direction: ParameterDirection.Input);
+            param.Add(":manhanvien", request.MaNhanVien, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":ngaylamviec", request.NgayLamViec, dbType: DbType.Date, direction: ParameterDirection.Input);
             string query = @"SELECT * FROM TBL_DULIEUCHAMCONG WHERE 
                             (:manhanvien IS NULL OR MANHANVIEN = :manhanvien) 
                             AND ( :ngaylamviec IS NULL OR NGAYCHAMCONG = :ngaylamviec)";
@@ -68,24 +69,6 @@ namespace HRMBackend.DataAccess.DuLieuChamCong
             string query = @"SELECT * FROM TBL_HOPDONG WHERE TENHOPDONG = :tenhopdong";
             return (query, param);
         }
-        //private static (string sql, DynamicParameters param) CreateQuery(Models.DuLieuChamCong model)
-        //{
-        //    // Param component
-        //    var param = new DynamicParameters();
-        //    param.Add(":tenhopdong", model.TenDuLieuChamCong, dbType: DbType.String, direction: ParameterDirection.Input);
-        //    param.Add(":manhanvien", model.MaNhanVien, dbType: DbType.String, direction: ParameterDirection.Input);
-        //    param.Add("ngaybatdauhopdong", model.NgayBatDauDuLieuChamCong, dbType: DbType.Date, direction: ParameterDirection.Input);
-        //    param.Add(":ngayketthuchopdong", model.NgayKetThucDuLieuChamCong, dbType: DbType.Date, direction: ParameterDirection.Input);
-        //    param.Add(":loaihopdong", model.loaiDuLieuChamCong, dbType: DbType.String, direction: ParameterDirection.Input);
-        //    param.Add(":tilehuongluong", model.TiLeHuongLuong, dbType: DbType.Double, direction: ParameterDirection.Input);
-        //    param.Add(":giolamviec", model.GioLamViec, dbType: DbType.Double, direction: ParameterDirection.Input);
-
-        //    // SQL component
-        //    string query = @"INSERT INTO public.tbl_hopdong(
-	       //                 tenhopdong, manhanvien, ngaybatdauhopdong, ngayketthuchopdong, loaihopdong, tilehuongluong, giolamviec)
-	       //                 VALUES (:tenhopdong, :manhanvien, :ngaybatdauhopdong, :ngayketthuchopdong, :loaihopdong, :tilehuongluong, :giolamviec);";
-        //    return (query, param);
-        //}
 
         private static (string sql, DynamicParameters param) PaginationQuery(PaginationDuLieuChamCongRequest request)
         {
@@ -144,28 +127,6 @@ namespace HRMBackend.DataAccess.DuLieuChamCong
             return (query, param);
         }
 
-        //private static (string sql, DynamicParameters param) UpdateQuery(Models.DuLieuChamCong model)
-        //{
-        //    // Param component
-        //    var param = new DynamicParameters();
-        //    param.Add(":tenhopdong", model.TenDuLieuChamCong, dbType: DbType.String, direction: ParameterDirection.Input);
-        //    param.Add(":manhanvien", model.MaNhanVien, dbType: DbType.String, direction: ParameterDirection.Input);
-        //    param.Add(":ngaybatdauhopdong", model.NgayBatDauDuLieuChamCong, dbType: DbType.Date, direction: ParameterDirection.Input);
-        //    param.Add(":ngayketthuchopdong", model.NgayKetThucDuLieuChamCong, dbType: DbType.Date, direction: ParameterDirection.Input);
-        //    param.Add(":loaihopdong", model.loaiDuLieuChamCong, dbType: DbType.String, direction: ParameterDirection.Input);
-        //    param.Add(":tilehuongluong", model.TiLeHuongLuong, dbType: DbType.Double, direction: ParameterDirection.Input);
-        //    param.Add(":giolamviec", model.GioLamViec, dbType: DbType.Double, direction: ParameterDirection.Input);
-
-        //    string query = @"UPDATE public.tbl_hopdong
-        //                 SET ngaybatdauhopdong= :ngaybatdauhopdong, 
-        //                        ngayketthuchopdong= :ngayketthuchopdong, 
-        //                        loaihopdong= :loaihopdong, 
-        //                        tilehuongluong= :tilehuongluong, 
-        //                        giolamviec= :giolamviec
-        //                 WHERE tenhopdong = :tenhopdong
-        //                    AND manhanvien = :manhanvien;";
-        //    return (query, param);
-        //}
         #endregion
 
         public static string RemoveSignUnicodeString(string s, bool toUpper = false)

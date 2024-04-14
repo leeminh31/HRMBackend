@@ -9,6 +9,12 @@ using Microsoft.Extensions.Options;
 using HRMBackend.Resources.DTO.NhanVien.Response;
 using HRMBackend.Resources.DTO.NhanVien.Request;
 using HRMBackend.Extensions;
+using HRMBackend.Resources.DTO.HopDong.Request;
+using HRMBackend.Resources.DTO.TaiKhoan.Request;
+using System.Text.RegularExpressions;
+using System.Text;
+using HRMBackend.DataAccess.TaiKhoan;
+using HRMBackend.Resources.DTO.TaiKhoan.Response;
 
 namespace HRMBackend.Services.NhanVien
 {
@@ -16,16 +22,19 @@ namespace HRMBackend.Services.NhanVien
     {
         #region Property
         private readonly INhanVienDAO _nhanVienDAO;
+        private readonly ITaiKhoanDAO _taiKhoanDAO;
         private readonly IUnitOfWork _unitOfWork;
         #endregion
 
         #region Constructor
         public NhanVienService(INhanVienDAO nhanVienDAO,
+            ITaiKhoanDAO taiKhoanDAO,
             IUnitOfWork unitOfWork,
             IMapper mapper,
             IOptionsMonitor<ResponseMessage> responseMessage) : base(mapper, responseMessage)
         {
             this._nhanVienDAO = nhanVienDAO;
+            this._taiKhoanDAO = taiKhoanDAO;
             this._unitOfWork = unitOfWork;
         }
         #endregion
@@ -57,15 +66,34 @@ namespace HRMBackend.Services.NhanVien
                 return GetBaseResult<NhanVienResponse>(CodeMessage._209, status: StatusEnum.Failed);
         }
 
-        //public async Task<BaseResult<IEnumerable<NhanVienResponse>>> GetByCodeOrNameAsync(SearchNhanVienRequest request)
-        //{
-        //    var records = await _nhanVienDAO.GetByCodeOrNameAsync(request);
-        //    if (records.isSuccess)
-        //    {
-        //        return GetBaseResult(CodeMessage._200, data: Mapper.Map<IEnumerable<NhanVienResponse>>(records.data));
-        //    }
-        //    return GetBaseResult<IEnumerable<NhanVienResponse>>(CodeMessage._545, status: StatusEnum.Failed);
-        //}
+        public async Task<BaseResult<TaiKhoanResponse>> CreateListAsync(string id)
+        {
+            //SearchNhanVienRequest searchRequest = new SearchNhanVienRequest() { IDVanTay = request.IDVanTay, ChucVu = null, HoTen= null, MaNhanVien = null, MaPhongBan = null };
+            //Tìm mã nhân viên đã tồn tại hay chưa?
+            var listNhanVien = await _nhanVienDAO.GetByParamsAsync(null, null, null, null, null);
+            string[] employeeId = id.Split(",");
+
+            var listEmployeeAccount = new List<Models.TaiKhoan>();
+            foreach (var employee in employeeId)
+            {
+                CreateTaiKhoanRequest taiKhoan = new CreateTaiKhoanRequest();
+                taiKhoan.PhanQuyen = "USER";
+                taiKhoan.MaNhanVien = listNhanVien.data.FirstOrDefault(nv => nv.MaNhanVien == employee).MaNhanVien;
+                taiKhoan.MatKhau = RemoveWhitespaceDiacriticsAndToLower(listNhanVien.data.FirstOrDefault(nv => nv.MaNhanVien == employee).HoTen);
+                taiKhoan.TenDangNhap = employee;
+                var hopDongModel1 = Mapper.Map<CreateTaiKhoanRequest, Models.TaiKhoan>(taiKhoan);
+                listEmployeeAccount.Add(hopDongModel1);
+            }
+
+            var result = await _taiKhoanDAO.CreateListQueryAsync(listEmployeeAccount.AsEnumerable());
+            await _unitOfWork.SaveChangesAsync();
+
+            if (result.isSuccess)
+                return GetBaseResult(CodeMessage._200, data: Mapper.Map<TaiKhoanResponse>(result.data));
+            else
+                return GetBaseResult<TaiKhoanResponse>(CodeMessage._209, status: StatusEnum.Failed);
+        }
+
         public async Task<BaseResult<IEnumerable<NhanVienResponse>>> GetByParamsAsync(string? maNhanVien, int? maPhongBan, int? idVanTay, string? chucVu, string? hoTen)
         {
             var records = await _nhanVienDAO.GetByParamsAsync(maNhanVien, maPhongBan, idVanTay, chucVu, hoTen);
@@ -96,28 +124,6 @@ namespace HRMBackend.Services.NhanVien
             return GetBaseResult<NhanVienResponse>(CodeMessage._545, status: StatusEnum.Failed);
         }
 
-        //public async Task<PaginationResult<IEnumerable<NhanVienResponse>>> PaginationGetByCodeAndNameAsync(PaginationNhanVienRequest request)
-        //{
-        //    var resultDAO = await _nhanVienDAO.PaginationAsync(request);
-
-        //    if (resultDAO.isSuccess)
-        //    {
-        //        // Mapping
-        //        var resource = Mapper.Map<IEnumerable<NhanVienResponse>>(resultDAO.data);
-
-        //        var result = GetPaginationResult<PaginationResult<IEnumerable<NhanVienResponse>>, IEnumerable<NhanVienResponse>>(CodeMessage._200, resource);
-
-        //        // Using extension-method for pagination
-        //        result.CreatePaginationResponse(request, resultDAO.totalRecords);
-
-        //        return result;
-        //    }
-        //    else
-        //    {
-        //        return GetPaginationResult<PaginationResult<IEnumerable<NhanVienResponse>>, IEnumerable<NhanVienResponse>>(CodeMessage._545, status: StatusEnum.Failed);
-        //    }
-        //}
-
         public async Task<BaseResult<NhanVienResponse>> UpdateAsync(UpdateNhanVienRequest request)
         {
             // Mapping Resource to NhanVien
@@ -136,6 +142,18 @@ namespace HRMBackend.Services.NhanVien
                 return GetBaseResult(CodeMessage._200, data: Mapper.Map<NhanVienResponse>(result.data));
             else
                 return GetBaseResult<NhanVienResponse>(CodeMessage._236, status: StatusEnum.Failed);
+        }
+
+        public static string RemoveWhitespaceDiacriticsAndToLower(string text)
+        {
+            // Loại bỏ dấu từ chuỗi và chuyển đổi ký tự viết hoa thành viết thường
+            string decomposed = text.Normalize(NormalizationForm.FormD);
+            Regex regexDiacritics = new Regex(@"\p{M}");
+            string withoutDiacritics = regexDiacritics.Replace(decomposed, string.Empty).Normalize(NormalizationForm.FormC);
+            string lowerCase = withoutDiacritics.ToLower();
+
+            // Loại bỏ khoảng trắng từ chuỗi đã chuyển đổi
+            return Regex.Replace(lowerCase, @"\s+", string.Empty);
         }
     }
 }

@@ -58,6 +58,30 @@ namespace HRMBackend.DataAccess.TaiKhoan
 
             return (false, default);
         }
+
+        public async Task<(bool isSuccess, IEnumerable<Models.TaiKhoan> data)> CreateListQueryAsync(IEnumerable<Models.TaiKhoan> request)
+        {
+            try
+            {
+                var query = CreateListQuery(request);
+                var res = await Context.ExecuteAsync(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+
+                // Process result
+                if (res > 0)
+                {
+                    //nhanvien.MaNhanVien = query.param.Get<string>("idOutput");
+                    return (true, request);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return (false, default);
+            }
+
+            return (false, default);
+        }
+
         public async Task<(bool isSuccess, Models.TaiKhoan data)> CreateAsync(Models.TaiKhoan taikhoan)
         {
             try

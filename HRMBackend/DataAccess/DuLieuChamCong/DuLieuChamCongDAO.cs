@@ -2,6 +2,8 @@
 using HRMBackend.DataAccess.DuLieuChamCong;
 using HRMBackend.DataAccess.UnitOfWork;
 using HRMBackend.Resources;
+using HRMBackend.Resources.DTO.BaoCaoTheoThang.Request;
+using HRMBackend.Resources.DTO.DanhSachDon.Request;
 using HRMBackend.Resources.DTO.DuLieuChamCong.Request;
 
 namespace HRMBackend.DataAccess.DuLieuChamCong
@@ -31,10 +33,10 @@ namespace HRMBackend.DataAccess.DuLieuChamCong
             return (false, default);
         }
 
-        public async Task<(bool hasValue, IEnumerable<Models.DuLieuChamCong> data)> GetTotalHourkWorkByDayAsync(string? maNhanVien, DateTime? ngayLamViec)
+        public async Task<(bool hasValue, IEnumerable<Models.DuLieuChamCong> data)> GetTotalHourkWorkByDayAsync(SearchBaoCaoTheoThangByDay request)
         {
             // Excute
-            var query = GetTotalHourkWorkByDayQuery(maNhanVien,ngayLamViec);
+            var query = GetTotalHourkWorkByDayQuery(request);
             var queryResult = await Context.QueryAsync<Models.DuLieuChamCong>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
 
             // Process result

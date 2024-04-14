@@ -99,7 +99,7 @@ namespace HRMBackend.Services.DuLieuChamCong
             return GetBaseResult<IEnumerable<DuLieuChamCongResponse>>(CodeMessage._545, status: StatusEnum.Failed);
         }
 
-        public async Task<BaseResult<IEnumerable<BaoCaoTheoThangAllResponse>>> GetByEmployeePerMonthAsync(SearchDuLieuChamCongRequest request)
+        public async Task<BaseResult<IEnumerable<BaoCaoTheoThangAllResponse>>> GetByEmployeePerMonthAsync(SearchDuLieuChamCongByMonthRequest request)
         {
             // Lấy ngày đầu tiên của tháng
             DateTime firstDayOfMonth = new DateTime(request.NgayBatDau.Year, request.NgayBatDau.Month, 1);

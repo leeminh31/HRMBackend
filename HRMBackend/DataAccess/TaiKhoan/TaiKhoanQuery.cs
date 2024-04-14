@@ -5,6 +5,7 @@ using System.Text;
 using HRMBackend.Resources.DTO.TaiKhoan.Request;
 using HRMBackend.Extensions;
 using HRMBackend.Resources;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace HRMBackend.DataAccess.TaiKhoan
 {
@@ -77,6 +78,39 @@ namespace HRMBackend.DataAccess.TaiKhoan
             return (query, param);
         }
 
+        private static (string sql, DynamicParameters param) CreateListQuery(IEnumerable<Models.TaiKhoan> requests)
+        {
+            // Param component
+            var param = new DynamicParameters();
+
+            StringBuilder valueQuery = new StringBuilder();
+            for (int i = 0; i < requests.Count(); i++)
+            {
+                if (i != requests.Count() - 1)
+                    valueQuery.AppendFormat("('{0}', '{1}', '{2}', '{3}'),"
+                        , requests.ElementAt(i).MaNhanVien,
+                        requests.ElementAt(i).PhanQuyen,
+                    requests.ElementAt(i).TenDangNhap,
+                        requests.ElementAt(i).MatKhau
+                    );
+                else
+                {
+                    valueQuery.AppendFormat("('{0}', '{1}', '{2}', '{3}')"
+                        , requests.ElementAt(i).MaNhanVien,
+                        requests.ElementAt(i).PhanQuyen,
+                    requests.ElementAt(i).TenDangNhap,
+                        requests.ElementAt(i).MatKhau
+                    );
+                }
+            }
+
+            // SQL component
+            string query = @"INSERT INTO public.tbl_taikhoan(
+	        manhanvien, phanquyen, tendangnhap, matkhau)
+	        VALUES" + valueQuery;
+            return (query, param);
+        }
+
         private static (string sql, DynamicParameters param) PaginationQuery(PaginationTaiKhoanRequest request)
         {
             // Process data
@@ -131,27 +165,6 @@ namespace HRMBackend.DataAccess.TaiKhoan
             return (query, param);
         }
 
-        //private static (string sql, DynamicParameters param) UpdateQuery(Models.TaiKhoan model)
-        //{
-        //    // Param component
-        //    var param = new DynamicParameters();
-        //    param.Add(":id", model.Id, dbType: DbType.Int32, direction: ParameterDirection.Input);
-        //    param.Add(":code", model.Code, dbType: DbType.String, direction: ParameterDirection.Input);
-        //    param.Add(":name", model.Name, dbType: DbType.String, direction: ParameterDirection.Input);
-        //    param.Add(":url", model.Url, dbType: DbType.String, direction: ParameterDirection.Input);
-        //    param.Add(":status", model.Status, dbType: DbType.Int32, direction: ParameterDirection.Input);
-        //    param.Add(":description", model.Description, dbType: DbType.String, direction: ParameterDirection.Input);
-        //    param.Add(":updateDateUtc", model.UpdatedDateUtc, dbType: DbType.DateTime, direction: ParameterDirection.Input);
-        //    string query = @"UPDATE TBL_AIRPORT
-        //                SET CODE = :code,
-        //                    NAME = :name,
-        //                    URL = :url,
-        //                    STATUS = :status,
-        //                    DESCRIPTION = :description,
-        //                    UPDATED_DATE_UTC = :updateDateUtc
-        //                WHERE ID = :id";
-        //    return (query, param);
-        //}
         #endregion
 
         public static string RemoveSignUnicodeString(string s, bool toUpper = false)

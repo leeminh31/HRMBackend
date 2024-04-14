@@ -15,7 +15,7 @@ namespace HRMBackend.Services.DanhSachDon
     public interface IDanhSachDonService
     {
         Task<BaseResult<DanhSachDonResponse>> GetByParamsAsync(SearchDanhSachDonRequest request);
-        Task<BaseResult<DanhSachDonResponse>> GetByEmployeeIdAsync(string? maNhanVien);
+        Task<BaseResult<DanhSachDonResponse>> GetByEmployeeIdAsync(string maNhanVien, DateTime ngayLamViec);
         Task<BaseResult<bool>> RejectAllRequestAsync(ApproveRequestList request);
         Task<BaseResult<bool>> ApproveAllRequestAsync(ApproveRequestList request);
         Task<BaseResult<DonBuResponse>> CreateDonBuAsync(CreateDonBuRequest request);

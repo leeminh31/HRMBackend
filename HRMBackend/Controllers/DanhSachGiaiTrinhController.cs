@@ -51,9 +51,9 @@ namespace HRMBackend.Controllers
 
         [HttpGet()]
         [SwaggerOperation(summary: "Lấy thông tin theo mã nhân viên")]
-        public async Task<IActionResult> GetByEmployeeIdAsync(string? maNhanVien)
+        public async Task<IActionResult> GetByEmployeeIdAsync(string maNhanVien, DateTime ngayLamViec)
         {
-            var result = await _giaiTrinhService.GetByEmployeeIdAsync(maNhanVien);
+            var result = await _giaiTrinhService.GetByEmployeeIdAsync(maNhanVien, ngayLamViec);
 
             return Ok(result);
 

@@ -36,6 +36,16 @@ namespace HRMBackend.Controllers
             return Ok(result);
         }
 
+        [HttpPost("CreateAccount")]
+        [SwaggerOperation(summary: "Tạo tài khoản cho nhân viên")]
+        //[Authorize]
+        public async Task<IActionResult> CreateListAsyncAsync(string id)
+        {
+            var result = await _nhanVienService.CreateListAsync(id);
+
+            return Ok(result);
+        }
+
         /// <summary>
         /// Chức năng: Lấy thông tin nhân viên theo mã nhân viên
         /// </summary>

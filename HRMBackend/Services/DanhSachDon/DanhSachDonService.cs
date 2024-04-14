@@ -60,16 +60,11 @@ namespace HRMBackend.Services.DanhSachDon
         }
         #endregion
 
-        public async Task<BaseResult<DanhSachDonResponse>> GetByEmployeeIdAsync(string? maNhanVien)
+        public async Task<BaseResult<DanhSachDonResponse>> GetByEmployeeIdAsync(string maNhanVien, DateTime ngayLamViec)
         {
-            var request = new SearchDanhSachDonRequest() { 
-                LoaiDon = null,
-                NgayLamViecBatDau = null,
-                NgayLamViecKetThuc = null,
-                NgayTaoBatDau = null,
-                NgayTaoKetThuc = null,
-                TenNhanVien = null,
-                TrangThai = null,
+            var request = new SearchDonByDayRequest() { 
+                MaNhanVien = maNhanVien,
+                NgayLamViec = ngayLamViec,
             };
 
             var danhSachDonResponse = new DanhSachDonResponse();
@@ -78,10 +73,10 @@ namespace HRMBackend.Services.DanhSachDon
             danhSachDonResponse.listDonTangCa = new List<DonTangCaResponse>();
             danhSachDonResponse.listDonConNho = new List<DonConNhoResponse>();
 
-            var listDonBu = await _donBuDAO.GetByParamsAsync(request);
-            var listDonPhep = await _donPhepDAO.GetByParamsAsync(request);
-            var listDonConNho = await _donConNhoDAO.GetByParamsAsync(request);
-            var listDonTangCa = await _donTangCaDAO.GetByParamsAsync(request);
+            var listDonBu = await _donBuDAO.GetDonBuByDayAsync(request);
+            var listDonPhep = await _donPhepDAO.GetDonPhepByDayAsync(request);
+            var listDonConNho = await _donConNhoDAO.GetDonConNhoByDayAsync(request);
+            var listDonTangCa = await _donTangCaDAO.GetDonTangCaByDayAsync(request);
 
             if (listDonBu.isSuccess)
             {
@@ -108,10 +103,10 @@ namespace HRMBackend.Services.DanhSachDon
                 return GetBaseResult<DanhSachDonResponse>(CodeMessage._545, status: StatusEnum.Failed);
             }
 
-            danhSachDonResponse.listDonPhep = danhSachDonResponse.listDonPhep.Where(donPhep => maNhanVien == donPhep.MaNhanVien).ToList();
-            danhSachDonResponse.listDonBu = danhSachDonResponse.listDonBu.Where(donPhep => maNhanVien == donPhep.MaNhanVien).ToList();
-            danhSachDonResponse.listDonConNho = danhSachDonResponse.listDonConNho.Where(donPhep => maNhanVien == donPhep.MaNhanVien).ToList();
-            danhSachDonResponse.listDonTangCa = danhSachDonResponse.listDonTangCa.Where(donPhep => maNhanVien == donPhep.MaNhanVien).ToList();
+            danhSachDonResponse.listDonPhep = danhSachDonResponse.listDonPhep.ToList();
+            danhSachDonResponse.listDonBu = danhSachDonResponse.listDonBu.ToList();
+            danhSachDonResponse.listDonConNho = danhSachDonResponse.listDonConNho.ToList();
+            danhSachDonResponse.listDonTangCa = danhSachDonResponse.listDonTangCa.ToList();
 
             return GetBaseResult(CodeMessage._200, data: danhSachDonResponse);
 

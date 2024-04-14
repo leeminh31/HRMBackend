@@ -49,8 +49,7 @@ namespace HRMBackend.Services.DuLieuChamCong
         //Task<BaseResult<bool>> UploadFileAsync(IFormFile file);
 
         Task<BaseResult<bool>> UploadFileTimeKeepingAsync(IFormFile file);
-
-        Task<BaseResult<IEnumerable<BaoCaoTheoThangAllResponse>>> GetByEmployeePerMonthAsync(SearchDuLieuChamCongRequest request);
+        Task<BaseResult<IEnumerable<BaoCaoTheoThangAllResponse>>> GetByEmployeePerMonthAsync(SearchDuLieuChamCongByMonthRequest request);
 
     }
 }
