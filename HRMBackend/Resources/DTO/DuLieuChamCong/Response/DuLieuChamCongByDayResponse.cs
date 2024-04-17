@@ -9,5 +9,6 @@
         public string TenCa { get; set; }
         public bool ConNho { get; set; }
         public bool IsYellow { get; set; }
+        public bool AllowOT { get; set; }
     }
 }

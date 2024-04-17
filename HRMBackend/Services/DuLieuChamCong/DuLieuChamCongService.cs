@@ -199,12 +199,17 @@ namespace HRMBackend.Services.DuLieuChamCong
                         for (int i = 1; i <= daysInMonth; i++)
                         {
                             var ngayLamViec = new DateTime((int)request.NgayKetThuc.Year, (int)request.NgayKetThuc.Month, i);
+                            if (ngayLamViec < hopDong.NgayBatDauHopDong || ngayLamViec > hopDong.NgayKetThucHopDong)
+                            {
+                                continue;
+                            }
                             var duLieuResponseDay = new DuLieuChamCongByDayResponse();
                             duLieuResponseDay.NgayLamViec = i;
                             duLieuResponseDay.IsYellow = false;
                             duLieuResponseDay.ConNho = false;
                             duLieuResponseDay.NghiPhep = false;
                             duLieuResponseDay.GioLamViec = 0;
+                            duLieuResponseDay.AllowOT = false;
 
                             // Logic đơn đăng ký ca của nhân viên
                             if (dangKyCa.isSuccess && dangKyCa.data.Any(dkc => dkc.MaNhanVien == employee.MaNhanVien))
@@ -355,6 +360,12 @@ namespace HRMBackend.Services.DuLieuChamCong
                                     {
                                         totalWorkHours = Math.Round((thongTinCaNhanVien.GioBatDauNghi - thongTinCaNhanVien.GioBatDauCa).TotalMinutes);
                                     }
+
+                                    if (totalWorkHours == gioLamViecTheoCa && (lastCheck?.GioChamCong - thongTinCaNhanVien.GioKetThucCa).Value.TotalMinutes >= 60)
+                                    {
+                                        duLieuResponseDay.AllowOT = true;
+                                    }
+
                                     duLieuResponseDay.GioLamViec = totalWorkHours;
                                     var totalWork = Math.Round(totalWorkHours / duLieuResponseDay.GioLamViecTheoCa, 2);
                                     totalWorkMonth += totalWork;
