@@ -12,6 +12,9 @@ using HRMBackend.Resources.DTO.BaoCaoTheoThang.Response;
 using HRMBackend.Resources.DTO.BaoCaoTheoThang.Request;
 using HRMBackend.DataAccess.CaLamViec;
 using HRMBackend.DataAccess.DangKyCa;
+using HRMBackend.DataAccess.DonBu;
+using HRMBackend.Resources.DTO.DanhSachDon.Request;
+using HRMBackend.DataAccess.DonConNho;
 
 namespace HRMBackend.Services.BaoCaoTheoThang
 {
@@ -21,7 +24,9 @@ namespace HRMBackend.Services.BaoCaoTheoThang
         private readonly IUnitOfWork _unitOfWork;
         private readonly INhanVienDAO _nhanVienDAO;
         private readonly IDangKyCaDAO _dangKyCaDAO;
+        private readonly IDonConNhoDAO _donConNhoDAO;
         private readonly IDuLieuChamCongDAO _duLieuChamCongDAO;
+        private readonly IDonBuDAO _donBuDAO;
         private readonly ICaLamViecDAO _caLamViecDAO;
         #endregion
 
@@ -30,13 +35,17 @@ namespace HRMBackend.Services.BaoCaoTheoThang
             IDangKyCaDAO dangKyCaDAO,
             IDuLieuChamCongDAO duLieuChamCongDAO,
             ICaLamViecDAO caLamViecDAO,
+            IDonConNhoDAO donConNhoDAO,
             IUnitOfWork unitOfWork,
+            IDonBuDAO donBuDAO,
             IMapper mapper,
             IOptionsMonitor<ResponseMessage> responseMessage) : base(mapper, responseMessage)
         {
             this._unitOfWork = unitOfWork;
             this._nhanVienDAO = nhanVienDAO;
             this._dangKyCaDAO = dangKyCaDAO;
+            this._donConNhoDAO = donConNhoDAO;
+            this._donBuDAO = donBuDAO;
             this._caLamViecDAO = caLamViecDAO;
             this._duLieuChamCongDAO = duLieuChamCongDAO;
         }
@@ -59,6 +68,14 @@ namespace HRMBackend.Services.BaoCaoTheoThang
         {
             var workHour = await _duLieuChamCongDAO.GetTotalHourkWorkByDayAsync(searchByDay);
 
+            var searchDonBuRequest = new SearchDonByDayRequest();
+            searchDonBuRequest.MaNhanVien = searchByDay.MaNhanVien;
+            searchDonBuRequest.NgayLamViec = searchByDay.NgayLamViec;
+
+            var donBuByDay = await _donBuDAO.GetDonBuByDayAsync(searchDonBuRequest);
+
+            var donConNhoByDay = await _donConNhoDAO.GetDonConNhoByDayAsync(searchDonBuRequest);
+
             if( workHour.data == null)
                 return GetBaseResult<List<BaoCaoTheoThangResponse>>(CodeMessage._545, status: StatusEnum.Success);
 
@@ -73,6 +90,8 @@ namespace HRMBackend.Services.BaoCaoTheoThang
             var lastCheckTime = lastCheck.GioChamCong;
 
             double totalWorkHours = 0;
+
+            double gioTinhCong= 0;
             
            if (searchByDay.TenCa != null)
            {
@@ -87,6 +106,8 @@ namespace HRMBackend.Services.BaoCaoTheoThang
                 var giobatdaunghi = thongTinCaNhanVien.data.GioBatDauNghi;
 
                 var gioketthucnghi = thongTinCaNhanVien.data.GioKetThucNghi;
+
+                var giolamviectheoca = (gioketthuclam - giobatdaulam - gioketthucnghi + giobatdaunghi).TotalMinutes;
 
                 if (firstCheck?.GioChamCong < giobatdaulam)
                 {
@@ -108,6 +129,32 @@ namespace HRMBackend.Services.BaoCaoTheoThang
                 {
                     totalWorkHours = Math.Round((giobatdaunghi - giobatdaulam).TotalMinutes);
                 }
+
+                gioTinhCong = totalWorkHours;
+
+                if (donBuByDay.isSuccess)
+                {
+                    if (donBuByDay.data.First().TrangThai.Equals("1"))
+                    {
+                        gioTinhCong = Math.Round(totalWorkHours + donBuByDay.data.First().SoPhutXinBu);
+                        if (gioTinhCong > giolamviectheoca)
+                        {
+                            gioTinhCong = giolamviectheoca;
+                        }
+                    }
+                }
+
+                if (donConNhoByDay.isSuccess)
+                {
+                    if(donConNhoByDay.data.First().TrangThai.Equals("1"))
+                    {
+                        gioTinhCong += 60;
+                        if (gioTinhCong > giolamviectheoca)
+                        {
+                            gioTinhCong = giolamviectheoca;
+                        }
+                    }
+                }
            }
 
             var listBaoCao = new List<BaoCaoTheoThangResponse>();
@@ -118,14 +165,14 @@ namespace HRMBackend.Services.BaoCaoTheoThang
                 {
                     var baoCao = Mapper.Map<BaoCaoTheoThangResponse>(item);
                     baoCao.ThoiGianLamViecThucTe = totalWorkHours;
-                    baoCao.TinhCong = totalWorkHours;
+                    baoCao.TinhCong = gioTinhCong;
                     listBaoCao.Add(baoCao);
                 }
+                return GetBaseResult(CodeMessage._200, data: listBaoCao);
             }
 
             if (workHour.hasValue)
             {
-                return GetBaseResult(CodeMessage._200, data: listBaoCao);
             }   
             
             return GetBaseResult<List<BaoCaoTheoThangResponse>>(CodeMessage._545, status: StatusEnum.Success);

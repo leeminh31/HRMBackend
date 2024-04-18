@@ -114,6 +114,7 @@ namespace HRMBackend.DataAccess.DonConNho
                                 (tungay >= :ngaybatdau AND tungay <= :ngayketthuc )
                                 OR (denngay >= :ngaybatdau AND denngay <= :ngayketthuc )
                                 OR (tungay <= :ngaybatdau AND denngay >= :ngayketthuc)
+                                AND trangthai = '1'
                             ORDER BY TUNGAY ASC
                             ";
 

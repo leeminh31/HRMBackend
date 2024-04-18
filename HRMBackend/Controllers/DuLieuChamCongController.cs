@@ -3,6 +3,7 @@ using HRMBackend.Resources;
 using HRMBackend.Resources.DTO.DuLieuChamCong.Request;
 using HRMBackend.Services.DuLieuChamCong;
 using HRMBackend.Services.HopDong;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Options;
@@ -30,7 +31,7 @@ namespace HRMBackend.Controllers
 
         [HttpPost()]
         [SwaggerOperation(summary: "Lấy thông tin dữ liệu chấm công theo điều kiện tìm kiếm")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> GetByParamsAsync([FromBody] SearchDuLieuChamCongRequest request )
         {
             var result = await _duLieuChamCongService.GetByParamsAsync(request);
@@ -41,7 +42,7 @@ namespace HRMBackend.Controllers
 
         [HttpPost("upload")]
         [SwaggerOperation(summary: "Upload File Excel để Import dữ liệu hợp đồng")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> UploadFileAsync(IFormFile formFile)
         {
             var result = await _duLieuChamCongService.UploadFileTimeKeepingAsync(formFile);
@@ -50,7 +51,7 @@ namespace HRMBackend.Controllers
 
         [HttpGet("dowload")]
         [SwaggerOperation(summary: "Dowload Excel Template")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> DowloadFileAsync()
         {
             try

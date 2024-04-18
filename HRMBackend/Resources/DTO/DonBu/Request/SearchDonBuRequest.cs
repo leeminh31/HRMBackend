@@ -2,8 +2,8 @@
 {
     public class SearchDonBuRequest
     {
-        public DateTime ngayBatDauTaoDon { get; set; }
-        public DateTime ngayKetThucTaoDon { get; set; }
-        public string maNhanVien {  get; set; }
+        public DateTime? NgayBatDauTaoDon { get; set; }
+        public DateTime? NgayKetThucTaoDon { get; set; }
+        public string? MaNhanVien {  get; set; }
     }
 }

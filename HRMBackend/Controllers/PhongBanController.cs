@@ -33,7 +33,7 @@ namespace HRMBackend.Controllers
         /// <returns></returns>
         [HttpGet()]
         [SwaggerOperation(summary: "Lấy thông tin phòng ban")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> GetByParamsAsync([FromQuery] SearchPhongBanRequest request)
         {
             var result = await _phongBanService.GetByParamsAsync(request);
@@ -48,7 +48,7 @@ namespace HRMBackend.Controllers
         /// <returns></returns>
         [HttpPost("create")]
         [SwaggerOperation(summary: "Tạo thông tin phòng ban")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> CreateAsync([FromBody] CreatePhongBanRequest request)
         {
             var result = await _phongBanService.CreateAsync(request);
@@ -63,7 +63,7 @@ namespace HRMBackend.Controllers
         /// <returns></returns>
         //[HttpPost("search")]
         //[SwaggerOperation(summary: "Lấy danh sách thông tin cảng dựa theo param (== code hoặc == name)")]
-        ////[Authorize]
+        //[Authorize]
         ////[NonAction]
         //public async Task<IActionResult> GetByCodeOrNameAsync([FromBody] SearchPhongBanRequest request)
         //{
@@ -78,7 +78,7 @@ namespace HRMBackend.Controllers
         /// <returns></returns>
         [HttpPost("pagination")]
         [SwaggerOperation(summary: "Lấy danh sách thông tin cảng dựa theo param (like code và like name)")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> PaginationGetByCodeAndNameAsync([FromBody] PaginationPhongBanRequest request)
         {
             var result = await _phongBanService.PaginationGetByCodeAndNameAsync(request);
@@ -92,7 +92,7 @@ namespace HRMBackend.Controllers
         /// <returns></returns>
         [HttpPost("update")]
         [SwaggerOperation(summary: "Cập nhật thông tin phòng ban")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> UpdateAsync([FromBody] UpdatePhongBanRequest request)
         {
             var result = await _phongBanService.UpdateAsync(request);
@@ -105,7 +105,7 @@ namespace HRMBackend.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete()]
-        //[Authorize]
+        [Authorize]
         //[NonAction]
         public async Task<IActionResult> DeleteAsync(string id)
         {

@@ -46,6 +46,6 @@ namespace HRMBackend.Services.NhanVien
         /// <returns></returns>
         Task<BaseResult<NhanVienResponse>> UpdateAsync(UpdateNhanVienRequest request);
 
-        Task<BaseResult<TaiKhoanResponse>> CreateListAsync(string id);
+        Task<BaseResult<IEnumerable<TaiKhoanResponse>>> CreateListAsync(string id);
     }
 }

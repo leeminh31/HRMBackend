@@ -9,6 +9,7 @@ using HRMBackend.Services.GIaiTrinh;
 using HRMBackend.Resources.DTO.GiaiTrinh.Request;
 using HRMBackend.Results;
 using HRMBackend.Resources.DTO.DonTangCa.Request;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HRMBackend.Controllers
 {
@@ -29,7 +30,7 @@ namespace HRMBackend.Controllers
         #endregion
         [HttpPost("Create")]
         [SwaggerOperation(summary: "Tạo giải trình")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> CreateAsync(CreateGiaiTrinhRequest request)
         {
             var result = await _giaiTrinhService.CreateAsync(request);
@@ -40,7 +41,7 @@ namespace HRMBackend.Controllers
 
         [HttpPost("Update")]
         [SwaggerOperation(summary: "Sửa giải trình")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> UpdateAsync(UpdateGiaiTrinhRequest request)
         {
             var result = await _giaiTrinhService.UpdateAsync(request);
@@ -51,6 +52,7 @@ namespace HRMBackend.Controllers
 
         [HttpGet()]
         [SwaggerOperation(summary: "Lấy thông tin theo mã nhân viên")]
+        [Authorize]
         public async Task<IActionResult> GetByEmployeeIdAsync(string maNhanVien, DateTime ngayLamViec)
         {
             var result = await _giaiTrinhService.GetByEmployeeIdAsync(maNhanVien, ngayLamViec);
@@ -61,7 +63,7 @@ namespace HRMBackend.Controllers
 
         [HttpPost()]
         [SwaggerOperation(summary: "Lấy thông tin theo điều kiện tìm kiếm")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> GetByParamsAsync(SearchGiaiTrinhRequest giaiTrinhRequest)
         {
             var result = await _giaiTrinhService.GetByParamsAsync(giaiTrinhRequest);
@@ -70,7 +72,7 @@ namespace HRMBackend.Controllers
 
         [HttpPost("ApproveExplanation")]
         [SwaggerOperation(summary: "Duyệt giải trình")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> ApproveExplanationAsync(string maGiaiTrinh, string nguoiDuyet)
         {
             var result = await _giaiTrinhService.ApproveAllExplanationAsync(maGiaiTrinh, nguoiDuyet);
@@ -80,7 +82,7 @@ namespace HRMBackend.Controllers
 
         [HttpPost("RejectExplanation")]
         [SwaggerOperation(summary: "Hủy giải trình")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> RejectExplanationAsync(string maGiaiTrinh, string nguoiDuyet)
         {
             var result = await _giaiTrinhService.RejectAllExplanationAsync(maGiaiTrinh, nguoiDuyet);

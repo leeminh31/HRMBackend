@@ -5,6 +5,7 @@ using HRMBackend.Resources;
 using HRMBackend.Resources.DTO.DanhSachDon.Request;
 using HRMBackend.Resources.DTO.DonBu.Request;
 using HRMBackend.Resources.DTO.DonBu.Response;
+using HRMBackend.Resources.DTO.DonPhep.Request;
 
 namespace HRMBackend.DataAccess.DonBu
 {
@@ -83,6 +84,18 @@ namespace HRMBackend.DataAccess.DonBu
             }
 
             return (false, airport);
+        }
+
+        public async Task<(bool isSuccess, IEnumerable<Models.DonBu> data)> GetDonBuByMonthAsync(SearchDonBuRequest request)
+        {
+            var query = GetDonBuByMonthQuery(request);
+            var queryResult = await Context.QueryAsync<Models.DonBu>(query.sql, query.param, Transaction, Constant.TimeOutCancelDAO);
+
+            // Process result
+            if (queryResult.GetEnumerator().MoveNext())
+                return (true, queryResult);
+
+            return (false, default);
         }
 
         public async Task<(bool isSuccess, Models.DonBu data)> UpdateAsync(Models.DonBu airport)

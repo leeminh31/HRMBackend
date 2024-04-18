@@ -7,6 +7,7 @@ using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Annotations;
 using HRMBackend.Services.CaLamViec;
 using HRMBackend.Resources.DTO.PhongBan.Request;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HRMBackend.Controllers
 {
@@ -28,7 +29,7 @@ namespace HRMBackend.Controllers
 
         [HttpGet()]
         [SwaggerOperation(summary: "Lấy thông tin theo điều kiện tìm kiếm")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> GetByParamsAsync(int? maCa, string? tenCa)
         {
             var result = await _caLamViecService.GetByShiftIdAsync(maCa, tenCa);
@@ -39,7 +40,7 @@ namespace HRMBackend.Controllers
 
         [HttpPost("create")]
         [SwaggerOperation(summary: "Tạo thông tin ca làm việc")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> CreateAsync([FromBody] CreateCaLamViecRequest request)
         {
             var result = await _caLamViecService.CreateAsync(request);
@@ -49,7 +50,7 @@ namespace HRMBackend.Controllers
 
         [HttpPost("update")]
         [SwaggerOperation(summary: "Cập nhật thông tin ca làm việc")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> UpdateAsync([FromBody] UpdateCaLamViecRequest request)
         {
             var result = await _caLamViecService.UpdateAsync(request);
@@ -57,7 +58,7 @@ namespace HRMBackend.Controllers
         }
 
         [HttpDelete()]
-        //[Authorize]
+        [Authorize]
         //[NonAction]
         public async Task<IActionResult> DeleteAsync(string id)
         {

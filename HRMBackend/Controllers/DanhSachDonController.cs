@@ -9,6 +9,7 @@ using HRMBackend.Resources.DTO.DonBu.Request;
 using HRMBackend.Resources.DTO.DonConNho.Request;
 using HRMBackend.Resources.DTO.DonPhep.Request;
 using HRMBackend.Resources.DTO.DonTangCa.Request;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HRMBackend.Controllers
 {
@@ -30,6 +31,8 @@ namespace HRMBackend.Controllers
 
         [HttpGet()]
         [SwaggerOperation(summary: "Lấy thông tin theo mã nhân viên")]
+        [Authorize]
+
         public async Task<IActionResult> GetByEmployeeIdAsync(string maNhanVien, DateTime ngayLamViec)
         {
             var result = await _danhSachDonService.GetByEmployeeIdAsync(maNhanVien, ngayLamViec);
@@ -41,7 +44,7 @@ namespace HRMBackend.Controllers
 
         [HttpPost()]
         [SwaggerOperation(summary: "Lấy thông tin theo điều kiện tìm kiếm")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> GetByParamsAsync(SearchDanhSachDonRequest danhSachDonRequest)
         {
             var result = await _danhSachDonService.GetByParamsAsync(danhSachDonRequest);
@@ -52,7 +55,7 @@ namespace HRMBackend.Controllers
 
         [HttpPost("ApproveRequest")]
         [SwaggerOperation(summary: "Duyệt đơn")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> ApproveRequestAsync(ApproveRequestList request)
         {
             var result = await _danhSachDonService.ApproveAllRequestAsync(request);
@@ -62,7 +65,7 @@ namespace HRMBackend.Controllers
 
         [HttpPost("RejectRequest")]
         [SwaggerOperation(summary: "Hủy đơn")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> RejectRequestAsync(ApproveRequestList request)
         {
             var result = await _danhSachDonService.RejectAllRequestAsync(request);
@@ -73,7 +76,7 @@ namespace HRMBackend.Controllers
 
         [HttpPost("CreateDonBu")]
         [SwaggerOperation(summary: "Tạo đơn bù")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> CreateDonBuAsync(CreateDonBuRequest request)
         {
             var result = await _danhSachDonService.CreateDonBuAsync(request);
@@ -84,7 +87,7 @@ namespace HRMBackend.Controllers
 
         [HttpPost("CreateDonConNho")]
         [SwaggerOperation(summary: "Tạo đơn con nhỏ")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> CreateDonConNhoAsync(CreateDonConNhoRequest request)
         {
             var result = await _danhSachDonService.CreateDonConNhoAsync(request);
@@ -95,7 +98,7 @@ namespace HRMBackend.Controllers
 
         [HttpPost("CreateDonPhep")]
         [SwaggerOperation(summary: "Tạo đơn phép")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> CreateDonPhepAsync(CreateDonPhepRequest request)
         {
             var result = await _danhSachDonService.CreateDonPhepAsync(request);
@@ -106,7 +109,7 @@ namespace HRMBackend.Controllers
 
         [HttpPost("CreateDonTangCa")]
         [SwaggerOperation(summary: "Tạo đơn tăng ca")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> CreateDonTangCaAsync(CreateDonTangCaRequest request)
         {
             var result = await _danhSachDonService.CreateDonTangCaAsync(request);
@@ -117,7 +120,7 @@ namespace HRMBackend.Controllers
 
         [HttpPost("UpdateDonTangCa")]
         [SwaggerOperation(summary: "Sửa đơn tăng ca")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> UpdateDonTangCaAsync(UpdateDonTangCaRequest request)
         {
             var result = await _danhSachDonService.UpdateDonTangCaAsync(request);
@@ -127,7 +130,7 @@ namespace HRMBackend.Controllers
 
         [HttpPost("UpdateDonBu")]
         [SwaggerOperation(summary: "Sửa đơn bù")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> UpdateDonBuAsync(UpdateDonBuRequest request)
         {
             var result = await _danhSachDonService.UpdateDonBuAsync(request);
@@ -137,7 +140,7 @@ namespace HRMBackend.Controllers
 
         [HttpPost("UpdateDonPhep")]
         [SwaggerOperation(summary: "Sửa đơn phép")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> UpdateDonPhepAsync(UpdateDonPhepRequest request)
         {
             var result = await _danhSachDonService.UpdateDonPhepAsync(request);
@@ -147,7 +150,7 @@ namespace HRMBackend.Controllers
 
         [HttpPost("UpdateDonConNho")]
         [SwaggerOperation(summary: "Sửa đơn con nhỏ")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> UpdateDonConNhoAsync(UpdateDonConNhoRequest request)
         {
             var result = await _danhSachDonService.UpdateDonConNhoAsync(request);
@@ -157,7 +160,7 @@ namespace HRMBackend.Controllers
 
         [HttpGet("GetTotalOTMinutes")]
         [SwaggerOperation(summary: "Quỹ bù hiện có")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> GetTotalMinutesOTAsync(string maNhanVien, int nam)
         {
             var result = await _danhSachDonService.GetTotalMinutesOTAsync(maNhanVien, nam);
@@ -167,6 +170,7 @@ namespace HRMBackend.Controllers
 
         [HttpGet("GetTotalDayOffByYear")]
         [SwaggerOperation(summary: "Quỹ phép hiện có")]
+        [Authorize]
         public async Task<IActionResult> GetTotalDayOffByYearAsync(string maNhanVien, int nam)
         {
             var result = await _danhSachDonService.GetTotalDayOffByYearAsync(maNhanVien, nam);

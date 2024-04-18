@@ -5,6 +5,7 @@ using HRMBackend.Resources.DTO.DuLieuChamCong.Request;
 using HRMBackend.Services.CaLamViec;
 using HRMBackend.Services.DuLieuChamCong;
 using HRMBackend.Services.PhanCaNhanVien;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Annotations;
@@ -32,7 +33,7 @@ namespace HRMBackend.Controllers
 
         [HttpPost()]
         [SwaggerOperation(summary: "Lấy thông tin theo điều kiện tìm kiếm")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> GetByParamsAsync(SearchBaoCaoTheoThangRequest request)
         {
             var result = await _baoCaoTheoThangService.GetByParamsAsync(request);
@@ -43,7 +44,7 @@ namespace HRMBackend.Controllers
 
         [HttpPost("GetWorkHour")]
         [SwaggerOperation(summary: "Lấy thông tin theo điều kiện tìm kiếm")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> GetByParamsAsync(SearchBaoCaoTheoThangByDay request)
         {
             var result = await _baoCaoTheoThangService.GetTotalHourkWorkByDayAsync(request);
@@ -54,7 +55,7 @@ namespace HRMBackend.Controllers
 
         [HttpPost("GetAll")]
         [SwaggerOperation(summary: "Lấy thông tin theo điều kiện tìm kiếm")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> GetByEmployeePerMonthAsync(SearchDuLieuChamCongByMonthRequest request)
         {
             var result = await _duLieuChamCongService.GetByEmployeePerMonthAsync(request);
@@ -64,7 +65,7 @@ namespace HRMBackend.Controllers
 
         [HttpPost("AssignShifts")]
         [SwaggerOperation(summary: "Phân ca nhân viên")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> AssignShiftsToEmployeeAsync()
         {
             var result = await _baoCaoTheoThangService.AssignShiftsToEmployeeAsync();

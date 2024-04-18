@@ -7,6 +7,7 @@ using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Annotations;
 using HRMBackend.Services.DangKyCa;
 using HRMBackend.Resources.DTO.CaLamViec.Request;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HRMBackend.Controllers
 {
@@ -28,7 +29,7 @@ namespace HRMBackend.Controllers
 
         [HttpPost()]
         [SwaggerOperation(summary: "Lấy thông tin theo điều kiện tìm kiếm")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> GetByParamsAsync(SearchDangKyCaRequest request)
         {
             var result = await _dangKyCaService.GetByParamsAsync(request);
@@ -39,7 +40,7 @@ namespace HRMBackend.Controllers
 
         [HttpPost("create")]
         [SwaggerOperation(summary: "Tạo thông tin đăng ký ca")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> CreateAsync([FromBody] CreateDangKyCaRequest request)
         {
             var result = await _dangKyCaService.CreateAsync(request);
@@ -49,7 +50,7 @@ namespace HRMBackend.Controllers
 
         [HttpPost("Approve")]
         [SwaggerOperation(summary: "Duyệt đăng ký ca")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> ApproveShiftRequestAsync(string maDangKyCa, string nguoiDuyet)
         {
             var result = await _dangKyCaService.ApproveShiftRequestAsync(maDangKyCa, nguoiDuyet);
@@ -59,7 +60,7 @@ namespace HRMBackend.Controllers
 
         [HttpPost("Reject")]
         [SwaggerOperation(summary: "Hủy đăng ký ca")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> RejectShiftRequestAsync(string maDangKyCa, string nguoiDuyet)
         {
             var result = await _dangKyCaService.RejectShiftRequestAsync(maDangKyCa, nguoiDuyet);

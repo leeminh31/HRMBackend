@@ -25,6 +25,7 @@ using HRMBackend.DataAccess.HopDong;
 using HRMBackend.Models;
 using System.Net.WebSockets;
 using HRMBackend.Resources.DTO.PhongBan.Request;
+using HRMBackend.Resources.DTO.DonBu.Request;
 
 namespace HRMBackend.Services.DuLieuChamCong
 {
@@ -110,6 +111,13 @@ namespace HRMBackend.Services.DuLieuChamCong
             request.NgayKetThuc = lastDayOfMonth;
             // Danh sách dữ liệu chấm theo tháng
             var records = await _duLieuChamCongDAO.GetByParamsAsync(null, request.NgayBatDau, request.NgayKetThuc);
+
+            //Danh sách đơn bù theo tháng
+            var searchDonBuRequest = new SearchDonBuRequest();
+            searchDonBuRequest.MaNhanVien = request?.MaNhanVien;
+            searchDonBuRequest.NgayBatDauTaoDon = request?.NgayBatDau;
+            searchDonBuRequest.NgayKetThucTaoDon = request?.NgayKetThuc;
+            var donBu = await _donBuDAO.GetDonBuByMonthAsync(searchDonBuRequest);
 
             // Danh sách đơn phép theo tháng
             var searchRequest = new SearchDonPhepRequest();
@@ -325,6 +333,9 @@ namespace HRMBackend.Services.DuLieuChamCong
                             if (records.isSuccess)
                             {
                                 var employeeByDay = records.data.Where(dlcc => dlcc.MaNhanVien == employee.MaNhanVien && dlcc.NgayChamCong == ngayLamViec);
+                                var donBuByNhanVien = donBu.data.Where(db => db.MaNhanVien == employee.MaNhanVien && db.NgayLamViec == ngayLamViec);
+                                var donConNhoByNhanVien = donConNho.data.Where(dcn => dcn.MaNhanVien == employee.MaNhanVien);
+                                
                                 if (employeeByDay.GetEnumerator().MoveNext())
                                 {
                                     var lastCheck = employeeByDay.MaxBy(t => t.LanChamCong);
@@ -356,7 +367,27 @@ namespace HRMBackend.Services.DuLieuChamCong
                                         totalWorkHours = Math.Round((thongTinCaNhanVien.GioBatDauNghi - thongTinCaNhanVien.GioBatDauCa).TotalMinutes);
                                     }
                                     duLieuResponseDay.GioLamViec = totalWorkHours;
-                                    var totalWork = Math.Round(totalWorkHours / duLieuResponseDay.GioLamViecTheoCa, 2);
+                                    var gioTinhCong = totalWorkHours;
+                                    
+                                    if(donBuByNhanVien.GetEnumerator().MoveNext())
+                                    {
+                                        gioTinhCong = totalWorkHours + donBuByNhanVien.First().SoPhutXinBu;
+                                        if(gioTinhCong > gioLamViecTheoCa)
+                                        {
+                                            gioTinhCong = gioLamViecTheoCa;
+                                        }
+                                    }
+
+                                    if(donConNhoByNhanVien.GetEnumerator().MoveNext())
+                                    {
+                                        gioTinhCong += 60;
+                                        if (gioTinhCong > gioLamViecTheoCa)
+                                        {
+                                            gioTinhCong = gioLamViecTheoCa;
+                                        }
+                                    }
+
+                                    var totalWork = Math.Round(gioTinhCong / duLieuResponseDay.GioLamViecTheoCa, 2);
                                     totalWorkMonth += totalWork;
                                 }
                             }

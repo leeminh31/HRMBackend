@@ -39,9 +39,9 @@ namespace HRMBackend.Controllers
         [HttpPost("CreateAccount")]
         [SwaggerOperation(summary: "Tạo tài khoản cho nhân viên")]
         //[Authorize]
-        public async Task<IActionResult> CreateListAsyncAsync(string id)
+        public async Task<IActionResult> CreateListAsyncAsync([FromBody] string maNhanVien)
         {
-            var result = await _nhanVienService.CreateListAsync(id);
+            var result = await _nhanVienService.CreateListAsync(maNhanVien);
 
             return Ok(result);
         }

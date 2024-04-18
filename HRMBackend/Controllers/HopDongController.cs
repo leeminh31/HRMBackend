@@ -7,6 +7,7 @@ using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Annotations;
 using HRMBackend.Services.NhanVien;
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HRMBackend.Controllers
 {
@@ -35,7 +36,7 @@ namespace HRMBackend.Controllers
         /// <returns></returns>
         [HttpGet()]
         [SwaggerOperation(summary: "Lấy thông tin hợp đồng theo điều kiện tìm kiếm")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> GetByParamsAsync(string? tenHopDong, string? loaiHopDong)
         {
             var result = await _hopDongService.GetByParamsAsync(tenHopDong, loaiHopDong);
@@ -51,7 +52,7 @@ namespace HRMBackend.Controllers
         /// <returns></returns>
         [HttpGet("{maHopDong}")]
         [SwaggerOperation(summary: "Lấy thông tin hợp đồng theo hợp đồng")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> GetByIDAsync(string maHopDong)
         {
             var result = await _hopDongService.GetByIDAsync(maHopDong);
@@ -65,7 +66,7 @@ namespace HRMBackend.Controllers
         /// <returns></returns>
         [HttpPost("create")]
         [SwaggerOperation(summary: "Tạo thông tin hợp đồng")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> CreateAsync([FromBody] CreateHopDongRequest request)
         {
             var result = await _hopDongService.CreateAsync(request);
@@ -80,7 +81,7 @@ namespace HRMBackend.Controllers
         /// <returns></returns>
         [HttpPost("update")]
         [SwaggerOperation(summary: "Cập nhật thông tin hợp đồng")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> UpdateAsync([FromBody] UpdateHopDongRequest request)
         {
             var result = await _hopDongService.UpdateAsync(request);
@@ -89,7 +90,7 @@ namespace HRMBackend.Controllers
 
         [HttpPost("upload")]
         [SwaggerOperation(summary: "Upload File Excel để Import dữ liệu hợp đồng")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> UploadFileAsync(IFormFile formFile)
         {
             var result = await _hopDongService.UploadFileAsync(formFile);
@@ -98,7 +99,7 @@ namespace HRMBackend.Controllers
 
         //[HttpPost("upload/timekeeping")]
         //[SwaggerOperation(summary: "Upload File Excel để Import dữ liệu chấm công")]
-        ////[Authorize]
+        //[Authorize]
         //public async Task<IActionResult> UploadFileTimekeepingAsync(IFormFile formFile)
         //{
         //    var result = await _hopDongService.UploadFileTimeKeepingAsync(formFile);
@@ -107,7 +108,7 @@ namespace HRMBackend.Controllers
 
         [HttpGet("dowload")]
         [SwaggerOperation(summary: "Dowload Excel Template")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> DowloadFileAsync()
         {
             try

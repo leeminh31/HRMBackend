@@ -1,4 +1,5 @@
 ﻿using HRMBackend.Resources.DTO.DanhSachDon.Request;
+using HRMBackend.Resources.DTO.DonBu.Request;
 using HRMBackend.Resources.DTO.DonBu.Response;
 
 namespace HRMBackend.DataAccess.DonBu
@@ -20,5 +21,7 @@ namespace HRMBackend.DataAccess.DonBu
         Task<(bool isSuccess, int? data)> GetTotalMinutesOTAsync(string maNhanVien, int nam);
 
         Task<(bool isSuccess, IEnumerable<Models.DonBu> data)> GetDonBuByDayAsync(SearchDonByDayRequest request);
+
+        Task<(bool isSuccess, IEnumerable<Models.DonBu> data)> GetDonBuByMonthAsync(SearchDonBuRequest request);
     }
 }

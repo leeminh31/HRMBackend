@@ -65,7 +65,7 @@ namespace HRMBackend.Controllers
         /// <returns></returns>
         [HttpPost("change-password")]
         [SwaggerOperation(summary: "Thay đổi mật khẩu")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> ChangePasswordAsync([FromBody] ChangePasswordRequest request)
         {
             var result = await _taiKhoanService.ChangePasswordAsync(request);
@@ -80,7 +80,7 @@ namespace HRMBackend.Controllers
         /// <returns></returns>
         [HttpPost("create")]
         [SwaggerOperation(summary: "Tạo tài khoản mới")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> CreateAsync([FromBody] CreateTaiKhoanRequest request)
         {
             var result = await _taiKhoanService.CreateAsync(request);
@@ -95,7 +95,7 @@ namespace HRMBackend.Controllers
         /// <returns></returns>
         [HttpGet("search")]
         [SwaggerOperation(summary: "Lấy danh sách mã nhân viên")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> GetEmployeeIdAsync()
         {
             var result = await _taiKhoanService.GetEmployeeIdAsync();
@@ -109,7 +109,7 @@ namespace HRMBackend.Controllers
         /// <returns></returns>
         [HttpPost("create-list")]
         [SwaggerOperation(summary: "Tạo danh sách tài khoản mới")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> CreateListAsync([FromBody] CreateTaiKhoanRequest request)
         {
             var result = await _taiKhoanService.CreateAsync(request);

@@ -66,7 +66,7 @@ namespace HRMBackend.Services.NhanVien
                 return GetBaseResult<NhanVienResponse>(CodeMessage._209, status: StatusEnum.Failed);
         }
 
-        public async Task<BaseResult<TaiKhoanResponse>> CreateListAsync(string id)
+        public async Task<BaseResult<IEnumerable<TaiKhoanResponse>>> CreateListAsync(string id)
         {
             //SearchNhanVienRequest searchRequest = new SearchNhanVienRequest() { IDVanTay = request.IDVanTay, ChucVu = null, HoTen= null, MaNhanVien = null, MaPhongBan = null };
             //Tìm mã nhân viên đã tồn tại hay chưa?
@@ -89,9 +89,9 @@ namespace HRMBackend.Services.NhanVien
             await _unitOfWork.SaveChangesAsync();
 
             if (result.isSuccess)
-                return GetBaseResult(CodeMessage._200, data: Mapper.Map<TaiKhoanResponse>(result.data));
+                return GetBaseResult(CodeMessage._200, data: Mapper.Map<IEnumerable<TaiKhoanResponse>>(result.data));
             else
-                return GetBaseResult<TaiKhoanResponse>(CodeMessage._209, status: StatusEnum.Failed);
+                return GetBaseResult<IEnumerable<TaiKhoanResponse>>(CodeMessage._209, status: StatusEnum.Failed);
         }
 
         public async Task<BaseResult<IEnumerable<NhanVienResponse>>> GetByParamsAsync(string? maNhanVien, int? maPhongBan, int? idVanTay, string? chucVu, string? hoTen)
@@ -146,14 +146,10 @@ namespace HRMBackend.Services.NhanVien
 
         public static string RemoveWhitespaceDiacriticsAndToLower(string text)
         {
-            // Loại bỏ dấu từ chuỗi và chuyển đổi ký tự viết hoa thành viết thường
-            string decomposed = text.Normalize(NormalizationForm.FormD);
-            Regex regexDiacritics = new Regex(@"\p{M}");
-            string withoutDiacritics = regexDiacritics.Replace(decomposed, string.Empty).Normalize(NormalizationForm.FormC);
-            string lowerCase = withoutDiacritics.ToLower();
-
-            // Loại bỏ khoảng trắng từ chuỗi đã chuyển đổi
-            return Regex.Replace(lowerCase, @"\s+", string.Empty);
+            Regex regex = new Regex("\\p{IsCombiningDiacriticalMarks}+");
+            string temp = text.Normalize(NormalizationForm.FormD);
+            var res = regex.Replace(temp, String.Empty).Replace('\u0111', 'd').Replace('\u0110', 'D');
+            return res.ToLower().Replace(" ", "");
         }
     }
 }

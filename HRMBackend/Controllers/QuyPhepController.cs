@@ -3,6 +3,7 @@ using HRMBackend.Resources;
 using HRMBackend.Resources.DTO.QuyPhep.Request;
 using HRMBackend.Services.CaLamViec;
 using HRMBackend.Services.QuyPhep;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Annotations;
@@ -27,7 +28,7 @@ namespace HRMBackend.Controllers
 
         [HttpPost()]
         [SwaggerOperation(summary: "Lấy thông tin theo điều kiện tìm kiếm")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> GetByParamsAsync(SearchQuyPhepRequest request)
         {
             var result = await _quyPhepService.GetByYearAsync(request);
