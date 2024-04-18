@@ -21,6 +21,9 @@ using HRMBackend.Resources.DTO.DonPhep.Request;
 using HRMBackend.Resources.DTO.DonTangCa.Request;
 using HRMBackend.DataAccess.HopDong;
 using HRMBackend.DataAccess.CaLamViec;
+using HRMBackend.Resources.DTO.DuLieuChamCong.Request;
+using HRMBackend.Resources.DTO.BaoCaoTheoThang.Request;
+using HRMBackend.DataAccess.DuLieuChamCong;
 
 namespace HRMBackend.Services.DanhSachDon
 {
@@ -32,6 +35,7 @@ namespace HRMBackend.Services.DanhSachDon
         private readonly IDonConNhoDAO _donConNhoDAO;
         private readonly IDonPhepDAO _donPhepDAO;
         private readonly IDonTangCaDAO _donTangCaDAO;
+        private readonly IDuLieuChamCongDAO _duLieuChamCongDAO;
         private readonly IHopDongDAO _hopDongDAO;
         private readonly INhanVienDAO _nhanVienDAO;
         private readonly IUnitOfWork _unitOfWork;
@@ -43,6 +47,7 @@ namespace HRMBackend.Services.DanhSachDon
             IDonTangCaDAO donTangCaDAO,
             IDonConNhoDAO donConNhoDAO,
             INhanVienDAO nhanVienDAO,
+            IDuLieuChamCongDAO duLieuChamCongDAO,
             IHopDongDAO hopDongDAO,
             ICaLamViecDAO caLamViecDAO,
             IUnitOfWork unitOfWork,
@@ -53,6 +58,7 @@ namespace HRMBackend.Services.DanhSachDon
             this._donTangCaDAO = donTangCaDAO;
             this._hopDongDAO = hopDongDAO;
             this._caLamViecDAO = caLamViecDAO;
+            this._duLieuChamCongDAO = duLieuChamCongDAO;
             this._donPhepDAO = donPhepDAO;
             this._donConNhoDAO = donConNhoDAO;
             this._nhanVienDAO = nhanVienDAO;
@@ -260,7 +266,19 @@ namespace HRMBackend.Services.DanhSachDon
         public async Task<BaseResult<DonConNhoResponse>> CreateDonConNhoAsync(CreateDonConNhoRequest request)
         {
             var donbu = Mapper.Map<CreateDonConNhoRequest, Models.DonConNho>(request);
+            var searchDonConNhoRequest = new SearchDonByDayRequest();
+            searchDonConNhoRequest.MaNhanVien = request.MaNhanVien;
+            searchDonConNhoRequest.NgayLamViec = request.NgayLamViec;
+
+            var checkDonConNho = await _donConNhoDAO.GetDonConNhoByDayAsync(searchDonConNhoRequest);
+
+            if (checkDonConNho.isSuccess)
+            {
+                return GetBaseResult<DonConNhoResponse>(CodeMessage._209, status: StatusEnum.Failed);
+            }
+
             var result = await _donConNhoDAO.CreateAsync(donbu);
+
             await _unitOfWork.SaveChangesAsync();
 
             if (result.isSuccess)
@@ -286,6 +304,24 @@ namespace HRMBackend.Services.DanhSachDon
         public async Task<BaseResult<DonPhepResponse>> CreateDonPhepAsync(CreateDonPhepRequest request)
         {
             var donbu = Mapper.Map<CreateDonPhepRequest, Models.DonPhep>(request);
+            var searchDonPhepRequest = new SearchDonByDayRequest();
+            searchDonPhepRequest.MaNhanVien = request.MaNhanVien;
+            searchDonPhepRequest.NgayLamViec = request.NgayLamViec;
+            var checkDonPhep = await _donPhepDAO.GetDonPhepByDayAsync(searchDonPhepRequest);
+            if (checkDonPhep.isSuccess)
+            {
+                return GetBaseResult<DonPhepResponse>(CodeMessage._209, status: StatusEnum.Failed);
+            }
+
+            var searchDuLieuChamCongRequest = new SearchBaoCaoTheoThangByDay();
+            searchDuLieuChamCongRequest.MaNhanVien = request.MaNhanVien;
+            searchDuLieuChamCongRequest.NgayLamViec = request.NgayLamViec;
+            var checkDLCC = await _duLieuChamCongDAO.GetTotalHourkWorkByDayAsync(searchDuLieuChamCongRequest);
+            if (checkDLCC.hasValue)
+            {
+                return GetBaseResult<DonPhepResponse>(CodeMessage._209, status: StatusEnum.Failed);
+            }
+
             var result = await _donPhepDAO.CreateAsync(donbu);
             await _unitOfWork.SaveChangesAsync();
 

@@ -12,5 +12,6 @@ namespace HRMBackend.Resources.DTO.DonConNho.Request
         public string NguoiDuyet { get; set; }
         public string TrangThai { get; set; }
         public string MaNhanVien { get; set; }
+        public DateTime NgayLamViec { get; set; }
     }
 }
