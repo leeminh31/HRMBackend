@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using HRMBackend.Resources.DTO.PhongBan.Response;
 using HRMBackend.Resources.DTO.PhongBan.Request;
 using HRMBackend.Extensions;
+using HRMBackend.DataAccess.NhanVien;
 
 namespace HRMBackend.Services.PhongBan
 {
@@ -16,16 +17,19 @@ namespace HRMBackend.Services.PhongBan
     {
         #region Property
         private readonly IPhongBanDAO _phongBanDAO;
+        private readonly INhanVienDAO _nhanVienDAO;
         private readonly IUnitOfWork _unitOfWork;
         #endregion
 
         #region Constructor
         public PhongBanService(IPhongBanDAO phongBanDAO,
+            INhanVienDAO nhanVienDAO,
             IUnitOfWork unitOfWork,
             IMapper mapper,
             IOptionsMonitor<ResponseMessage> responseMessage) : base(mapper, responseMessage)
         {
             this._phongBanDAO = phongBanDAO;
+            this._nhanVienDAO = nhanVienDAO;
             this._unitOfWork = unitOfWork;
         }
         #endregion
@@ -116,6 +120,14 @@ namespace HRMBackend.Services.PhongBan
 
         public async Task<BaseResult<bool>> DeleteAsync(string id)
         {
+            int[] numbers = id.Split(',').Select(int.Parse).ToArray();
+            var checkNhanVien = await _nhanVienDAO.GetByParamsAsync(null, null, null, null, null);
+
+            if(checkNhanVien.isSuccess && checkNhanVien.data.Any(nv => numbers.Contains(nv.MaPhongBan)))
+            {
+                return GetBaseResult<bool>(CodeMessage._210, status: StatusEnum.Failed);
+            }
+
             var isUserRoleSuccess = await _phongBanDAO.DeleteAsync(id);
 
             await _unitOfWork.SaveChangesAsync();

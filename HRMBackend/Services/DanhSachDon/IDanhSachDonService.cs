@@ -26,7 +26,7 @@ namespace HRMBackend.Services.DanhSachDon
         Task<BaseResult<DonPhepResponse>> UpdateDonPhepAsync(UpdateDonPhepRequest request);
         Task<BaseResult<DonConNhoResponse>> UpdateDonConNhoAsync(UpdateDonConNhoRequest request);
         Task<BaseResult<DonBuResponse>> UpdateDonBuAsync(UpdateDonBuRequest request);
-        Task<BaseResult<int?>> GetTotalMinutesOTAsync(string maNhanVien, int nam);
+        Task<BaseResult<int>> GetTotalMinutesOTAsync(string maNhanVien, int nam);
         Task<BaseResult<double>> GetTotalDayOffByYearAsync(string maNhanVien, int nam);
     }
 }

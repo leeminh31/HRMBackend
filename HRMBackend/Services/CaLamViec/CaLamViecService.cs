@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using HRMBackend.DataAccess.CaLamViec;
+using HRMBackend.DataAccess.DangKyCa;
 using HRMBackend.DataAccess.DuLieuChamCong;
 using HRMBackend.DataAccess.NhanVien;
 using HRMBackend.DataAccess.PhongBan;
@@ -7,6 +8,7 @@ using HRMBackend.DataAccess.UnitOfWork;
 using HRMBackend.Resources;
 using HRMBackend.Resources.DTO.CaLamViec.Request;
 using HRMBackend.Resources.DTO.CaLamViec.Response;
+using HRMBackend.Resources.DTO.DangKyCa.Request;
 using HRMBackend.Resources.DTO.DuLieuChamCong.Response;
 using HRMBackend.Resources.DTO.PhongBan.Request;
 using HRMBackend.Resources.DTO.PhongBan.Response;
@@ -20,16 +22,19 @@ namespace HRMBackend.Services.CaLamViec
     {
         #region Property
         private readonly ICaLamViecDAO _caLamViecDAO;
+        private readonly IDangKyCaDAO _dangKyCaDAO;
         private readonly IUnitOfWork _unitOfWork;
         #endregion
 
         #region Constructor
         public CaLamViecService(ICaLamViecDAO caLamViecDAO,
             IUnitOfWork unitOfWork,
+            IDangKyCaDAO dangKyCaDAO,
             IMapper mapper,
             IOptionsMonitor<ResponseMessage> responseMessage) : base(mapper, responseMessage)
         {
             this._caLamViecDAO = caLamViecDAO;
+            this._dangKyCaDAO = dangKyCaDAO;
             this._unitOfWork = unitOfWork;
         }
         #endregion
@@ -88,6 +93,31 @@ namespace HRMBackend.Services.CaLamViec
 
         public async Task<BaseResult<bool>> DeleteAsync(string id)
         {
+            int[] numbers = id.Split(',').Select(int.Parse).ToArray();
+            List<string> danhSachCa = new List<string>();
+
+            var caLamViec = await _caLamViecDAO.GetByShiftIDAsync(null, null);
+            if (caLamViec.isSuccess)
+            {
+                foreach (var number in numbers)
+                {
+                    if(caLamViec.data.Any(clv => clv.MaCa == number))
+                    {
+                        danhSachCa.Add(caLamViec.data.First(clv => clv.MaCa == number).TenCa);
+                    }
+                }
+            }
+            
+            var searchDangKyCaRequest = new SearchDangKyCaRequest();
+            searchDangKyCaRequest.MaNhanVien = null;
+            searchDangKyCaRequest.NgayTao = null;
+            searchDangKyCaRequest.CaLamViecMoi = null;
+            var dangKyCa = await _dangKyCaDAO.GetByParamsAsync(searchDangKyCaRequest);
+            if (dangKyCa.isSuccess && dangKyCa.data.Any(dkc => danhSachCa.Contains(dkc.CaLamViecMoi)))
+            {
+                return GetBaseResult<bool>(CodeMessage._210, status: StatusEnum.Failed);
+            }
+
             var isUserRoleSuccess = await _caLamViecDAO.DeleteAsync(id);
 
             await _unitOfWork.SaveChangesAsync();

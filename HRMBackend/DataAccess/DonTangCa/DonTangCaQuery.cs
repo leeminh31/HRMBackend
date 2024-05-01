@@ -20,12 +20,13 @@ namespace HRMBackend.DataAccess.DonTangCa
             param.Add(":tangcaden", model.TangCaDen, dbType: DbType.Time, direction: ParameterDirection.Input);
             param.Add(":lydo", model.LyDo, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(":nguoiduyet", model.NguoiDuyet, dbType: DbType.String, direction: ParameterDirection.Input);
+            //param.Add(":thoigiancapnhat", model.ThoiGianCapNhat, dbType: DbType.DateTime, direction: ParameterDirection.Input);
             param.Add(":madontangca", model.MaDonTangCa, dbType: DbType.Int32, direction: ParameterDirection.Output);
 
             // SQL component
             string query = @"INSERT INTO public.tbl_dontangca(
-	                        manhanvien, ngaytaodon, ngaylamviec, tangcatu, tangcaden, lydo, nguoiduyet, trangthai)
-	                        VALUES (:manhanvien, :ngaytaodon, :ngaylamviec, :tangcatu, :tangcaden, :lydo, :nguoiduyet, '" + model.TrangThai + @"')
+	                        manhanvien, ngaytaodon, ngaylamviec, tangcatu, tangcaden, lydo, nguoiduyet,thoigiancapnhat, trangthai)
+	                        VALUES (:manhanvien, :ngaytaodon, :ngaylamviec, :tangcatu, :tangcaden, :lydo,:thoigiancapnhat, :nguoiduyet, '" + model.TrangThai + @"')
                             RETURNING madontangca";
             return (query, param);
         }

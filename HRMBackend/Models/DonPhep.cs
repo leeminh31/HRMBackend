@@ -23,5 +23,7 @@ namespace HRMBackend.Models
         public string TrangThai { get; set; }
         [Column("manhanvien")]
         public string MaNhanVien { get; set;}
+        [Column("thoigiancapnhat")]
+        public DateTime ThoiGianCapNhat { get; set; }
     }
 }

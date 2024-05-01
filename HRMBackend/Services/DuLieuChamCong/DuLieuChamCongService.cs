@@ -338,6 +338,7 @@ namespace HRMBackend.Services.DuLieuChamCong
                             if (records.isSuccess)
                             {
                                 var employeeByDay = records.data.Where(dlcc => dlcc.MaNhanVien == employee.MaNhanVien && dlcc.NgayChamCong == ngayLamViec);
+
                                 var donBuByNhanVien = donBu.data.Where(db => db.MaNhanVien == employee.MaNhanVien && db.NgayLamViec == ngayLamViec);
                                 var donConNhoByNhanVien = donConNho.data.Where(dcn => dcn.MaNhanVien == employee.MaNhanVien);
                                 

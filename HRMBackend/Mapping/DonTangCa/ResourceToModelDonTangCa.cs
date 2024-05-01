@@ -8,7 +8,7 @@ namespace HRMBackend.Mapping.DonTangCa
     {
         public ResourceToModelDonTangCa()
         {
-            CreateMap<CreateDonTangCaRequest, Models.DonTangCa>();
+            CreateMap<CreateDonTangCaRequest, Models.DonTangCa>().ForMember(x => x.ThoiGianCapNhat, opt => opt.MapFrom(src => DateTime.UtcNow));
             CreateMap<UpdateDonTangCaRequest, Models.DonTangCa>();
         }
     }

@@ -8,7 +8,7 @@ namespace HRMBackend.Mapping.DonPhep
     {
         public ResourceToModelDonPhep()
         {
-            CreateMap<CreateDonPhepRequest, Models.DonPhep>();
+            CreateMap<CreateDonPhepRequest, Models.DonPhep>().ForMember(x => x.ThoiGianCapNhat, opt => opt.MapFrom(src => DateTime.UtcNow));
             CreateMap<UpdateDonPhepRequest, Models.DonPhep>();
         }
     }

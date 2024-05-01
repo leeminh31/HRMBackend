@@ -93,8 +93,8 @@ namespace HRMBackend.Services.QuyBu
                         {
                             var quyBuThang = new QuyBuThang();
                             quyBuThang.Thang = thang;
-                            quyBuThang.PhatSinh = quyBuNam.data.FirstOrDefault(qb => qb.Thang == thang && maQuyBus.data.Any(mqb => mqb.MaQuyBu == qb.MaQuyBu))?.PhatSinh ?? 0;
-                            quyBuThang.SuDung = quyBuNam.data.FirstOrDefault(qb => qb.Thang == thang && maQuyBus.data.Any(mqb => mqb.MaQuyBu == qb.MaQuyBu))?.SuDung ?? 0;
+                            quyBuThang.PhatSinh = quyBuNam.data?.FirstOrDefault(qb => qb.Thang == thang && maQuyBus.data.Any(mqb => mqb.MaQuyBu == qb.MaQuyBu))?.PhatSinh ?? 0;
+                            quyBuThang.SuDung = quyBuNam.data?.FirstOrDefault(qb => qb.Thang == thang && maQuyBus.data.Any(mqb => mqb.MaQuyBu == qb.MaQuyBu))?.SuDung ?? 0;
                             listQuyBuThang.Add(quyBuThang);
                             phatSinh += quyBuThang.PhatSinh;
                             suDung += quyBuThang.SuDung;

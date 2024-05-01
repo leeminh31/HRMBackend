@@ -35,7 +35,7 @@
       "408": "Lỗi xảy ra trong quá trình gọi dịch vụ C06",
 
       "530": "Sai tài khoản/mật khẩu",
-      "531": "Không tìm thấy tài khoản hoạt động tương ứng",
+      "531": "Sai tên đăng nhập hoặc mật khẩu!",
       "532": "Đã gửi yêu cầu khôi phục mật khẩu",
       "533": "Vui lòng không bỏ trống thông tin",
       "534": "Mật khẩu mới không được trùng với mật khẩu cũ",
@@ -58,7 +58,9 @@
       "555": "File upload không đúng định dạng",
       "556": "Vui lòng kiểm tra lại file",
       "557": "Ca làm việc này đã tồn tại",
-      "558": "Đã phân ca đủ cho nhân viên"
+      "558": "Đã phân ca đủ cho nhân viên",
+      "559": "Tạo tài khoản thất bại",
+      "560": "Đổi mật khẩu thất bại",
     }
   }
 }

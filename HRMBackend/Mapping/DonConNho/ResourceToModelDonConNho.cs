@@ -8,7 +8,8 @@ namespace HRMBackend.Mapping.DonConNho
     {
         public ResourceToModelDonConNho()
         {
-            CreateMap<CreateDonConNhoRequest, Models.DonConNho>();
+            CreateMap<CreateDonConNhoRequest, Models.DonConNho>()
+                .ForMember(x => x.ThoiGianCapNhat, opt => opt.MapFrom(src => DateTime.UtcNow));
             CreateMap<UpdateDonConNhoRequest, Models.DonConNho>();
         }
     }

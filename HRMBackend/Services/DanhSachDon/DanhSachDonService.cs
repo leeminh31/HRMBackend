@@ -24,6 +24,8 @@ using HRMBackend.DataAccess.CaLamViec;
 using HRMBackend.Resources.DTO.DuLieuChamCong.Request;
 using HRMBackend.Resources.DTO.BaoCaoTheoThang.Request;
 using HRMBackend.DataAccess.DuLieuChamCong;
+using HRMBackend.Services.QuyBu;
+using HRMBackend.DataAccess.QuyBu;
 
 namespace HRMBackend.Services.DanhSachDon
 {
@@ -38,6 +40,7 @@ namespace HRMBackend.Services.DanhSachDon
         private readonly IDuLieuChamCongDAO _duLieuChamCongDAO;
         private readonly IHopDongDAO _hopDongDAO;
         private readonly INhanVienDAO _nhanVienDAO;
+        private readonly IQuyBuDAO _quyBuDAO;
         private readonly IUnitOfWork _unitOfWork;
         #endregion
 
@@ -46,6 +49,7 @@ namespace HRMBackend.Services.DanhSachDon
             IDonPhepDAO donPhepDAO,
             IDonTangCaDAO donTangCaDAO,
             IDonConNhoDAO donConNhoDAO,
+            IQuyBuDAO quyBuDAO,
             INhanVienDAO nhanVienDAO,
             IDuLieuChamCongDAO duLieuChamCongDAO,
             IHopDongDAO hopDongDAO,
@@ -58,6 +62,7 @@ namespace HRMBackend.Services.DanhSachDon
             this._donTangCaDAO = donTangCaDAO;
             this._hopDongDAO = hopDongDAO;
             this._caLamViecDAO = caLamViecDAO;
+            this._quyBuDAO = quyBuDAO;
             this._duLieuChamCongDAO = duLieuChamCongDAO;
             this._donPhepDAO = donPhepDAO;
             this._donConNhoDAO = donConNhoDAO;
@@ -240,6 +245,17 @@ namespace HRMBackend.Services.DanhSachDon
         public async Task<BaseResult<DonBuResponse>> CreateDonBuAsync(CreateDonBuRequest request)
         {
             var donbu = Mapper.Map<CreateDonBuRequest, Models.DonBu>(request);
+
+            var searchDonBuByDay = new SearchDonByDayRequest();
+            searchDonBuByDay.MaNhanVien = request.MaNhanVien;
+            searchDonBuByDay.NgayLamViec = request.NgayLamViec;
+            var checkDonBu = await _donBuDAO.GetDonBuByDayAsync(searchDonBuByDay);
+
+            if(checkDonBu.isSuccess)
+            {
+                return GetBaseResult<DonBuResponse>(CodeMessage._209, status: StatusEnum.Failed);
+            }
+
             var result = await _donBuDAO.CreateAsync(donbu);
             await _unitOfWork.SaveChangesAsync();
 
@@ -371,21 +387,20 @@ namespace HRMBackend.Services.DanhSachDon
             return GetBaseResult(CodeMessage._209, data: Mapper.Map<DonTangCaResponse>(result.data));
         }
 
-        public async Task<BaseResult<int?>> GetTotalMinutesOTAsync(string maNhanVien, int nam)
+        public async Task<BaseResult<int>> GetTotalMinutesOTAsync(string maNhanVien, int nam)
         {
-            var records = await _donTangCaDAO.GetTotalMinutesOTAsync(maNhanVien, nam);
-
-            var donBu = await _donBuDAO.GetTotalMinutesOTAsync(maNhanVien, nam);
+            var records = await _quyBuDAO.GetByYearForEmployeeAsync(maNhanVien, nam);
 
             if (records.isSuccess)
             {
-                if(donBu.isSuccess)
+                var quyHienCo = 0;
+                foreach (var record in records.data)
                 {
-                    records.data = records.data - donBu.data;
+                    quyHienCo = record.PhatSinh - record.SuDung;
                 }
-                return GetBaseResult(CodeMessage._200, data: records.data);
+                return GetBaseResult(CodeMessage._200, data: quyHienCo);
             }
-            return GetBaseResult<int?>(CodeMessage._200, data: 0);
+            return GetBaseResult<int>(CodeMessage._200, data: 0);
         }
 
         public async Task<BaseResult<double>> GetTotalDayOffByYearAsync(string maNhanVien, int nam)

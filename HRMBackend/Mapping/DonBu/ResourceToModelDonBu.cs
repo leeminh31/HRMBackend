@@ -8,7 +8,8 @@ namespace HRMBackend.Mapping.DonBu
     {
         public ResourceToModelDonBu()
         {
-            CreateMap<CreateDonBuRequest, Models.DonBu>();
+            CreateMap<CreateDonBuRequest, Models.DonBu>()
+                .ForMember(x => x.ThoiGianCapNhat, opt => opt.MapFrom(src => DateTime.UtcNow));
             CreateMap<UpdateDonBuRequest, Models.DonBu>();
         }
     }

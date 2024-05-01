@@ -19,12 +19,13 @@ namespace HRMBackend.DataAccess.DonConNho
             param.Add(":denngay", model.DenNgay, dbType: DbType.Date, direction: ParameterDirection.Input);
             param.Add(":lydo", model.LyDo, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(":nguoiduyet", model.NguoiDuyet, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(":thoigiancapnhat", model.ThoiGianCapNhat, dbType: DbType.DateTime, direction: ParameterDirection.Input);
             param.Add(":madonconnho", model.MaDonConNho, dbType: DbType.Int32, direction: ParameterDirection.Output);
 
             // SQL component
             string query = @"INSERT INTO public.tbl_donconnho(
-	                        manhanvien, ngaytaodon, tungay, denngay, lydo, nguoiduyet, trangthai)
-	                        VALUES (:manhanvien, :ngaytaodon, :tungay, :denngay, :lydo, :nguoiduyet, '" + model.TrangThai + @"')
+	                        manhanvien, ngaytaodon, tungay, denngay, lydo, nguoiduyet,thoigiancapnhat, trangthai)
+	                        VALUES (:manhanvien, :ngaytaodon, :tungay, :denngay, :lydo, :nguoiduyet, :thoigiancapnhat, '" + model.TrangThai + @"')
                             RETURNING madonconnho";
             return (query, param);
         }

@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using HRMBackend.DataAccess.CaLamViec;
 using HRMBackend.DataAccess.ChiTietQuyPhep;
 using HRMBackend.DataAccess.HopDong;
 using HRMBackend.DataAccess.NhanVien;
@@ -7,13 +6,11 @@ using HRMBackend.DataAccess.PhongBan;
 using HRMBackend.DataAccess.QuyPhep;
 using HRMBackend.DataAccess.UnitOfWork;
 using HRMBackend.Resources;
-using HRMBackend.Resources.DTO.CaLamViec.Response;
 using HRMBackend.Resources.DTO.PhongBan.Request;
 using HRMBackend.Resources.DTO.QuyPhep.Request;
 using HRMBackend.Resources.DTO.QuyPhep.Response;
 using HRMBackend.Resources.Enums;
 using HRMBackend.Results;
-using HRMBackend.Services.CaLamViec;
 using Microsoft.Extensions.Options;
 
 namespace HRMBackend.Services.QuyPhep
