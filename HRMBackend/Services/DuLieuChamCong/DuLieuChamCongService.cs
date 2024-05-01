@@ -338,9 +338,6 @@ namespace HRMBackend.Services.DuLieuChamCong
                             if (records.isSuccess)
                             {
                                 var employeeByDay = records.data.Where(dlcc => dlcc.MaNhanVien == employee.MaNhanVien && dlcc.NgayChamCong == ngayLamViec);
-
-                                var donBuByNhanVien = donBu.data.Where(db => db.MaNhanVien == employee.MaNhanVien && db.NgayLamViec == ngayLamViec);
-                                var donConNhoByNhanVien = donConNho.data.Where(dcn => dcn.MaNhanVien == employee.MaNhanVien);
                                 
                                 if (employeeByDay.GetEnumerator().MoveNext())
                                 {
@@ -380,24 +377,34 @@ namespace HRMBackend.Services.DuLieuChamCong
 
                                     duLieuResponseDay.GioLamViec = totalWorkHours;
                                     var gioTinhCong = totalWorkHours;
-                                    
-                                    if(donBuByNhanVien.GetEnumerator().MoveNext())
-                                    {
-                                        gioTinhCong = totalWorkHours + donBuByNhanVien.First().SoPhutXinBu;
-                                        if(gioTinhCong > gioLamViecTheoCa)
-                                        {
-                                            gioTinhCong = gioLamViecTheoCa;
-                                        }
-                                    }
 
-                                    if(donConNhoByNhanVien.GetEnumerator().MoveNext())
+                                    if(donBu.isSuccess)
                                     {
-                                        gioTinhCong += 60;
-                                        if (gioTinhCong > gioLamViecTheoCa)
+                                        var donBuByNhanVien = donBu.data?.Where(db => db.MaNhanVien == employee.MaNhanVien && db.NgayLamViec == ngayLamViec);
+                                        if (donBuByNhanVien.GetEnumerator().MoveNext())
                                         {
-                                            gioTinhCong = gioLamViecTheoCa;
+                                            gioTinhCong = totalWorkHours + donBuByNhanVien.First().SoPhutXinBu;
+                                            if (gioTinhCong > gioLamViecTheoCa)
+                                            {
+                                                gioTinhCong = gioLamViecTheoCa;
+                                            }
                                         }
                                     }
+                                    if(donConNho.isSuccess)
+                                    {
+                                        var donConNhoByNhanVien = donConNho.data?.Where(dcn => dcn.MaNhanVien == employee.MaNhanVien);
+                                        if (donConNhoByNhanVien.GetEnumerator().MoveNext())
+                                        {
+                                            gioTinhCong += 60;
+                                            if (gioTinhCong > gioLamViecTheoCa)
+                                            {
+                                                gioTinhCong = gioLamViecTheoCa;
+                                            }
+                                        }
+                                    }
+                                    
+
+                                    
 
                                     var totalWork = Math.Round(gioTinhCong / duLieuResponseDay.GioLamViecTheoCa, 2);
                                     totalWorkMonth += totalWork;

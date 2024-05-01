@@ -103,6 +103,16 @@ namespace HRMBackend.Services.QuyBu
                     }
                     else
                     {
+                        for (int thang = 1; thang <= 12; thang++)
+                        {
+                            var quyBuThang = new QuyBuThang();
+                            quyBuThang.Thang = thang;
+                            quyBuThang.PhatSinh = 0;
+                            quyBuThang.SuDung = 0;
+                            listQuyBuThang.Add(quyBuThang);
+                            phatSinh += quyBuThang.PhatSinh;
+                            suDung += quyBuThang.SuDung;
+                        }
                         conLai = phatSinh;
                     }
 
