@@ -75,7 +75,7 @@ namespace HRMBackend.DataAccess.DonBu
             param.Add(":sophutxinbu", model.SoPhutXinBu, dbType: DbType.Int32, direction: ParameterDirection.Input);
             param.Add(":lydo", model.LyDo, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(":nguoiduyet", model.NguoiDuyet, dbType: DbType.String, direction: ParameterDirection.Input);
-            //param.Add(":thoigiancapnhat", model.ThoiGianCapNhat, dbType: DbType.DateTime, direction: ParameterDirection.Input);
+            param.Add(":thoigiancapnhat", model.ThoiGianCapNhat, dbType: DbType.DateTime, direction: ParameterDirection.Input);
             param.Add(":madonbu", model.MaDonBu, dbType: DbType.Int32, direction: ParameterDirection.Output);
 
             // SQL component

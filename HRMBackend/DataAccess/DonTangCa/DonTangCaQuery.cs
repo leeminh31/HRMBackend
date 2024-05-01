@@ -20,7 +20,7 @@ namespace HRMBackend.DataAccess.DonTangCa
             param.Add(":tangcaden", model.TangCaDen, dbType: DbType.Time, direction: ParameterDirection.Input);
             param.Add(":lydo", model.LyDo, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(":nguoiduyet", model.NguoiDuyet, dbType: DbType.String, direction: ParameterDirection.Input);
-            //param.Add(":thoigiancapnhat", model.ThoiGianCapNhat, dbType: DbType.DateTime, direction: ParameterDirection.Input);
+            param.Add(":thoigiancapnhat", model.ThoiGianCapNhat, dbType: DbType.DateTime, direction: ParameterDirection.Input);
             param.Add(":madontangca", model.MaDonTangCa, dbType: DbType.Int32, direction: ParameterDirection.Output);
 
             // SQL component
