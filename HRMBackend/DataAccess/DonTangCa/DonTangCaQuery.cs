@@ -26,7 +26,7 @@ namespace HRMBackend.DataAccess.DonTangCa
             // SQL component
             string query = @"INSERT INTO public.tbl_dontangca(
 	                        manhanvien, ngaytaodon, ngaylamviec, tangcatu, tangcaden, lydo, nguoiduyet,thoigiancapnhat, trangthai)
-	                        VALUES (:manhanvien, :ngaytaodon, :ngaylamviec, :tangcatu, :tangcaden, :lydo,:thoigiancapnhat, :nguoiduyet, '" + model.TrangThai + @"')
+	                        VALUES (:manhanvien, :ngaytaodon, :ngaylamviec, :tangcatu, :tangcaden, :lydo, :nguoiduyet,:thoigiancapnhat, '" + model.TrangThai + @"')
                             RETURNING madontangca";
             return (query, param);
         }
