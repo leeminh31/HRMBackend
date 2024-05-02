@@ -49,13 +49,20 @@ namespace HRMBackend.Services.HopDong
         public async Task<BaseResult<HopDongResponse>> CreateAsync(CreateHopDongRequest request)
         {
             // Mapping Resource to HopDong
-            var airport = Mapper.Map<CreateHopDongRequest, Models.HopDong>(request);
-            //SearchHopDongRequest searchRequest = new SearchHopDongRequest() { Code = request.Code, Name = request.Name };
+            var airport = Mapper.Map<CreateHopDongRequest, Models.HopDong>(request);;
             //Tìm mã code hoặc name đã tồn tại chưa?
             var records = await _hopDongDAO.GetByIDAsync(request.TenHopDong);
             if (records.hasValue)
             {
                 return GetBaseResult(CodeMessage._552, data: Mapper.Map<HopDongResponse>(records.data));
+            }
+
+            var checkNgay = await _hopDongDAO.GetContractByTimeRangeAndIDAsync(request.NgayBatDauHopDong, request.NgayKetThucHopDong);
+            if(checkNgay.hasValue)
+            {
+                var isValid = checkNgay.data.Any(hd => hd.MaNhanVien == request.MaNhanVien);
+                 if(isValid)
+                    return GetBaseResult(CodeMessage._561, data: Mapper.Map<HopDongResponse>(records.data));
             }
 
             var result = await _hopDongDAO.CreateAsync(airport);
