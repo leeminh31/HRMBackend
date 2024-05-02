@@ -207,10 +207,7 @@ namespace HRMBackend.Services.DuLieuChamCong
                         for (int i = 1; i <= daysInMonth; i++)
                         {
                             var ngayLamViec = new DateTime((int)request.NgayKetThuc.Year, (int)request.NgayKetThuc.Month, i);
-                            if (ngayLamViec < hopDong.NgayBatDauHopDong || ngayLamViec > hopDong.NgayKetThucHopDong)
-                            {
-                                continue;
-                            }
+
                             var duLieuResponseDay = new DuLieuChamCongByDayResponse();
                             duLieuResponseDay.NgayLamViec = i;
                             duLieuResponseDay.IsYellow = false;
@@ -218,6 +215,19 @@ namespace HRMBackend.Services.DuLieuChamCong
                             duLieuResponseDay.NghiPhep = false;
                             duLieuResponseDay.GioLamViec = 0;
                             duLieuResponseDay.AllowOT = false;
+
+                            if (ngayLamViec < hopDong.NgayBatDauHopDong || ngayLamViec > hopDong.NgayKetThucHopDong)
+                            {
+                                if (records.isSuccess)
+                                {
+                                    var employeeByDay = records.data.Where(dlcc => dlcc.MaNhanVien == employee.MaNhanVien && dlcc.NgayChamCong == ngayLamViec);
+                                    if (!employeeByDay.GetEnumerator().MoveNext())
+                                    {
+                                        duLieuResponseDay.IsYellow = true;
+                                    }
+                                }
+                                continue;
+                            }
 
                             // Logic đơn đăng ký ca của nhân viên
                             if (dangKyCa.isSuccess && dangKyCa.data.Any(dkc => dkc.MaNhanVien == employee.MaNhanVien))
@@ -341,6 +351,10 @@ namespace HRMBackend.Services.DuLieuChamCong
                                 
                                 if (employeeByDay.GetEnumerator().MoveNext())
                                 {
+                                    if (ngayLamViec < hopDong.NgayBatDauHopDong || ngayLamViec > hopDong.NgayKetThucHopDong)
+                                    {
+                                        duLieuResponseDay.IsYellow = true;
+                                    }
                                     var lastCheck = employeeByDay.MaxBy(t => t.LanChamCong);
 
                                     var firstCheck = employeeByDay.MinBy(t => t.LanChamCong);
@@ -403,9 +417,6 @@ namespace HRMBackend.Services.DuLieuChamCong
                                         }
                                     }
                                     
-
-                                    
-
                                     var totalWork = Math.Round(gioTinhCong / duLieuResponseDay.GioLamViecTheoCa, 2);
                                     totalWorkMonth += totalWork;
                                 }
