@@ -221,11 +221,12 @@ namespace HRMBackend.Services.DuLieuChamCong
                                 if (records.isSuccess)
                                 {
                                     var employeeByDay = records.data.Where(dlcc => dlcc.MaNhanVien == employee.MaNhanVien && dlcc.NgayChamCong == ngayLamViec);
-                                    if (!employeeByDay.GetEnumerator().MoveNext())
+                                    if (employeeByDay.GetEnumerator().MoveNext())
                                     {
                                         duLieuResponseDay.IsYellow = true;
-                                    }
-                                }
+                                        baoCaoTheoThangNhanVien.DuLieuChamCongResponses.Add(duLieuResponseDay);
+                                    } 
+                                } 
                                 continue;
                             }
 
