@@ -253,7 +253,7 @@ namespace HRMBackend.Services.DanhSachDon
 
             if(checkDonBu.isSuccess)
             {
-                return GetBaseResult<DonBuResponse>(CodeMessage._209, status: StatusEnum.Failed);
+                return GetBaseResult<DonBuResponse>(CodeMessage._562, status: StatusEnum.Failed);
             }
 
             var result = await _donBuDAO.CreateAsync(donbu);
@@ -290,7 +290,7 @@ namespace HRMBackend.Services.DanhSachDon
 
             if (checkDonConNho.isSuccess)
             {
-                return GetBaseResult<DonConNhoResponse>(CodeMessage._209, status: StatusEnum.Failed);
+                return GetBaseResult<DonConNhoResponse>(CodeMessage._564, status: StatusEnum.Failed);
             }
 
             var result = await _donConNhoDAO.CreateAsync(donbu);
@@ -326,7 +326,7 @@ namespace HRMBackend.Services.DanhSachDon
             var checkDonPhep = await _donPhepDAO.GetDonPhepByDayAsync(searchDonPhepRequest);
             if (checkDonPhep.isSuccess)
             {
-                return GetBaseResult<DonPhepResponse>(CodeMessage._209, status: StatusEnum.Failed);
+                return GetBaseResult<DonPhepResponse>(CodeMessage._563, status: StatusEnum.Failed);
             }
 
             var searchDuLieuChamCongRequest = new SearchBaoCaoTheoThangByDay();
