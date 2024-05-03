@@ -107,7 +107,7 @@ namespace HRMBackend.DataAccess.DonPhep
             string query = @"SELECT *
                             FROM TBL_DONPHEP
                             WHERE 
-                                (:manhanvien IS NULL OR manhanvien = :manhanvien)
+                                (:manhanvien IS NULL OR TRANSLATE(UPPER(MANHANVIEN), 'ÁÀẢẠÃĂẮẰẲẶẴÂẤẦẨẬẪĐÉÈẺẸẼÊẾỀỂỆỄÍÌỈỊĨÓÒỎỌÕỐỒỘỖÔỔƠỚỜỞỠỢÚÙỦỤŨƯỨỪỬỰỮÝỲỶỴỸáàảạãăắẵằẳặâấầẩậẫđéèẻẹẽêếềểệễíìỉịĩóòỏọõốồổộỗôơớờởỡợúùủụũưứừửựữýỳỷỵỹ', 'AAAAAAAAAAAAAAAAADEEEEEEEEEEEIIIIIOOOOOOOOOOOOOOOOOUUUUUUUUUUUYYYYYAAAAAAAAAAAAAAAAADEEEEEEEEEEEIIIIIOOOOOOOOOOOOOOOOOUUUUUUUUUUUYYYYY') LIKE '%' || :manhanvien || '%')
                                 AND (:ngaybatdautaodon IS NULL OR ngaylamviec >= :ngaybatdautaodon)
                                 AND (:ngayketthuctaodon IS NULL OR ngaylamviec <= :ngayketthuctaodon)
                                 AND trangthai = '1'
