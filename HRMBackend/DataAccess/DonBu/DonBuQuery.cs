@@ -133,6 +133,7 @@ namespace HRMBackend.DataAccess.DonBu
                 query.AppendLine(@"
                         UPDATE public.tbl_donbu
 	                    SET trangthai = '1',
+                            thoigiancapnhat = '" + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss") + @"',
                             nguoiduyet = '" + request.nguoiDuyet + @"'
 	                    WHERE madonbu IN (" + request.maDonBu + ");");
                 query.Append(Environment.NewLine);
@@ -144,6 +145,7 @@ namespace HRMBackend.DataAccess.DonBu
                 query.AppendLine(@"
                         UPDATE public.tbl_donconnho
 	                    SET trangthai= '1',
+                        thoigiancapnhat = '" + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss") + @"',
                         nguoiduyet = '" + request.nguoiDuyet + @"'
 	                    WHERE madonconnho IN (" + request.maDonConNho + ");");
                 query.Append(Environment.NewLine);
@@ -155,6 +157,7 @@ namespace HRMBackend.DataAccess.DonBu
                 query.AppendLine(@"
                     UPDATE public.tbl_donphep
                     SET trangthai= '1',
+                    thoigiancapnhat = '" + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss") + @"',
                     nguoiduyet = '" + request.nguoiDuyet + @"'
                     WHERE madonphep IN (" + request.maDonPhep + ");");
                 query.Append(Environment.NewLine);
@@ -165,6 +168,7 @@ namespace HRMBackend.DataAccess.DonBu
                 query.AppendLine(@"
                      UPDATE public.tbl_dontangca
                      SET trangthai= '1',
+                     thoigiancapnhat = '" + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss") + @"',
                      nguoiduyet = '" + request.nguoiDuyet + @"'
                      WHERE madontangca IN (" + request.maDonTangCa + ");");
                 query.Append(Environment.NewLine);
@@ -184,6 +188,7 @@ namespace HRMBackend.DataAccess.DonBu
                 query.AppendLine(@"
                         UPDATE public.tbl_donbu
 	                    SET trangthai= '2',
+                        thoigiancapnhat = '" + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss") + @"',
                         nguoiduyet = '" + request.nguoiDuyet + @"'
 	                    WHERE madonbu IN (" + request.maDonBu + ");");
                 query.Append(Environment.NewLine);
@@ -195,6 +200,7 @@ namespace HRMBackend.DataAccess.DonBu
                 query.AppendLine(@"
                         UPDATE public.tbl_donconnho
 	                    SET trangthai= '2',
+                        thoigiancapnhat = '" + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss") + @"',
                         nguoiduyet = '" + request.nguoiDuyet + @"'
 	                    WHERE madonconnho IN (" + request.maDonConNho + ");");
                 query.Append(Environment.NewLine);
@@ -206,6 +212,7 @@ namespace HRMBackend.DataAccess.DonBu
                 query.AppendLine(@"
                     UPDATE public.tbl_donphep
                     SET trangthai= '2',
+                    thoigiancapnhat = '" + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss") + @"',
                     nguoiduyet = '" + request.nguoiDuyet + @"'
                     WHERE madonphep IN (" + request.maDonPhep + ");");
                 query.Append(Environment.NewLine);
@@ -216,6 +223,7 @@ namespace HRMBackend.DataAccess.DonBu
                 query.AppendLine(@"
                      UPDATE public.tbl_dontangca
                      SET trangthai= '2',
+                     thoigiancapnhat = '" + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss") + @"',
                      nguoiduyet = '" + request.nguoiDuyet + @"'
                      WHERE madontangca IN (" + request.maDonTangCa + ");");
                 query.Append(Environment.NewLine);
